@@ -53,6 +53,7 @@ type Client struct {
 	Capabilities   *CapabilitiesService
 	Admin          *AdminService
 	Favorites      *FavoritesService
+	ContentStore   *ContentStoreService
 }
 
 // Option configures the client.
@@ -121,6 +122,7 @@ func NewClient(opts ...Option) *Client {
 	c.Capabilities = &CapabilitiesService{client: c}
 	c.Admin = &AdminService{client: c}
 	c.Favorites = &FavoritesService{client: c}
+	c.ContentStore = &ContentStoreService{client: c}
 	return c
 }
 
