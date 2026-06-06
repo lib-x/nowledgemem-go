@@ -1,8 +1,12 @@
 package onledgemem
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"net/url"
 )
 
@@ -22,11 +26,37 @@ func (s *DataService) Export(ctx context.Context, req *DataExportRequest) (*Data
 
 // DownloadExport creates and downloads a ZIP export.
 func (s *DataService) DownloadExport(ctx context.Context, req *DataExportRequest) ([]byte, error) {
-	var resp struct{}
-	if err := s.client.do(ctx, "POST", "/data/export/download", req, &resp); err != nil {
-		return nil, err
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("marshal request: %w", err)
 	}
-	return nil, nil // TODO: handle binary download
+
+	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/data/export/download"})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	resp, err := s.client.httpClient.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		var apiErr APIError
+		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
+		}
+		return nil, &apiErr
+	}
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response: %w", err)
+	}
+	return data, nil
 }
 
 // Import imports data from a server-side export path.

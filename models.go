@@ -1,6 +1,9 @@
 package onledgemem
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Memory represents a memory node in the knowledge base.
 type Memory struct {
@@ -506,5 +509,12 @@ func (e *APIError) Error() string {
 	if len(e.Detail) == 0 {
 		return "unknown API error"
 	}
-	return e.Detail[0].Msg
+	if len(e.Detail) == 1 {
+		return e.Detail[0].Msg
+	}
+	msgs := make([]string, len(e.Detail))
+	for i, d := range e.Detail {
+		msgs[i] = d.Msg
+	}
+	return fmt.Sprintf("%s (and %d more errors)", msgs[0], len(msgs)-1)
 }

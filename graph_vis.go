@@ -14,6 +14,9 @@ type GraphVisService struct {
 
 // SearchGraph finds relevant content and builds visualization-ready graph data.
 func (s *GraphVisService) SearchGraph(ctx context.Context, params *GraphSearchParams) (*GraphData, error) {
+	if params == nil {
+		return nil, fmt.Errorf("params is required")
+	}
 	q := url.Values{}
 	q.Set("query", params.Query)
 	if params.Limit > 0 {

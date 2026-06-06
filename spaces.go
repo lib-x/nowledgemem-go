@@ -55,7 +55,17 @@ func (s *SpacesService) Delete(ctx context.Context, spaceID string) error {
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
+// UpdateConfig enables or disables spaces at the product level.
+func (s *SpacesService) UpdateConfig(ctx context.Context, req *SpacesConfigRequest) error {
+	return s.client.do(ctx, "POST", "/spaces/config", req, nil)
+}
+
 // --- Space request types ---
+
+// SpacesConfigRequest is the request for POST /spaces/config.
+type SpacesConfigRequest struct {
+	Enabled bool `json:"enabled"`
+}
 
 // CreateSpaceRequest is the request body for POST /spaces.
 type CreateSpaceRequest struct {

@@ -88,8 +88,8 @@ func (s *MemoriesService) Delete(ctx context.Context, memoryID string, params *D
 		}
 	}
 	var resp DeleteMemoryResponse
-	path := fmt.Sprintf("/memories/%s", url.PathEscape(memoryID))
-	if err := s.client.doQuery(ctx, path, q, &resp); err != nil {
+	path := fmt.Sprintf("/memories/%s?%s", url.PathEscape(memoryID), q.Encode())
+	if err := s.client.do(ctx, "DELETE", path, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

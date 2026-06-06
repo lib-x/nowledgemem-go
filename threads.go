@@ -107,11 +107,11 @@ func (s *ThreadsService) ToggleFavorite(ctx context.Context, threadID string) (*
 	return &resp, nil
 }
 
-// BulkDelete deletes multiple threads at once.
+// BulkDelete deletes multiple threads at once using POST (preferred over DELETE with body).
 func (s *ThreadsService) BulkDelete(ctx context.Context, threadIDs []string) (*BulkDeleteResponse, error) {
 	var resp BulkDeleteResponse
 	body := map[string]any{"thread_ids": threadIDs}
-	if err := s.client.do(ctx, "DELETE", "/threads/bulk/delete", body, &resp); err != nil {
+	if err := s.client.do(ctx, "POST", "/threads/bulk/delete", body, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
