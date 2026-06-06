@@ -271,3 +271,41 @@ type BulkDeleteResponse struct {
 type ToggleFavoriteResponse struct {
 	IsFavorite bool `json:"is_favorite"`
 }
+
+// Reindex reindexes multiple memories or all needing reindex.
+func (s *MemoriesService) Reindex(ctx context.Context, req *ReindexRequest) (*ReindexResponse, error) {
+	var resp ReindexResponse
+	if err := s.client.do(ctx, "POST", "/memories/reindex", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// GetReindexStatus returns status of memories needing reindex.
+func (s *MemoriesService) GetReindexStatus(ctx context.Context) (*MemoryReindexStatus, error) {
+	var resp MemoryReindexStatus
+	if err := s.client.do(ctx, "GET", "/memories/reindex/status", nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// --- Reindex types ---
+
+// ReindexRequest is the request for POST /memories/reindex.
+type ReindexRequest struct {
+	MemoryIDs []string `json:"memory_ids,omitempty"`
+	All       bool     `json:"all,omitempty"`
+}
+
+// ReindexResponse is the response for POST /memories/reindex.
+type ReindexResponse struct {
+	Queued  int `json:"queued"`
+	Skipped int `json:"skipped"`
+}
+
+// MemoryReindexStatus is the response for GET /memories/reindex/status.
+type MemoryReindexStatus struct {
+	Total       int `json:"total"`
+	NeedsReindex int `json:"needs_reindex"`
+}

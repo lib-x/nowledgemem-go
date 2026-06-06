@@ -27,16 +27,31 @@ type Client struct {
 	httpClient *http.Client
 
 	// Services provides access to API resource operations.
-	Memories *MemoriesService
-	Threads  *ThreadsService
-	Spaces   *SpacesService
-	Labels   *LabelsService
-	Entities *EntitiesService
-	Sources  *SourcesService
-	Health   *HealthService
-	FS       *FSService
-	Agent    *AgentService
-	Graph    *GraphService
+	Memories       *MemoriesService
+	Threads        *ThreadsService
+	Spaces         *SpacesService
+	Labels         *LabelsService
+	Entities       *EntitiesService
+	Sources        *SourcesService
+	Health         *HealthService
+	FS             *FSService
+	Agent          *AgentService
+	Graph          *GraphService
+	GraphVis       *GraphVisService
+	Distillation   *DistillationService
+	KG             *KGService
+	Communities    *CommunitiesService
+	Data           *DataService
+	Storage        *StorageService
+	Settings       *SettingsService
+	Models         *ModelsService
+	SearchIndex    *SearchIndexService
+	Embeddings     *EmbeddingsService
+	Feed           *FeedService
+	WorkingMemory  *WorkingMemoryService
+	Library        *LibraryService
+	Capabilities   *CapabilitiesService
+	Admin          *AdminService
 }
 
 // Option configures the client.
@@ -89,6 +104,21 @@ func NewClient(opts ...Option) *Client {
 	c.FS = &FSService{client: c}
 	c.Agent = &AgentService{client: c}
 	c.Graph = &GraphService{client: c}
+	c.GraphVis = &GraphVisService{client: c}
+	c.Distillation = &DistillationService{client: c}
+	c.KG = &KGService{client: c}
+	c.Communities = &CommunitiesService{client: c}
+	c.Data = &DataService{client: c}
+	c.Storage = &StorageService{client: c}
+	c.Settings = &SettingsService{client: c}
+	c.Models = &ModelsService{client: c}
+	c.SearchIndex = &SearchIndexService{client: c}
+	c.Embeddings = &EmbeddingsService{client: c}
+	c.Feed = &FeedService{client: c}
+	c.WorkingMemory = &WorkingMemoryService{client: c}
+	c.Library = &LibraryService{client: c}
+	c.Capabilities = &CapabilitiesService{client: c}
+	c.Admin = &AdminService{client: c}
 	return c
 }
 

@@ -122,7 +122,31 @@ type AugmentationJob struct {
 
 // AugmentationState is the response body for GET /graph/augmentation/state.
 type AugmentationState struct {
-	Running   bool            `json:"running"`
+	Running    bool             `json:"running"`
 	CurrentJob *AugmentationJob `json:"current_job,omitempty"`
-	LastRun   string          `json:"last_run,omitempty"`
+	LastRun    string           `json:"last_run,omitempty"`
+}
+
+// GetNodeDetails returns detailed information about a specific node.
+func (s *GraphService) GetNodeDetails(ctx context.Context, nodeID string) (*GraphNode, error) {
+	var resp GraphNode
+	path := fmt.Sprintf("/graph/node-details/%s", url.PathEscape(nodeID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// GetCommunityMembers returns members of a specific community.
+func (s *GraphService) GetCommunityMembers(ctx context.Context, communityID string, limit int) (*GraphData, error) {
+	q := url.Values{}
+	if limit > 0 {
+		q.Set("limit", strconv.Itoa(limit))
+	}
+	var resp GraphData
+	path := fmt.Sprintf("/graph/community-members/%s", url.PathEscape(communityID))
+	if err := s.client.doQuery(ctx, path, q, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }

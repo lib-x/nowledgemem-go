@@ -163,3 +163,86 @@ type BatchIngestResponse struct {
 	Sources []Source `json:"sources"`
 	Failed  []string `json:"failed,omitempty"`
 }
+
+// UpdateContent updates the parsed markdown content of a source.
+func (s *SourcesService) UpdateContent(ctx context.Context, sourceID, content string) error {
+	path := fmt.Sprintf("/sources/%s/content", url.PathEscape(sourceID))
+	body := map[string]string{"content": content}
+	return s.client.do(ctx, "PUT", path, body, nil)
+}
+
+// Extract triggers knowledge extraction from a source.
+func (s *SourcesService) Extract(ctx context.Context, sourceID string) error {
+	path := fmt.Sprintf("/sources/%s/extract", url.PathEscape(sourceID))
+	return s.client.do(ctx, "POST", path, nil, nil)
+}
+
+// Refetch re-fetches a URL source's content and re-parse.
+func (s *SourcesService) Refetch(ctx context.Context, sourceID string) (*Source, error) {
+	var resp Source
+	path := fmt.Sprintf("/sources/%s/refetch", url.PathEscape(sourceID))
+	if err := s.client.do(ctx, "POST", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// GetLabels returns labels assigned to a source.
+func (s *SourcesService) GetLabels(ctx context.Context, sourceID string) ([]Label, error) {
+	var resp []Label
+	path := fmt.Sprintf("/sources/%s/labels", url.PathEscape(sourceID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// AssignLabel assigns a label to a source.
+func (s *SourcesService) AssignLabel(ctx context.Context, sourceID, labelID string) error {
+	path := fmt.Sprintf("/sources/%s/labels/%s", url.PathEscape(sourceID), url.PathEscape(labelID))
+	return s.client.do(ctx, "POST", path, nil, nil)
+}
+
+// RemoveLabel removes a label from a source.
+func (s *SourcesService) RemoveLabel(ctx context.Context, sourceID, labelID string) error {
+	path := fmt.Sprintf("/sources/%s/labels/%s", url.PathEscape(sourceID), url.PathEscape(labelID))
+	return s.client.do(ctx, "DELETE", path, nil, nil)
+}
+
+// IngestFolderUpload uploads a folder preserving relative paths.
+func (s *SourcesService) IngestFolderUpload(ctx context.Context, req *IngestFolderUploadRequest) (*BatchIngestResponse, error) {
+	var resp BatchIngestResponse
+	if err := s.client.do(ctx, "POST", "/sources/ingest/folder-upload", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// IngestFolderSummary returns a summary of a folder before ingestion.
+func (s *SourcesService) IngestFolderSummary(ctx context.Context, req *IngestFolderSummaryRequest) (*IngestFolderSummaryResponse, error) {
+	var resp IngestFolderSummaryResponse
+	if err := s.client.do(ctx, "POST", "/sources/ingest/folder-summary", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// --- Source extended types ---
+
+// IngestFolderUploadRequest is the request for POST /sources/ingest/folder-upload.
+type IngestFolderUploadRequest struct {
+	Files   []string `json:"files"`
+	SpaceID string   `json:"space_id,omitempty"`
+}
+
+// IngestFolderSummaryRequest is the request for POST /sources/ingest/folder-summary.
+type IngestFolderSummaryRequest struct {
+	Paths []string `json:"paths"`
+}
+
+// IngestFolderSummaryResponse is the response for POST /sources/ingest/folder-summary.
+type IngestFolderSummaryResponse struct {
+	TotalFiles int      `json:"total_files"`
+	TotalSize  int64    `json:"total_size"`
+	FileTypes  map[string]int `json:"file_types"`
+}
