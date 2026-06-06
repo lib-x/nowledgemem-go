@@ -1,4 +1,4 @@
-package onledgemem
+package nowledgemem
 
 import (
 	"bytes"
@@ -20,8 +20,8 @@ const (
 //
 // Create a client with NewClient:
 //
-//	client := onledgemem.NewClient()
-//	client := onledgemem.NewClient(onledgemem.WithBaseURL("http://host:14242"))
+//	client := nowledgemem.NewClient()
+//	client := nowledgemem.NewClient(nowledgemem.WithBaseURL("http://host:14242"))
 type Client struct {
 	baseURL    *url.URL
 	httpClient *http.Client
