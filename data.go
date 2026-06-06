@@ -129,3 +129,13 @@ type DataImportStatus struct {
 	Failed      int     `json:"failed"`
 	Message     string  `json:"message,omitempty"`
 }
+
+// UploadImport uploads a ZIP export from web and remote clients.
+// Note: This requires multipart form upload - use HTTP client directly for file uploads.
+func (s *DataService) UploadImport(ctx context.Context) (*DataImportResponse, error) {
+	var resp DataImportResponse
+	if err := s.client.do(ctx, "POST", "/data/import/upload", nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}

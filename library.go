@@ -125,3 +125,29 @@ type WikiPage struct {
 	Type     string         `json:"type"`
 	Metadata map[string]any `json:"metadata,omitempty"`
 }
+
+// ExportWikiSummary exports wiki summary.
+func (s *LibraryService) ExportWikiSummary(ctx context.Context) ([]byte, error) {
+	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/library/wiki-export-summary"})
+	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+	resp, err := s.client.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		var apiErr APIError
+		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
+		}
+		return nil, &apiErr
+	}
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response: %w", err)
+	}
+	return data, nil
+}

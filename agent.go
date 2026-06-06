@@ -2,6 +2,7 @@ package onledgemem
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"strconv"
 )
@@ -193,4 +194,189 @@ type AINowSession struct {
 type CreateAINowSessionRequest struct {
 	Prompt  string `json:"prompt,omitempty"`
 	Context string `json:"context,omitempty"`
+}
+
+// GetAINowSession returns a specific AI Now session.
+func (s *AgentService) GetAINowSession(ctx context.Context, sessionID string) (*AINowSession, error) {
+	var resp AINowSession
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// UpdateAINowSession updates an AI Now session.
+func (s *AgentService) UpdateAINowSession(ctx context.Context, sessionID string, req map[string]any) error {
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s", url.PathEscape(sessionID))
+	return s.client.do(ctx, "PATCH", path, req, nil)
+}
+
+// DeleteAINowSession deletes an AI Now session.
+func (s *AgentService) DeleteAINowSession(ctx context.Context, sessionID string) error {
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s", url.PathEscape(sessionID))
+	return s.client.do(ctx, "DELETE", path, nil, nil)
+}
+
+// CloseAINowSession closes an AI Now session.
+func (s *AgentService) CloseAINowSession(ctx context.Context, sessionID string) error {
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/close", url.PathEscape(sessionID))
+	return s.client.do(ctx, "POST", path, nil, nil)
+}
+
+// CancelAINowSession cancels an AI Now session.
+func (s *AgentService) CancelAINowSession(ctx context.Context, sessionID string) error {
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/cancel", url.PathEscape(sessionID))
+	return s.client.do(ctx, "POST", path, nil, nil)
+}
+
+// GetAINowSessionEvents returns events for an AI Now session.
+func (s *AgentService) GetAINowSessionEvents(ctx context.Context, sessionID string) ([]AINowEvent, error) {
+	var resp []AINowEvent
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/events", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetAINowSessionMessages returns messages for an AI Now session.
+func (s *AgentService) GetAINowSessionMessages(ctx context.Context, sessionID string) ([]AINowMessage, error) {
+	var resp []AINowMessage
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/messages", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// SendAINowSessionMessage sends a message to an AI Now session.
+func (s *AgentService) SendAINowSessionMessage(ctx context.Context, sessionID string, req *AINowMessageRequest) (*AINowMessage, error) {
+	var resp AINowMessage
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/messages", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "POST", path, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// PromptAINowSession sends a prompt to an AI Now session.
+func (s *AgentService) PromptAINowSession(ctx context.Context, sessionID string, req *AINowPromptRequest) (*AINowPromptResponse, error) {
+	var resp AINowPromptResponse
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/prompt", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "POST", path, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// GetAINowAutoApprove returns auto-approve status for an AI Now session.
+func (s *AgentService) GetAINowAutoApprove(ctx context.Context, sessionID string) (*AINowAutoApprove, error) {
+	var resp AINowAutoApprove
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/auto-approve", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// SetAINowAutoApprove sets auto-approve for an AI Now session.
+func (s *AgentService) SetAINowAutoApprove(ctx context.Context, sessionID string, req *AINowAutoApproveRequest) error {
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/auto-approve", url.PathEscape(sessionID))
+	return s.client.do(ctx, "POST", path, req, nil)
+}
+
+// ReadAINowSessionFile reads a file from an AI Now session.
+func (s *AgentService) ReadAINowSessionFile(ctx context.Context, sessionID string, req *AINowFileReadRequest) (*AINowFileReadResponse, error) {
+	var resp AINowFileReadResponse
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/files/read", url.PathEscape(sessionID))
+	if err := s.client.do(ctx, "POST", path, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// RequestAINowPermission requests permission in an AI Now session.
+func (s *AgentService) RequestAINowPermission(ctx context.Context, sessionID, requestID string, req *AINowPermissionRequest) error {
+	path := fmt.Sprintf("/agent/ai-now/sessions/%s/permissions/%s", url.PathEscape(sessionID), url.PathEscape(requestID))
+	return s.client.do(ctx, "POST", path, req, nil)
+}
+
+// SendAINowSkillPrompt sends a skill prompt to AI Now.
+func (s *AgentService) SendAINowSkillPrompt(ctx context.Context, req *AINowSkillPromptRequest) (*AINowSkillPromptResponse, error) {
+	var resp AINowSkillPromptResponse
+	if err := s.client.do(ctx, "POST", "/agent/ai-now/skill-prompts", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// --- AI Now types ---
+
+// AINowEvent represents an AI Now session event.
+type AINowEvent struct {
+	ID        string `json:"id"`
+	EventType string `json:"event_type"`
+	Content   string `json:"content,omitempty"`
+	CreatedAt string `json:"created_at,omitempty"`
+}
+
+// AINowMessage represents an AI Now session message.
+type AINowMessage struct {
+	ID        string `json:"id"`
+	Role      string `json:"role"`
+	Content   string `json:"content"`
+	CreatedAt string `json:"created_at,omitempty"`
+}
+
+// AINowMessageRequest is the request for POST /agent/ai-now/sessions/{id}/messages.
+type AINowMessageRequest struct {
+	Content string `json:"content"`
+}
+
+// AINowPromptRequest is the request for POST /agent/ai-now/sessions/{id}/prompt.
+type AINowPromptRequest struct {
+	Prompt string `json:"prompt"`
+}
+
+// AINowPromptResponse is the response for POST /agent/ai-now/sessions/{id}/prompt.
+type AINowPromptResponse struct {
+	Response string `json:"response"`
+}
+
+// AINowAutoApprove is the response for GET /agent/ai-now/sessions/{id}/auto-approve.
+type AINowAutoApprove struct {
+	Enabled bool `json:"enabled"`
+}
+
+// AINowAutoApproveRequest is the request for POST /agent/ai-now/sessions/{id}/auto-approve.
+type AINowAutoApproveRequest struct {
+	Enabled bool `json:"enabled"`
+}
+
+// AINowFileReadRequest is the request for POST /agent/ai-now/sessions/{id}/files/read.
+type AINowFileReadRequest struct {
+	Path string `json:"path"`
+}
+
+// AINowFileReadResponse is the response for POST /agent/ai-now/sessions/{id}/files/read.
+type AINowFileReadResponse struct {
+	Content string `json:"content"`
+}
+
+// AINowPermissionRequest is the request for POST /agent/ai-now/sessions/{id}/permissions/{request_id}.
+type AINowPermissionRequest struct {
+	Approved bool   `json:"approved"`
+	Reason   string `json:"reason,omitempty"`
+}
+
+// AINowSkillPromptRequest is the request for POST /agent/ai-now/skill-prompts.
+type AINowSkillPromptRequest struct {
+	SkillID string `json:"skill_id"`
+	Prompt  string `json:"prompt,omitempty"`
+}
+
+// AINowSkillPromptResponse is the response for POST /agent/ai-now/skill-prompts.
+type AINowSkillPromptResponse struct {
+	Response string `json:"response"`
 }

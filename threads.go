@@ -1,6 +1,7 @@
 package onledgemem
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -424,4 +425,94 @@ type ThreadCoverage struct {
 	MemoryCount    int     `json:"memory_count"`
 	CoverageRatio  float64 `json:"coverage_ratio"`
 	UncoveredMsgs  int     `json:"uncovered_msgs"`
+}
+
+// PreviewConversation loads a richer head-and-tail preview for one discovered conversation before import.
+func (s *ThreadsService) PreviewConversation(ctx context.Context, req *PreviewConversationRequest) (*PreviewConversationResponse, error) {
+	var resp PreviewConversationResponse
+	if err := s.client.do(ctx, "POST", "/threads/conversations/preview", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// ExportRaw exports a raw conversation file as markdown or JSON without importing.
+func (s *ThreadsService) ExportRaw(ctx context.Context, req *ExportRawRequest) ([]byte, error) {
+	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/threads/conversations/export-raw"})
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("marshal request: %w", err)
+	}
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+	resp, err := s.client.httpClient.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		var apiErr APIError
+		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
+		}
+		return nil, &apiErr
+	}
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response: %w", err)
+	}
+	return data, nil
+}
+
+// ReconcileTail reconciles the tail of a thread.
+func (s *ThreadsService) ReconcileTail(ctx context.Context, threadID string) error {
+	path := fmt.Sprintf("/threads/%s/reconcile-tail", url.PathEscape(threadID))
+	return s.client.do(ctx, "POST", path, nil, nil)
+}
+
+// HideProject hides a project from the browse view.
+func (s *ThreadsService) HideProject(ctx context.Context, project string) error {
+	body := map[string]string{"project": project}
+	return s.client.do(ctx, "POST", "/threads/import-config/hide-project", body, nil)
+}
+
+// UnhideProject unhides a project.
+func (s *ThreadsService) UnhideProject(ctx context.Context, project string) error {
+	body := map[string]string{"project": project}
+	return s.client.do(ctx, "POST", "/threads/import-config/unhide-project", body, nil)
+}
+
+// HideSession hides a session from the browse view.
+func (s *ThreadsService) HideSession(ctx context.Context, sessionID string) error {
+	body := map[string]string{"session_id": sessionID}
+	return s.client.do(ctx, "POST", "/threads/import-config/hide-session", body, nil)
+}
+
+// UnhideSession unhides a session.
+func (s *ThreadsService) UnhideSession(ctx context.Context, sessionID string) error {
+	body := map[string]string{"session_id": sessionID}
+	return s.client.do(ctx, "POST", "/threads/import-config/unhide-session", body, nil)
+}
+
+// --- Thread preview/export types ---
+
+// PreviewConversationRequest is the request for POST /threads/conversations/preview.
+type PreviewConversationRequest struct {
+	Path string `json:"path"`
+}
+
+// PreviewConversationResponse is the response for POST /threads/conversations/preview.
+type PreviewConversationResponse struct {
+	Preview  string `json:"preview"`
+	Title    string `json:"title,omitempty"`
+	Messages int    `json:"messages"`
+}
+
+// ExportRawRequest is the request for POST /threads/conversations/export-raw.
+type ExportRawRequest struct {
+	Path   string `json:"path"`
+	Format string `json:"format,omitempty"`
 }

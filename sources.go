@@ -2,7 +2,10 @@ package onledgemem
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -245,4 +248,56 @@ type IngestFolderSummaryResponse struct {
 	TotalFiles int      `json:"total_files"`
 	TotalSize  int64    `json:"total_size"`
 	FileTypes  map[string]int `json:"file_types"`
+}
+
+// GetRawFile serves the raw source file for native preview.
+func (s *SourcesService) GetRawFile(ctx context.Context, sourceID string) ([]byte, error) {
+	u := s.client.baseURL.ResolveReference(&url.URL{Path: fmt.Sprintf("/sources/%s/raw", url.PathEscape(sourceID))})
+	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+	resp, err := s.client.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		var apiErr APIError
+		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
+		}
+		return nil, &apiErr
+	}
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response: %w", err)
+	}
+	return data, nil
+}
+
+// GetImage serves an extracted image from a source.
+func (s *SourcesService) GetImage(ctx context.Context, sourceID, filename string) ([]byte, error) {
+	u := s.client.baseURL.ResolveReference(&url.URL{Path: fmt.Sprintf("/sources/%s/images/%s", url.PathEscape(sourceID), url.PathEscape(filename))})
+	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+	resp, err := s.client.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		var apiErr APIError
+		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
+		}
+		return nil, &apiErr
+	}
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response: %w", err)
+	}
+	return data, nil
 }
