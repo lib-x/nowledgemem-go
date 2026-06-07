@@ -1,10 +1,11 @@
 package nowledgemem
 
 import (
+	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -95,9 +96,49 @@ func (s *SourcesService) Update(ctx context.Context, sourceID string, req *Updat
 }
 
 // IngestFile ingests a file through the full source pipeline.
-func (s *SourcesService) IngestFile(ctx context.Context, req *IngestFileRequest) (*Source, error) {
-	var resp Source
-	if err := s.client.do(ctx, "POST", "/sources/ingest/file", req, &resp); err != nil {
+func (s *SourcesService) IngestFile(ctx context.Context, req *IngestFileRequest) (*IngestSourceResponse, error) {
+	if req == nil {
+		return nil, fmt.Errorf("request is required")
+	}
+	if req.File == nil {
+		return nil, fmt.Errorf("file is required")
+	}
+
+	var buf bytes.Buffer
+	writer := multipart.NewWriter(&buf)
+	filename := req.Filename
+	if filename == "" {
+		filename = "upload"
+	}
+	part, err := writer.CreateFormFile("file", filename)
+	if err != nil {
+		return nil, fmt.Errorf("create form file: %w", err)
+	}
+	if _, err := io.Copy(part, req.File); err != nil {
+		return nil, fmt.Errorf("copy file: %w", err)
+	}
+	if err := writeFormFieldIfSet(writer, "user_comment", req.UserComment); err != nil {
+		return nil, err
+	}
+	if err := writeFormFieldIfSet(writer, "labels", req.Labels); err != nil {
+		return nil, err
+	}
+	if err := writeFormFieldIfSet(writer, "metadata", req.Metadata); err != nil {
+		return nil, err
+	}
+	if err := writeFormFieldIfSet(writer, "space_id", req.SpaceID); err != nil {
+		return nil, err
+	}
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("close multipart writer: %w", err)
+	}
+
+	httpReq, err := s.client.newRequest(ctx, http.MethodPost, "/sources/ingest/file", nil, &buf, writer.FormDataContentType())
+	if err != nil {
+		return nil, err
+	}
+	var resp IngestSourceResponse
+	if err := s.client.doRequest(httpReq, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -137,10 +178,14 @@ type UpdateSourceRequest struct {
 	LifecycleState string `json:"lifecycle_state,omitempty"`
 }
 
-// IngestFileRequest is the request body for POST /sources/ingest/file.
+// IngestFileRequest is the multipart request body for POST /sources/ingest/file.
 type IngestFileRequest struct {
-	SpaceID string `json:"space_id,omitempty"`
-	// File upload requires multipart form - use a custom HTTP client for this.
+	File        io.Reader `json:"-"`
+	Filename    string    `json:"-"`
+	UserComment string    `json:"user_comment,omitempty"`
+	Labels      string    `json:"labels,omitempty"`
+	Metadata    string    `json:"metadata,omitempty"`
+	SpaceID     string    `json:"space_id,omitempty"`
 }
 
 // IngestURLRequest is the request body for POST /sources/ingest/url.
@@ -213,17 +258,79 @@ func (s *SourcesService) RemoveLabel(ctx context.Context, sourceID, labelID stri
 }
 
 // IngestFolderUpload uploads a folder preserving relative paths.
-func (s *SourcesService) IngestFolderUpload(ctx context.Context, req *IngestFolderUploadRequest) (*BatchIngestResponse, error) {
-	var resp BatchIngestResponse
-	if err := s.client.do(ctx, "POST", "/sources/ingest/folder-upload", req, &resp); err != nil {
+func (s *SourcesService) IngestFolderUpload(ctx context.Context, req *IngestFolderUploadRequest) (*FolderIngestResponse, error) {
+	if req == nil {
+		return nil, fmt.Errorf("request is required")
+	}
+	if req.FolderName == "" {
+		return nil, fmt.Errorf("folder_name is required")
+	}
+	if len(req.Files) == 0 {
+		return nil, fmt.Errorf("at least one file is required")
+	}
+
+	var buf bytes.Buffer
+	writer := multipart.NewWriter(&buf)
+	for i, file := range req.Files {
+		if file.File == nil {
+			return nil, fmt.Errorf("files[%d].file is required", i)
+		}
+		filename := file.Filename
+		if filename == "" {
+			filename = file.RelativePath
+		}
+		if filename == "" {
+			filename = fmt.Sprintf("file-%d", i+1)
+		}
+		part, err := writer.CreateFormFile("files", filename)
+		if err != nil {
+			return nil, fmt.Errorf("create form file %q: %w", filename, err)
+		}
+		if _, err := io.Copy(part, file.File); err != nil {
+			return nil, fmt.Errorf("copy file %q: %w", filename, err)
+		}
+	}
+	if err := writer.WriteField("folder_name", req.FolderName); err != nil {
+		return nil, fmt.Errorf("write folder_name field: %w", err)
+	}
+	if err := writeFormFieldIfSet(writer, "file_manifest", req.FileManifest); err != nil {
+		return nil, err
+	}
+	if err := writeFormFieldIfSet(writer, "user_comment", req.UserComment); err != nil {
+		return nil, err
+	}
+	if err := writeFormFieldIfSet(writer, "labels", req.Labels); err != nil {
+		return nil, err
+	}
+	if err := writeFormFieldIfSet(writer, "space_id", req.SpaceID); err != nil {
+		return nil, err
+	}
+	if req.EmitFeedEvent != nil {
+		if err := writer.WriteField("emit_feed_event", strconv.FormatBool(*req.EmitFeedEvent)); err != nil {
+			return nil, fmt.Errorf("write emit_feed_event field: %w", err)
+		}
+	}
+	if err := writeFormFieldIfSet(writer, "accumulated_totals", req.AccumulatedTotals); err != nil {
+		return nil, err
+	}
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("close multipart writer: %w", err)
+	}
+
+	httpReq, err := s.client.newRequest(ctx, http.MethodPost, "/sources/ingest/folder-upload", nil, &buf, writer.FormDataContentType())
+	if err != nil {
+		return nil, err
+	}
+	var resp FolderIngestResponse
+	if err := s.client.doRequest(httpReq, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
 // IngestFolderSummary returns a summary of a folder before ingestion.
-func (s *SourcesService) IngestFolderSummary(ctx context.Context, req *IngestFolderSummaryRequest) (*IngestFolderSummaryResponse, error) {
-	var resp IngestFolderSummaryResponse
+func (s *SourcesService) IngestFolderSummary(ctx context.Context, req *IngestFolderSummaryRequest) (*FolderIngestResponse, error) {
+	var resp FolderIngestResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/folder-summary", req, &resp); err != nil {
 		return nil, err
 	}
@@ -232,72 +339,69 @@ func (s *SourcesService) IngestFolderSummary(ctx context.Context, req *IngestFol
 
 // --- Source extended types ---
 
-// IngestFolderUploadRequest is the request for POST /sources/ingest/folder-upload.
+// IngestFolderUploadRequest is the multipart request for POST /sources/ingest/folder-upload.
 type IngestFolderUploadRequest struct {
-	Files   []string `json:"files"`
-	SpaceID string   `json:"space_id,omitempty"`
+	Files             []FolderUploadFile `json:"-"`
+	FolderName        string             `json:"folder_name"`
+	FileManifest      string             `json:"file_manifest,omitempty"`
+	UserComment       string             `json:"user_comment,omitempty"`
+	Labels            string             `json:"labels,omitempty"`
+	SpaceID           string             `json:"space_id,omitempty"`
+	EmitFeedEvent     *bool              `json:"emit_feed_event,omitempty"`
+	AccumulatedTotals string             `json:"accumulated_totals,omitempty"`
+}
+
+// FolderUploadFile is one file in a multipart folder upload.
+type FolderUploadFile struct {
+	File         io.Reader `json:"-"`
+	Filename     string    `json:"filename,omitempty"`
+	RelativePath string    `json:"relative_path,omitempty"`
 }
 
 // IngestFolderSummaryRequest is the request for POST /sources/ingest/folder-summary.
 type IngestFolderSummaryRequest struct {
-	Paths []string `json:"paths"`
+	FolderName        string         `json:"folder_name"`
+	AccumulatedTotals map[string]any `json:"accumulated_totals"`
+	SpaceID           string         `json:"space_id,omitempty"`
 }
 
-// IngestFolderSummaryResponse is the response for POST /sources/ingest/folder-summary.
-type IngestFolderSummaryResponse struct {
-	TotalFiles int      `json:"total_files"`
-	TotalSize  int64    `json:"total_size"`
-	FileTypes  map[string]int `json:"file_types"`
+// IngestSourceResponse is one source ingestion result.
+type IngestSourceResponse struct {
+	SourceID       string `json:"source_id"`
+	OriginalName   string `json:"original_name"`
+	LifecycleState string `json:"lifecycle_state"`
+	IsDuplicate    bool   `json:"is_duplicate"`
+	Message        string `json:"message,omitempty"`
+}
+
+// FolderIngestResponse is the response for folder upload and summary endpoints.
+type FolderIngestResponse struct {
+	FolderName      string                 `json:"folder_name"`
+	TotalIngested   int                    `json:"total_ingested"`
+	TotalDuplicates int                    `json:"total_duplicates"`
+	TotalErrors     int                    `json:"total_errors"`
+	Results         []IngestSourceResponse `json:"results,omitempty"`
+	Message         string                 `json:"message,omitempty"`
 }
 
 // GetRawFile serves the raw source file for native preview.
 func (s *SourcesService) GetRawFile(ctx context.Context, sourceID string) ([]byte, error) {
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: fmt.Sprintf("/sources/%s/raw", url.PathEscape(sourceID))})
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
-	}
-	resp, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
-		}
-		return nil, &apiErr
-	}
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return data, nil
+	path := fmt.Sprintf("/sources/%s/raw", url.PathEscape(sourceID))
+	return s.client.doBytes(ctx, http.MethodGet, path, nil, nil)
 }
 
 // GetImage serves an extracted image from a source.
 func (s *SourcesService) GetImage(ctx context.Context, sourceID, filename string) ([]byte, error) {
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: fmt.Sprintf("/sources/%s/images/%s", url.PathEscape(sourceID), url.PathEscape(filename))})
-	req, err := http.NewRequestWithContext(ctx, "GET", u.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
+	path := fmt.Sprintf("/sources/%s/images/%s", url.PathEscape(sourceID), url.PathEscape(filename))
+	return s.client.doBytes(ctx, http.MethodGet, path, nil, nil)
+}
+
+func writeFormFieldIfSet(writer *multipart.Writer, name, value string) error {
+	if value == "" {
+		return nil
 	}
-	resp, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
+	if err := writer.WriteField(name, value); err != nil {
+		return fmt.Errorf("write %s field: %w", name, err)
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
-		}
-		return nil, &apiErr
-	}
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return data, nil
+	return nil
 }

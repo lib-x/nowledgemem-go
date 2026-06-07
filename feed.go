@@ -3,6 +3,7 @@ package nowledgemem
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -69,6 +70,13 @@ func (s *FeedService) DeleteEvent(ctx context.Context, eventID string) error {
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
+// StreamInput streams agent processing of feed input.
+//
+// The caller owns the returned response body and must close it.
+func (s *FeedService) StreamInput(ctx context.Context, req *FeedInputStreamRequest) (*http.Response, error) {
+	return s.client.doStream(ctx, http.MethodPost, "/agent/feed/input/stream", nil, req)
+}
+
 // PersistQuestion persists a question and agent response as a feed event.
 func (s *FeedService) PersistQuestion(ctx context.Context, req *PersistQuestionRequest) error {
 	return s.client.do(ctx, "POST", "/agent/feed/input/persist-question", req, nil)
@@ -91,20 +99,29 @@ type FeedEventsParams struct {
 
 // FeedEvent represents a feed event.
 type FeedEvent struct {
-	ID          string         `json:"id"`
-	EventType   string         `json:"event_type"`
-	Severity    string         `json:"severity"`
-	Title       string         `json:"title"`
-	Body        string         `json:"body,omitempty"`
-	Resolved    bool           `json:"resolved"`
-	CreatedAt   string         `json:"created_at,omitempty"`
-	Metadata    map[string]any `json:"metadata,omitempty"`
+	ID        string         `json:"id"`
+	EventType string         `json:"event_type"`
+	Severity  string         `json:"severity"`
+	Title     string         `json:"title"`
+	Body      string         `json:"body,omitempty"`
+	Resolved  bool           `json:"resolved"`
+	CreatedAt string         `json:"created_at,omitempty"`
+	Metadata  map[string]any `json:"metadata,omitempty"`
 }
 
 // ResolveEventRequest is the request for POST /agent/feed/events/{id}/resolve.
 type ResolveEventRequest struct {
-	Resolution string         `json:"resolution,omitempty"`
+	Resolution     string         `json:"resolution,omitempty"`
 	GraphMutations map[string]any `json:"graph_mutations,omitempty"`
+}
+
+// FeedInputStreamRequest is the request for POST /agent/feed/input/stream.
+type FeedInputStreamRequest struct {
+	Content  string `json:"content"`
+	Source   string `json:"source,omitempty"`
+	Persist  *bool  `json:"persist,omitempty"`
+	ThreadID string `json:"thread_id,omitempty"`
+	SpaceID  string `json:"space_id,omitempty"`
 }
 
 // PersistQuestionRequest is the request for POST /agent/feed/input/persist-question.

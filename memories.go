@@ -2,9 +2,7 @@ package nowledgemem
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -88,8 +86,8 @@ func (s *MemoriesService) Delete(ctx context.Context, memoryID string, params *D
 		}
 	}
 	var resp DeleteMemoryResponse
-	path := fmt.Sprintf("/memories/%s?%s", url.PathEscape(memoryID), q.Encode())
-	if err := s.client.do(ctx, "DELETE", path, nil, &resp); err != nil {
+	path := fmt.Sprintf("/memories/%s", url.PathEscape(memoryID))
+	if err := s.client.doWithQuery(ctx, http.MethodDelete, path, q, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -169,33 +167,8 @@ func (s *MemoriesService) Export(ctx context.Context, memoryID, format string) (
 	if format != "" {
 		q.Set("format", format)
 	}
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: fmt.Sprintf("/memories/%s/export", url.PathEscape(memoryID))})
-	u.RawQuery = q.Encode()
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
-	}
-
-	resp, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
-		}
-		return nil, &apiErr
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return data, nil
+	path := fmt.Sprintf("/memories/%s/export", url.PathEscape(memoryID))
+	return s.client.doBytes(ctx, http.MethodGet, path, q, nil)
 }
 
 // --- Search types ---
@@ -212,34 +185,34 @@ type SearchMemoriesRequest struct {
 
 // SearchMemoriesResponse is the response body for POST /memories/search.
 type SearchMemoriesResponse struct {
-	Results    []SearchResult `json:"results"`
-	Total      int            `json:"total"`
-	Query      string         `json:"query"`
+	Results []SearchResult `json:"results"`
+	Total   int            `json:"total"`
+	Query   string         `json:"query"`
 }
 
 // SearchResult is a single search result.
 type SearchResult struct {
-	ID        string  `json:"id"`
-	Title     string  `json:"title,omitempty"`
-	Content   string  `json:"content,omitempty"`
-	Score     float64 `json:"score"`
-	SpaceID   string  `json:"space_id,omitempty"`
-	Source    string  `json:"source,omitempty"`
+	ID      string  `json:"id"`
+	Title   string  `json:"title,omitempty"`
+	Content string  `json:"content,omitempty"`
+	Score   float64 `json:"score"`
+	SpaceID string  `json:"space_id,omitempty"`
+	Source  string  `json:"source,omitempty"`
 }
 
 // --- Bulk types ---
 
 // BulkMovePreviewRequest is the request for POST /memories/bulk/move/preview.
 type BulkMovePreviewRequest struct {
-	MemoryIDs  []string `json:"memory_ids,omitempty"`
-	FromSpace  string   `json:"from_space,omitempty"`
-	ToSpace    string   `json:"to_space"`
+	MemoryIDs []string `json:"memory_ids,omitempty"`
+	FromSpace string   `json:"from_space,omitempty"`
+	ToSpace   string   `json:"to_space"`
 }
 
 // BulkMovePreviewResponse is the response for POST /memories/bulk/move/preview.
 type BulkMovePreviewResponse struct {
-	WillMove   int      `json:"will_move"`
-	Conflicts  []string `json:"conflicts,omitempty"`
+	WillMove  int      `json:"will_move"`
+	Conflicts []string `json:"conflicts,omitempty"`
 }
 
 // BulkMoveRequest is the request for POST /memories/bulk/move.
@@ -251,8 +224,8 @@ type BulkMoveRequest struct {
 
 // BulkMoveResponse is the response for POST /memories/bulk/move.
 type BulkMoveResponse struct {
-	Moved   int `json:"moved"`
-	Failed  int `json:"failed"`
+	Moved  int `json:"moved"`
+	Failed int `json:"failed"`
 }
 
 // BulkDeleteRequest is the request for POST /memories/bulk/delete.
@@ -306,6 +279,6 @@ type ReindexResponse struct {
 
 // MemoryReindexStatus is the response for GET /memories/reindex/status.
 type MemoryReindexStatus struct {
-	Total       int `json:"total"`
+	Total        int `json:"total"`
 	NeedsReindex int `json:"needs_reindex"`
 }

@@ -101,10 +101,11 @@ func strPtr(s string) *string { return &s }
 | `client.Spaces` | Space profiles and configuration |
 | `client.Labels` | Label CRUD |
 | `client.Entities` | Knowledge graph entities |
-| `client.Sources` | Library sources, ingestion |
+| `client.Sources` | Library sources, ingestion, multipart file/folder upload |
 | `client.Health` | Health check, checkpoint |
 | `client.FS` | Path-based tree browsing (ls, cat, stat, find, grep, recall, write, delete) |
 | `client.Agent` | Background Intelligence triggers |
+| `client.Events` | Server-sent events stream |
 | `client.Graph` | Graph analysis, augmentation, orphans |
 
 ## Configuration

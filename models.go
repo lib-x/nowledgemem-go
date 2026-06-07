@@ -493,7 +493,10 @@ type Community struct {
 
 // APIError represents an error response from the API.
 type APIError struct {
-	Detail []ErrorDetail `json:"detail"`
+	StatusCode int           `json:"-"`
+	Status     string        `json:"-"`
+	Body       string        `json:"-"`
+	Detail     []ErrorDetail `json:"detail"`
 }
 
 // ErrorDetail is a single validation error.
@@ -507,6 +510,12 @@ type ErrorDetail struct {
 
 func (e *APIError) Error() string {
 	if len(e.Detail) == 0 {
+		if e.Body != "" {
+			return fmt.Sprintf("API error (status %d): %s", e.StatusCode, e.Body)
+		}
+		if e.Status != "" {
+			return fmt.Sprintf("API error: %s", e.Status)
+		}
 		return "unknown API error"
 	}
 	if len(e.Detail) == 1 {

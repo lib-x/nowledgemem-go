@@ -3,7 +3,6 @@ package nowledgemem
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -28,37 +27,7 @@ func (s *DataService) Export(ctx context.Context, req *DataExportRequest) (*Data
 
 // DownloadExport creates and downloads a ZIP export.
 func (s *DataService) DownloadExport(ctx context.Context, req *DataExportRequest) ([]byte, error) {
-	body, err := json.Marshal(req)
-	if err != nil {
-		return nil, fmt.Errorf("marshal request: %w", err)
-	}
-
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/data/export/download"})
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewReader(body))
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
-	}
-	httpReq.Header.Set("Content-Type", "application/json")
-
-	resp, err := s.client.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
-		}
-		return nil, &apiErr
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return data, nil
+	return s.client.doBytes(ctx, http.MethodPost, "/data/export/download", nil, req)
 }
 
 // Import imports data from a server-side export path.
@@ -89,23 +58,23 @@ func (s *DataService) Checkpoint(ctx context.Context) error {
 
 // DataExportRequest is the request for POST /data/export.
 type DataExportRequest struct {
-	ExportPath        string `json:"export_path"`
-	Compress          bool   `json:"compress,omitempty"`
-	Overwrite         bool   `json:"overwrite,omitempty"`
-	IncludeMemories   *bool  `json:"include_memories,omitempty"`
-	IncludeThreads    *bool  `json:"include_threads,omitempty"`
-	IncludeMessages   *bool  `json:"include_messages,omitempty"`
-	IncludeEntities   *bool  `json:"include_entities,omitempty"`
-	IncludeLabels     *bool  `json:"include_labels,omitempty"`
-	IncludeSources    *bool  `json:"include_sources,omitempty"`
-	IncludeCommunities *bool `json:"include_communities,omitempty"`
+	ExportPath         string `json:"export_path"`
+	Compress           bool   `json:"compress,omitempty"`
+	Overwrite          bool   `json:"overwrite,omitempty"`
+	IncludeMemories    *bool  `json:"include_memories,omitempty"`
+	IncludeThreads     *bool  `json:"include_threads,omitempty"`
+	IncludeMessages    *bool  `json:"include_messages,omitempty"`
+	IncludeEntities    *bool  `json:"include_entities,omitempty"`
+	IncludeLabels      *bool  `json:"include_labels,omitempty"`
+	IncludeSources     *bool  `json:"include_sources,omitempty"`
+	IncludeCommunities *bool  `json:"include_communities,omitempty"`
 }
 
 // DataExportResponse is the response for POST /data/export.
 type DataExportResponse struct {
-	Path       string `json:"path"`
-	SizeBytes  int64  `json:"size_bytes"`
-	ItemCount  int    `json:"item_count"`
+	Path      string `json:"path"`
+	SizeBytes int64  `json:"size_bytes"`
+	ItemCount int    `json:"item_count"`
 }
 
 // DataImportRequest is the request for POST /data/import.
@@ -123,13 +92,13 @@ type DataImportResponse struct {
 
 // DataImportStatus is the response for GET /data/import/status/{job_id}.
 type DataImportStatus struct {
-	JobID       string  `json:"job_id"`
-	Status      string  `json:"status"`
-	Progress    float64 `json:"progress"`
-	Imported    int     `json:"imported"`
-	Skipped     int     `json:"skipped"`
-	Failed      int     `json:"failed"`
-	Message     string  `json:"message,omitempty"`
+	JobID    string  `json:"job_id"`
+	Status   string  `json:"status"`
+	Progress float64 `json:"progress"`
+	Imported int     `json:"imported"`
+	Skipped  int     `json:"skipped"`
+	Failed   int     `json:"failed"`
+	Message  string  `json:"message,omitempty"`
 }
 
 // UploadImportRequest is the request for POST /data/import/upload.
@@ -151,12 +120,23 @@ type UploadImportRequest struct {
 // UploadImport uploads a ZIP export from web and remote clients.
 // file is the ZIP file content, filename is the name of the file.
 func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest) (*DataImportResponse, error) {
+	if req == nil {
+		return nil, fmt.Errorf("request is required")
+	}
+	if req.File == nil {
+		return nil, fmt.Errorf("file is required")
+	}
+
 	// Build multipart form
 	var buf bytes.Buffer
 	writer := multipart.NewWriter(&buf)
 
 	// Add file field
-	part, err := writer.CreateFormFile("file", req.Filename)
+	filename := req.Filename
+	if filename == "" {
+		filename = "import.zip"
+	}
+	part, err := writer.CreateFormFile("file", filename)
 	if err != nil {
 		return nil, fmt.Errorf("create form file: %w", err)
 	}
@@ -196,32 +176,18 @@ func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest
 		writer.WriteField("include_working_memory", strconv.FormatBool(*req.IncludeWorkingMemory))
 	}
 
-	writer.Close()
-
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/data/import/upload"})
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", u.String(), &buf)
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("close multipart writer: %w", err)
 	}
-	httpReq.Header.Set("Content-Type", writer.FormDataContentType())
 
-	httpResp, err := s.client.httpClient.Do(httpReq)
+	httpReq, err := s.client.newRequest(ctx, http.MethodPost, "/data/import/upload", nil, &buf, writer.FormDataContentType())
 	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
-	}
-	defer httpResp.Body.Close()
-
-	if httpResp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(httpResp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", httpResp.StatusCode)
-		}
-		return nil, &apiErr
+		return nil, err
 	}
 
 	var result DataImportResponse
-	if err := json.NewDecoder(httpResp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("decode response: %w", err)
+	if err := s.client.doRequest(httpReq, &result); err != nil {
+		return nil, err
 	}
 	return &result, nil
 }

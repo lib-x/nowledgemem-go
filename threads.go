@@ -1,11 +1,8 @@
 package nowledgemem
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -253,33 +250,8 @@ func (s *ThreadsService) Export(ctx context.Context, threadID, format string) ([
 	if format != "" {
 		q.Set("format", format)
 	}
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: fmt.Sprintf("/threads/%s/export", url.PathEscape(threadID))})
-	u.RawQuery = q.Encode()
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
-	}
-
-	resp, err := s.client.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
-		}
-		return nil, &apiErr
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return data, nil
+	path := fmt.Sprintf("/threads/%s/export", url.PathEscape(threadID))
+	return s.client.doBytes(ctx, http.MethodGet, path, q, nil)
 }
 
 // GetCoverage returns a coverage report for debugging.
@@ -296,17 +268,17 @@ func (s *ThreadsService) GetCoverage(ctx context.Context, threadID string) (*Thr
 
 // ImportThreadsRequest is the request for POST /threads/import.
 type ImportThreadsRequest struct {
-	Content   string  `json:"content"`
-	Format    string  `json:"format,omitempty"`
-	Source    string  `json:"source,omitempty"`
-	SpaceID   string  `json:"space_id,omitempty"`
+	Content string `json:"content"`
+	Format  string `json:"format,omitempty"`
+	Source  string `json:"source,omitempty"`
+	SpaceID string `json:"space_id,omitempty"`
 }
 
 // ImportThreadsResponse is the response for POST /threads/import.
 type ImportThreadsResponse struct {
-	Threads []Thread `json:"threads"`
-	Imported int     `json:"imported"`
-	Skipped  int     `json:"skipped"`
+	Threads  []Thread `json:"threads"`
+	Imported int      `json:"imported"`
+	Skipped  int      `json:"skipped"`
 }
 
 // ParseContentRequest is the request for POST /threads/parse.
@@ -328,8 +300,8 @@ type ThreadSource struct {
 
 // ImportConfig is the response for GET /threads/import-config.
 type ImportConfig struct {
-	AutoImport  bool     `json:"auto_import"`
-	Sources     []string `json:"sources,omitempty"`
+	AutoImport   bool     `json:"auto_import"`
+	Sources      []string `json:"sources,omitempty"`
 	ExcludePaths []string `json:"exclude_paths,omitempty"`
 }
 
@@ -366,18 +338,18 @@ type ImportConversationRequest struct {
 
 // ImportConversationResponse is the response for POST /threads/conversations/import.
 type ImportConversationResponse struct {
-	Thread  Thread `json:"thread"`
-	Imported bool  `json:"imported"`
+	Thread   Thread `json:"thread"`
+	Imported bool   `json:"imported"`
 }
 
 // SaveSessionRequest is the request for POST /threads/sessions/save.
 type SaveSessionRequest struct {
-	SessionID string         `json:"session_id"`
-	Title     string         `json:"title,omitempty"`
-	Source    string         `json:"source,omitempty"`
-	Project   string         `json:"project,omitempty"`
+	SessionID string                 `json:"session_id"`
+	Title     string                 `json:"title,omitempty"`
+	Source    string                 `json:"source,omitempty"`
+	Project   string                 `json:"project,omitempty"`
 	Messages  []MessageCreateRequest `json:"messages"`
-	SpaceID   string         `json:"space_id,omitempty"`
+	SpaceID   string                 `json:"space_id,omitempty"`
 }
 
 // SaveSessionResponse is the response for POST /threads/sessions/save.
@@ -420,11 +392,11 @@ type ThreadBulkDeleteSelectionRequest struct {
 
 // ThreadCoverage is the response for GET /threads/{id}/coverage.
 type ThreadCoverage struct {
-	ThreadID       string  `json:"thread_id"`
-	MessageCount   int     `json:"message_count"`
-	MemoryCount    int     `json:"memory_count"`
-	CoverageRatio  float64 `json:"coverage_ratio"`
-	UncoveredMsgs  int     `json:"uncovered_msgs"`
+	ThreadID      string  `json:"thread_id"`
+	MessageCount  int     `json:"message_count"`
+	MemoryCount   int     `json:"memory_count"`
+	CoverageRatio float64 `json:"coverage_ratio"`
+	UncoveredMsgs int     `json:"uncovered_msgs"`
 }
 
 // PreviewConversation loads a richer head-and-tail preview for one discovered conversation before import.
@@ -438,33 +410,7 @@ func (s *ThreadsService) PreviewConversation(ctx context.Context, req *PreviewCo
 
 // ExportRaw exports a raw conversation file as markdown or JSON without importing.
 func (s *ThreadsService) ExportRaw(ctx context.Context, req *ExportRawRequest) ([]byte, error) {
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/threads/conversations/export-raw"})
-	body, err := json.Marshal(req)
-	if err != nil {
-		return nil, fmt.Errorf("marshal request: %w", err)
-	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewReader(body))
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
-	}
-	httpReq.Header.Set("Content-Type", "application/json")
-	resp, err := s.client.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, fmt.Errorf("execute request: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		var apiErr APIError
-		if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
-			return nil, fmt.Errorf("API error (status %d)", resp.StatusCode)
-		}
-		return nil, &apiErr
-	}
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-	return data, nil
+	return s.client.doBytes(ctx, http.MethodPost, "/threads/conversations/export-raw", nil, req)
 }
 
 // ReconcileTail reconciles the tail of a thread.

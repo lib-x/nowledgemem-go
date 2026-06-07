@@ -20,6 +20,15 @@ func (s *SpacesService) List(ctx context.Context) (*ListSpacesResponse, error) {
 	return &resp, nil
 }
 
+// Roster returns the shared space roster.
+func (s *SpacesService) Roster(ctx context.Context) (*ListSpacesResponse, error) {
+	var resp ListSpacesResponse
+	if err := s.client.do(ctx, "GET", "/spaces/roster", nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // Create creates a space profile.
 func (s *SpacesService) Create(ctx context.Context, req *CreateSpaceRequest) (*Space, error) {
 	var resp Space
@@ -69,11 +78,11 @@ type SpacesConfigRequest struct {
 
 // CreateSpaceRequest is the request body for POST /spaces.
 type CreateSpaceRequest struct {
-	Name                 string   `json:"name"`
-	Description          string   `json:"description,omitempty"`
-	Icon                 string   `json:"icon,omitempty"`
-	Instructions         string   `json:"instructions,omitempty"`
-	DefaultRetrievalMode string   `json:"defaultRetrievalMode,omitempty"`
+	Name                 string `json:"name"`
+	Description          string `json:"description,omitempty"`
+	Icon                 string `json:"icon,omitempty"`
+	Instructions         string `json:"instructions,omitempty"`
+	DefaultRetrievalMode string `json:"defaultRetrievalMode,omitempty"`
 }
 
 // UpdateSpaceRequest is the request body for PATCH /spaces/{id}.

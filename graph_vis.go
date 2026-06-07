@@ -3,13 +3,20 @@ package nowledgemem
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 // GraphVisService handles graph visualization operations.
 type GraphVisService struct {
 	client *Client
+}
+
+// Explorer returns the interactive graph explorer HTML.
+func (s *GraphVisService) Explorer(ctx context.Context) ([]byte, error) {
+	return s.client.doBytes(ctx, http.MethodGet, "/graph/vis", nil, nil)
 }
 
 // SearchGraph finds relevant content and builds visualization-ready graph data.
@@ -151,6 +158,26 @@ func (s *GraphVisService) GetOverview(ctx context.Context) (*GraphOverview, erro
 	return &resp, nil
 }
 
+// GetLivePreviewGraph gets a compact merged graph for one or more seed nodes.
+func (s *GraphVisService) GetLivePreviewGraph(ctx context.Context, params *GraphLivePreviewGraphParams) (*GraphData, error) {
+	if params == nil || len(params.NodeIDs) == 0 {
+		return nil, fmt.Errorf("node_ids is required")
+	}
+	q := url.Values{}
+	q.Set("node_ids", strings.Join(params.NodeIDs, ","))
+	if params.LimitPerSeed > 0 {
+		q.Set("limit_per_seed", strconv.Itoa(params.LimitPerSeed))
+	}
+	if params.SpaceID != "" {
+		q.Set("space_id", params.SpaceID)
+	}
+	var resp GraphData
+	if err := s.client.doQuery(ctx, "/graph/live-preview", q, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // GetLivePreview returns a live preview for a node.
 func (s *GraphVisService) GetLivePreview(ctx context.Context, nodeID string) (*GraphLivePreview, error) {
 	var resp GraphLivePreview
@@ -195,36 +222,49 @@ type GraphExpandParams struct {
 	SpaceID string `json:"space_id,omitempty"`
 }
 
+// GraphLivePreviewGraphParams are parameters for GET /graph/live-preview.
+type GraphLivePreviewGraphParams struct {
+	NodeIDs      []string `json:"node_ids"`
+	LimitPerSeed int      `json:"limit_per_seed,omitempty"`
+	SpaceID      string   `json:"space_id,omitempty"`
+}
+
 // GraphData is the visualization-ready graph response.
 type GraphData struct {
-	Nodes []GraphNode `json:"nodes"`
-	Edges []GraphEdge `json:"edges"`
+	Nodes               []GraphNode      `json:"nodes"`
+	Edges               []GraphEdge      `json:"edges"`
+	Communities         []map[string]any `json:"communities,omitempty"`
+	CommunityHulls      []map[string]any `json:"community_hulls,omitempty"`
+	VisualizationConfig map[string]any   `json:"visualization_config,omitempty"`
+	Metadata            map[string]any   `json:"metadata,omitempty"`
 }
 
 // GraphNode represents a node in the graph visualization.
 type GraphNode struct {
-	ID           string         `json:"id"`
-	Label        string         `json:"label"`
-	NodeType     string         `json:"node_type"`
-	NodeSubtype  string         `json:"node_subtype,omitempty"`
-	Size         float64        `json:"size,omitempty"`
-	Color        string         `json:"color,omitempty"`
-	Community    string         `json:"community,omitempty"`
-	Importance   float64        `json:"importance,omitempty"`
-	HopCount     int            `json:"hop_count,omitempty"`
-	PagerankScore float64       `json:"pagerank_score,omitempty"`
-	ThreadID     string         `json:"thread_id,omitempty"`
-	Metadata     map[string]any `json:"metadata,omitempty"`
+	ID            string         `json:"id"`
+	Label         string         `json:"label"`
+	NodeType      string         `json:"node_type"`
+	NodeSubtype   string         `json:"node_subtype,omitempty"`
+	Size          float64        `json:"size,omitempty"`
+	Color         string         `json:"color,omitempty"`
+	Community     string         `json:"community,omitempty"`
+	Importance    float64        `json:"importance,omitempty"`
+	HopCount      int            `json:"hop_count,omitempty"`
+	PagerankScore float64        `json:"pagerank_score,omitempty"`
+	ThreadID      string         `json:"thread_id,omitempty"`
+	Metadata      map[string]any `json:"metadata,omitempty"`
 }
 
 // GraphEdge represents an edge in the graph visualization.
 type GraphEdge struct {
-	ID        string  `json:"id"`
-	Source    string  `json:"source"`
-	Target    string  `json:"target"`
-	EdgeType  string  `json:"edge_type"`
-	Weight    float64 `json:"weight,omitempty"`
-	Label     string  `json:"label,omitempty"`
+	ID             string         `json:"id"`
+	Source         string         `json:"source"`
+	Target         string         `json:"target"`
+	EdgeType       string         `json:"edge_type"`
+	Weight         float64        `json:"weight,omitempty"`
+	Label          string         `json:"label,omitempty"`
+	RelevanceScore float64        `json:"relevance_score,omitempty"`
+	Metadata       map[string]any `json:"metadata,omitempty"`
 }
 
 // GraphOverview is the response for GET /graph/overview.

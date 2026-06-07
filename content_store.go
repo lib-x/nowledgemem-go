@@ -2,7 +2,6 @@ package nowledgemem
 
 import (
 	"context"
-	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -32,13 +31,7 @@ func (s *ContentStoreService) CopyBatch(ctx context.Context, batchSize int) erro
 	if batchSize > 0 {
 		q.Set("batch_size", strconv.Itoa(batchSize))
 	}
-	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/content-store/thread-messages/copy-batch"})
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), nil)
-	if err != nil {
-		return err
-	}
-	return s.client.doRequest(req, nil)
+	return s.client.doWithQuery(ctx, "POST", "/content-store/thread-messages/copy-batch", q, nil, nil)
 }
 
 // Cutover performs the content store cutover.
