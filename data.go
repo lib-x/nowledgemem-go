@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 // DataService handles data export/import operations.
@@ -130,12 +132,96 @@ type DataImportStatus struct {
 	Message     string  `json:"message,omitempty"`
 }
 
+// UploadImportRequest is the request for POST /data/import/upload.
+type UploadImportRequest struct {
+	File                 io.Reader `json:"-"`
+	Filename             string    `json:"-"`
+	Mode                 string    `json:"mode,omitempty"`
+	IncludeMemories      *bool     `json:"include_memories,omitempty"`
+	IncludeThreads       *bool     `json:"include_threads,omitempty"`
+	IncludeMessages      *bool     `json:"include_messages,omitempty"`
+	IncludeEntities      *bool     `json:"include_entities,omitempty"`
+	IncludeLabels        *bool     `json:"include_labels,omitempty"`
+	IncludeSources       *bool     `json:"include_sources,omitempty"`
+	IncludeCommunities   *bool     `json:"include_communities,omitempty"`
+	IncludeEdges         *bool     `json:"include_edges,omitempty"`
+	IncludeWorkingMemory *bool     `json:"include_working_memory,omitempty"`
+}
+
 // UploadImport uploads a ZIP export from web and remote clients.
-// Note: This requires multipart form upload - use HTTP client directly for file uploads.
-func (s *DataService) UploadImport(ctx context.Context) (*DataImportResponse, error) {
-	var resp DataImportResponse
-	if err := s.client.do(ctx, "POST", "/data/import/upload", nil, &resp); err != nil {
-		return nil, err
+// file is the ZIP file content, filename is the name of the file.
+func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest) (*DataImportResponse, error) {
+	// Build multipart form
+	var buf bytes.Buffer
+	writer := multipart.NewWriter(&buf)
+
+	// Add file field
+	part, err := writer.CreateFormFile("file", req.Filename)
+	if err != nil {
+		return nil, fmt.Errorf("create form file: %w", err)
 	}
-	return &resp, nil
+	if _, err := io.Copy(part, req.File); err != nil {
+		return nil, fmt.Errorf("copy file: %w", err)
+	}
+
+	// Add optional fields
+	if req.Mode != "" {
+		writer.WriteField("mode", req.Mode)
+	}
+	if req.IncludeMemories != nil {
+		writer.WriteField("include_memories", strconv.FormatBool(*req.IncludeMemories))
+	}
+	if req.IncludeThreads != nil {
+		writer.WriteField("include_threads", strconv.FormatBool(*req.IncludeThreads))
+	}
+	if req.IncludeMessages != nil {
+		writer.WriteField("include_messages", strconv.FormatBool(*req.IncludeMessages))
+	}
+	if req.IncludeEntities != nil {
+		writer.WriteField("include_entities", strconv.FormatBool(*req.IncludeEntities))
+	}
+	if req.IncludeLabels != nil {
+		writer.WriteField("include_labels", strconv.FormatBool(*req.IncludeLabels))
+	}
+	if req.IncludeSources != nil {
+		writer.WriteField("include_sources", strconv.FormatBool(*req.IncludeSources))
+	}
+	if req.IncludeCommunities != nil {
+		writer.WriteField("include_communities", strconv.FormatBool(*req.IncludeCommunities))
+	}
+	if req.IncludeEdges != nil {
+		writer.WriteField("include_edges", strconv.FormatBool(*req.IncludeEdges))
+	}
+	if req.IncludeWorkingMemory != nil {
+		writer.WriteField("include_working_memory", strconv.FormatBool(*req.IncludeWorkingMemory))
+	}
+
+	writer.Close()
+
+	u := s.client.baseURL.ResolveReference(&url.URL{Path: "/data/import/upload"})
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", u.String(), &buf)
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", writer.FormDataContentType())
+
+	httpResp, err := s.client.httpClient.Do(httpReq)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+	defer httpResp.Body.Close()
+
+	if httpResp.StatusCode >= 400 {
+		var apiErr APIError
+		if err := json.NewDecoder(httpResp.Body).Decode(&apiErr); err != nil {
+			return nil, fmt.Errorf("API error (status %d)", httpResp.StatusCode)
+		}
+		return nil, &apiErr
+	}
+
+	var result DataImportResponse
+	if err := json.NewDecoder(httpResp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("decode response: %w", err)
+	}
+	return &result, nil
 }
