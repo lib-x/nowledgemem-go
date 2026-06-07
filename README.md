@@ -114,6 +114,15 @@ func strPtr(s string) *string { return &s }
 // Custom base URL
 client := mem.NewClient(mem.WithBaseURL("http://192.168.1.100:14242"))
 
+// Remote deployment with nmem API key
+client := mem.NewRemoteClient("https://example.com/remote-api", os.Getenv("NMEM_API_KEY"))
+
+// Equivalent explicit options:
+// client := mem.NewClient(
+//     mem.WithBaseURL("https://example.com/remote-api"),
+//     mem.WithAPIKey(os.Getenv("NMEM_API_KEY")),
+// )
+
 // Custom HTTP client
 client := mem.NewClient(mem.WithHTTPClient(&http.Client{Timeout: 60 * time.Second}))
 
@@ -123,6 +132,10 @@ client := mem.NewClient(mem.WithTimeout(60 * time.Second))
 // Always close when done to release idle connections
 defer client.Close()
 ```
+
+`NewClient()` targets the local unauthenticated API by default. `NewRemoteClient`
+and `WithAPIKey` are for remote deployments and send the key as both
+`Authorization: Bearer nmem_xxxx` and `nmem_api_key=nmem_xxxx`.
 
 ## Error Handling
 

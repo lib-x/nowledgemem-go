@@ -24,8 +24,10 @@ const (
 //	client := nowledgemem.NewClient()
 //	client := nowledgemem.NewClient(nowledgemem.WithBaseURL("http://host:14242"))
 type Client struct {
-	baseURL    *url.URL
-	httpClient *http.Client
+	baseURL     *url.URL
+	httpClient  *http.Client
+	apiKey      string
+	bearerToken string
 
 	// Services provides access to API resource operations.
 	Memories      *MemoriesService
@@ -86,6 +88,35 @@ func WithTimeout(d time.Duration) Option {
 	}
 }
 
+// WithBearerToken sets an Authorization: Bearer token header for every request.
+//
+// Pass the raw token value, for example "nmem_xxxx". If the value already starts
+// with "Bearer ", the prefix is stripped and normalized.
+func WithBearerToken(token string) Option {
+	return func(c *Client) {
+		token = normalizeBearerToken(token)
+		if token == "" {
+			panic("bearer token cannot be empty")
+		}
+		c.bearerToken = token
+	}
+}
+
+// WithAPIKey sets the Nowledge Mem remote API key for every request.
+//
+// Remote deployments commonly require both Authorization: Bearer nmem_xxxx and
+// nmem_api_key=nmem_xxxx query authentication. This option sends both.
+func WithAPIKey(apiKey string) Option {
+	return func(c *Client) {
+		apiKey = normalizeBearerToken(apiKey)
+		if apiKey == "" {
+			panic("API key cannot be empty")
+		}
+		c.apiKey = apiKey
+		c.bearerToken = apiKey
+	}
+}
+
 // NewClient creates a new Nowledge Mem API client.
 func NewClient(opts ...Option) *Client {
 	u, _ := url.Parse(defaultBaseURL)
@@ -127,6 +158,18 @@ func NewClient(opts ...Option) *Client {
 	c.Favorites = &FavoritesService{client: c}
 	c.ContentStore = &ContentStoreService{client: c}
 	return c
+}
+
+// NewRemoteClient creates a client for a remote Nowledge Mem deployment.
+//
+// Remote deployments use a base URL such as "https://host/remote-api" and an
+// nmem API key. The key is sent as both Authorization: Bearer nmem_xxxx and
+// nmem_api_key=nmem_xxxx.
+func NewRemoteClient(rawURL, apiKey string, opts ...Option) *Client {
+	remoteOpts := make([]Option, 0, len(opts)+2)
+	remoteOpts = append(remoteOpts, WithBaseURL(rawURL), WithAPIKey(apiKey))
+	remoteOpts = append(remoteOpts, opts...)
+	return NewClient(remoteOpts...)
 }
 
 // Close closes idle HTTP connections. Call this when done with the client.
@@ -177,6 +220,9 @@ func (c *Client) newRequest(ctx context.Context, method, path string, params url
 	if contentType != "" && body != nil {
 		req.Header.Set("Content-Type", contentType)
 	}
+	if c.bearerToken != "" {
+		req.Header.Set("Authorization", "Bearer "+c.bearerToken)
+	}
 	return req, nil
 }
 
@@ -189,17 +235,48 @@ func (c *Client) requestURL(path string, params url.Values) (*url.URL, error) {
 		return nil, fmt.Errorf("request path must be relative: %s", path)
 	}
 
-	u := c.baseURL.ResolveReference(rel)
+	u := *c.baseURL
+	u.Path = joinURLPath(c.baseURL.Path, rel.Path)
+	u.RawPath = ""
+	q := u.Query()
+	for key, values := range rel.Query() {
+		for _, value := range values {
+			q.Add(key, value)
+		}
+	}
 	if params != nil {
-		q := u.Query()
 		for key, values := range params {
 			for _, value := range values {
 				q.Add(key, value)
 			}
 		}
-		u.RawQuery = q.Encode()
 	}
-	return u, nil
+	if c.apiKey != "" {
+		q.Set("nmem_api_key", c.apiKey)
+	}
+	u.RawQuery = q.Encode()
+	return &u, nil
+}
+
+func normalizeBearerToken(token string) string {
+	token = strings.TrimSpace(token)
+	if strings.HasPrefix(strings.ToLower(token), "bearer ") {
+		token = strings.TrimSpace(token[len("Bearer "):])
+	}
+	return token
+}
+
+func joinURLPath(basePath, requestPath string) string {
+	if basePath == "" || basePath == "/" {
+		if strings.HasPrefix(requestPath, "/") {
+			return requestPath
+		}
+		return "/" + requestPath
+	}
+	if requestPath == "" || requestPath == "/" {
+		return basePath
+	}
+	return strings.TrimRight(basePath, "/") + "/" + strings.TrimLeft(requestPath, "/")
 }
 
 func (c *Client) doBytes(ctx context.Context, method, path string, params url.Values, body any) ([]byte, error) {

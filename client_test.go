@@ -8,8 +8,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestDoWithQueryKeepsQueryOutOfPath(t *testing.T) {
@@ -56,6 +58,99 @@ func TestAPIErrorPreservesPlainTextBody(t *testing.T) {
 	}
 	if !strings.Contains(apiErr.Error(), "plain failure") {
 		t.Fatalf("error message = %q, want plain body", apiErr.Error())
+	}
+}
+
+func TestWithBearerTokenSetsAuthorizationHeaderOnly(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if got := r.Header.Get("Authorization"); got != "Bearer nmem_header" {
+			t.Fatalf("authorization = %q, want Bearer nmem_header", got)
+		}
+		if got := r.URL.Query().Get("nmem_api_key"); got != "" {
+			t.Fatalf("nmem_api_key = %q, want empty", got)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+
+	client := NewClient(WithBaseURL(srv.URL), WithBearerToken("Bearer nmem_header"))
+	if err := client.do(context.Background(), http.MethodGet, "/health", nil, nil); err != nil {
+		t.Fatalf("do returned error: %v", err)
+	}
+}
+
+func TestWithAPIKeySetsBearerHeaderAndQueryParam(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if got := r.Header.Get("Authorization"); got != "Bearer nmem_key" {
+			t.Fatalf("authorization = %q, want Bearer nmem_key", got)
+		}
+		if got := r.URL.Query().Get("nmem_api_key"); got != "nmem_key" {
+			t.Fatalf("nmem_api_key = %q, want nmem_key", got)
+		}
+		if got := r.URL.Query().Get("existing"); got != "1" {
+			t.Fatalf("existing = %q, want 1", got)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+
+	client := NewClient(WithBaseURL(srv.URL), WithAPIKey("nmem_key"))
+	if err := client.doQuery(context.Background(), "/health", url.Values{"existing": {"1"}}, nil); err != nil {
+		t.Fatalf("doQuery returned error: %v", err)
+	}
+}
+
+func TestWithAPIKeyPreservesRemoteBaseURLPath(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/remote-api/models/bge-m3/status" {
+			t.Fatalf("path = %q, want /remote-api/models/bge-m3/status", r.URL.Path)
+		}
+		if got := r.Header.Get("Authorization"); got != "Bearer nmem_key" {
+			t.Fatalf("authorization = %q, want Bearer nmem_key", got)
+		}
+		if got := r.URL.Query().Get("nmem_api_key"); got != "nmem_key" {
+			t.Fatalf("nmem_api_key = %q, want nmem_key", got)
+		}
+		_ = json.NewEncoder(w).Encode(EmbeddingModelStatus{Installed: true, Ready: true})
+	}))
+	defer srv.Close()
+
+	client := NewRemoteClient(srv.URL+"/remote-api", "nmem_key")
+	status, err := client.Models.GetEmbeddingModelStatus(context.Background())
+	if err != nil {
+		t.Fatalf("GetEmbeddingModelStatus returned error: %v", err)
+	}
+	if !status.Ready {
+		t.Fatal("ready = false, want true")
+	}
+}
+
+func TestRemoteAPIKeyIntegration(t *testing.T) {
+	apiKey := os.Getenv("NMEM_TEST_API_KEY")
+	if apiKey == "" {
+		t.Skip("set NMEM_TEST_API_KEY to run remote API integration test")
+	}
+	baseURL := os.Getenv("NMEM_TEST_BASE_URL")
+	if baseURL == "" {
+		baseURL = "https://nowledge-mem.tinycat.heiyu.space/remote-api"
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	client := NewRemoteClient(baseURL, apiKey, WithTimeout(20*time.Second))
+	status, err := client.Models.GetEmbeddingModelStatus(ctx)
+	if err != nil {
+		t.Fatalf("GetEmbeddingModelStatus returned error: %v", err)
+	}
+	if status == nil {
+		t.Fatal("status is nil")
 	}
 }
 
