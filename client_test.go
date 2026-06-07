@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -81,15 +82,18 @@ func TestWithBearerTokenSetsAuthorizationHeaderOnly(t *testing.T) {
 	}
 }
 
-func TestWithAPIKeySetsBearerHeaderAndQueryParam(t *testing.T) {
+func TestWithAPIKeySetsBearerAndAPIKeyHeaders(t *testing.T) {
 	t.Parallel()
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if got := r.Header.Get("Authorization"); got != "Bearer nmem_key" {
 			t.Fatalf("authorization = %q, want Bearer nmem_key", got)
 		}
-		if got := r.URL.Query().Get("nmem_api_key"); got != "nmem_key" {
-			t.Fatalf("nmem_api_key = %q, want nmem_key", got)
+		if got := r.Header.Get("X-NMEM-API-Key"); got != "nmem_key" {
+			t.Fatalf("X-NMEM-API-Key = %q, want nmem_key", got)
+		}
+		if got := r.URL.Query().Get("nmem_api_key"); got != "" {
+			t.Fatalf("nmem_api_key = %q, want empty", got)
 		}
 		if got := r.URL.Query().Get("existing"); got != "1" {
 			t.Fatalf("existing = %q, want 1", got)
@@ -104,30 +108,172 @@ func TestWithAPIKeySetsBearerHeaderAndQueryParam(t *testing.T) {
 	}
 }
 
-func TestWithAPIKeyPreservesRemoteBaseURLPath(t *testing.T) {
+func TestWithAPIKeyQuerySetsQueryParamOnly(t *testing.T) {
 	t.Parallel()
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/remote-api/models/bge-m3/status" {
-			t.Fatalf("path = %q, want /remote-api/models/bge-m3/status", r.URL.Path)
+		if got := r.Header.Get("Authorization"); got != "" {
+			t.Fatalf("authorization = %q, want empty", got)
+		}
+		if got := r.Header.Get("X-NMEM-API-Key"); got != "" {
+			t.Fatalf("X-NMEM-API-Key = %q, want empty", got)
+		}
+		if got := r.URL.Query().Get("nmem_api_key"); got != "nmem_key" {
+			t.Fatalf("nmem_api_key = %q, want nmem_key", got)
+		}
+		if got := r.URL.Query().Get("existing"); got != "1" {
+			t.Fatalf("existing = %q, want 1", got)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+
+	client := NewClient(WithBaseURL(srv.URL), WithAPIKeyQuery("Bearer nmem_key"))
+	if err := client.doQuery(context.Background(), "/health", url.Values{"existing": {"1"}}, nil); err != nil {
+		t.Fatalf("doQuery returned error: %v", err)
+	}
+}
+
+func TestNewRemoteClientUsesBackendAPIPath(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/models/bge-m3/status" {
+			t.Fatalf("path = %q, want /models/bge-m3/status", r.URL.Path)
 		}
 		if got := r.Header.Get("Authorization"); got != "Bearer nmem_key" {
 			t.Fatalf("authorization = %q, want Bearer nmem_key", got)
 		}
-		if got := r.URL.Query().Get("nmem_api_key"); got != "nmem_key" {
-			t.Fatalf("nmem_api_key = %q, want nmem_key", got)
+		if got := r.Header.Get("X-NMEM-API-Key"); got != "nmem_key" {
+			t.Fatalf("X-NMEM-API-Key = %q, want nmem_key", got)
+		}
+		if got := r.URL.Query().Get("nmem_api_key"); got != "" {
+			t.Fatalf("nmem_api_key = %q, want empty", got)
 		}
 		_ = json.NewEncoder(w).Encode(EmbeddingModelStatus{Installed: true, Ready: true})
 	}))
 	defer srv.Close()
 
-	client := NewRemoteClient(srv.URL+"/remote-api", "nmem_key")
+	client := NewRemoteClient(srv.URL, "Bearer nmem_key")
 	status, err := client.Models.GetEmbeddingModelStatus(context.Background())
 	if err != nil {
 		t.Fatalf("GetEmbeddingModelStatus returned error: %v", err)
 	}
 	if !status.Ready {
 		t.Fatal("ready = false, want true")
+	}
+}
+
+func TestNewClientFromEnvReadsURLAndAPIKey(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/health" {
+			t.Fatalf("path = %q, want /health", r.URL.Path)
+		}
+		if got := r.Header.Get("Authorization"); got != "Bearer nmem_env" {
+			t.Fatalf("authorization = %q, want Bearer nmem_env", got)
+		}
+		if got := r.Header.Get("X-NMEM-API-Key"); got != "nmem_env" {
+			t.Fatalf("X-NMEM-API-Key = %q, want nmem_env", got)
+		}
+		_ = json.NewEncoder(w).Encode(HealthCheck{Status: "ok"})
+	}))
+	defer srv.Close()
+
+	t.Setenv("NMEM_API_URL", srv.URL)
+	t.Setenv("NMEM_API_KEY", "nmem_env")
+
+	client := NewClientFromEnv()
+	health, err := client.Health.Check(context.Background())
+	if err != nil {
+		t.Fatalf("Health.Check returned error: %v", err)
+	}
+	if health.Status != "ok" {
+		t.Fatalf("status = %q, want ok", health.Status)
+	}
+}
+
+func TestNewClientFromConfigReadsSharedClientConfig(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/spaces/roster" {
+			t.Fatalf("path = %q, want /spaces/roster", r.URL.Path)
+		}
+		if got := r.Header.Get("Authorization"); got != "Bearer nmem_config" {
+			t.Fatalf("authorization = %q, want Bearer nmem_config", got)
+		}
+		if got := r.Header.Get("X-NMEM-API-Key"); got != "nmem_config" {
+			t.Fatalf("X-NMEM-API-Key = %q, want nmem_config", got)
+		}
+		_ = json.NewEncoder(w).Encode(ListSpacesResponse{})
+	}))
+	defer srv.Close()
+
+	home := t.TempDir()
+	configDir := filepath.Join(home, ".nowledge-mem")
+	if err := os.MkdirAll(configDir, 0o700); err != nil {
+		t.Fatalf("mkdir config dir: %v", err)
+	}
+	config := []byte(`{"apiUrl":"` + srv.URL + `","apiKey":"nmem_config"}`)
+	if err := os.WriteFile(filepath.Join(configDir, "config.json"), config, 0o600); err != nil {
+		t.Fatalf("write config: %v", err)
+	}
+
+	t.Setenv("HOME", home)
+	t.Setenv("NMEM_API_URL", "")
+	t.Setenv("NMEM_API_KEY", "")
+
+	client, err := NewClientFromConfig()
+	if err != nil {
+		t.Fatalf("NewClientFromConfig returned error: %v", err)
+	}
+	if _, err := client.Spaces.Roster(context.Background()); err != nil {
+		t.Fatalf("Spaces.Roster returned error: %v", err)
+	}
+}
+
+func TestNewClientFromConfigEnvOverridesFile(t *testing.T) {
+	fileSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Fatal("file config server should not be called when env overrides are set")
+	}))
+	defer fileSrv.Close()
+
+	envSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/health" {
+			t.Fatalf("path = %q, want /health", r.URL.Path)
+		}
+		if got := r.Header.Get("Authorization"); got != "Bearer nmem_env" {
+			t.Fatalf("authorization = %q, want Bearer nmem_env", got)
+		}
+		if got := r.Header.Get("X-NMEM-API-Key"); got != "nmem_env" {
+			t.Fatalf("X-NMEM-API-Key = %q, want nmem_env", got)
+		}
+		_ = json.NewEncoder(w).Encode(HealthCheck{Status: "ok"})
+	}))
+	defer envSrv.Close()
+
+	home := t.TempDir()
+	configDir := filepath.Join(home, ".nowledge-mem")
+	if err := os.MkdirAll(configDir, 0o700); err != nil {
+		t.Fatalf("mkdir config dir: %v", err)
+	}
+	config := []byte(`{"apiUrl":"` + fileSrv.URL + `","apiKey":"nmem_file"}`)
+	if err := os.WriteFile(filepath.Join(configDir, "config.json"), config, 0o600); err != nil {
+		t.Fatalf("write config: %v", err)
+	}
+
+	t.Setenv("HOME", home)
+	t.Setenv("NMEM_API_URL", envSrv.URL)
+	t.Setenv("NMEM_API_KEY", "nmem_env")
+
+	client, err := NewClientFromConfig()
+	if err != nil {
+		t.Fatalf("NewClientFromConfig returned error: %v", err)
+	}
+	health, err := client.Health.Check(context.Background())
+	if err != nil {
+		t.Fatalf("Health.Check returned error: %v", err)
+	}
+	if health.Status != "ok" {
+		t.Fatalf("status = %q, want ok", health.Status)
 	}
 }
 
@@ -138,7 +284,7 @@ func TestRemoteAPIKeyIntegration(t *testing.T) {
 	}
 	baseURL := os.Getenv("NMEM_TEST_BASE_URL")
 	if baseURL == "" {
-		baseURL = "https://nowledge-mem.tinycat.heiyu.space/remote-api"
+		t.Skip("set NMEM_TEST_BASE_URL to the backend API URL, for example https://mem.example.com")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)

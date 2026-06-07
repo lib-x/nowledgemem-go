@@ -8,6 +8,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -15,6 +17,8 @@ import (
 const (
 	defaultBaseURL = "http://127.0.0.1:14242"
 	defaultTimeout = 30 * time.Second
+	envAPIURL      = "NMEM_API_URL"
+	envAPIKey      = "NMEM_API_KEY"
 )
 
 // Client is the Nowledge Mem API client.
@@ -24,10 +28,11 @@ const (
 //	client := nowledgemem.NewClient()
 //	client := nowledgemem.NewClient(nowledgemem.WithBaseURL("http://host:14242"))
 type Client struct {
-	baseURL     *url.URL
-	httpClient  *http.Client
-	apiKey      string
-	bearerToken string
+	baseURL      *url.URL
+	httpClient   *http.Client
+	bearerToken  string
+	headerAPIKey string
+	queryAPIKey  string
 
 	// Services provides access to API resource operations.
 	Memories      *MemoriesService
@@ -104,16 +109,30 @@ func WithBearerToken(token string) Option {
 
 // WithAPIKey sets the Nowledge Mem remote API key for every request.
 //
-// Remote deployments commonly require both Authorization: Bearer nmem_xxxx and
-// nmem_api_key=nmem_xxxx query authentication. This option sends both.
+// This sends both supported header forms: Authorization: Bearer nmem_xxxx and
+// X-NMEM-API-Key: nmem_xxxx.
 func WithAPIKey(apiKey string) Option {
 	return func(c *Client) {
 		apiKey = normalizeBearerToken(apiKey)
 		if apiKey == "" {
 			panic("API key cannot be empty")
 		}
-		c.apiKey = apiKey
 		c.bearerToken = apiKey
+		c.headerAPIKey = apiKey
+	}
+}
+
+// WithAPIKeyQuery sends nmem_api_key=nmem_xxxx on every request.
+//
+// Prefer header authentication when possible. Use this for proxies or clients
+// that strip custom headers.
+func WithAPIKeyQuery(apiKey string) Option {
+	return func(c *Client) {
+		apiKey = normalizeBearerToken(apiKey)
+		if apiKey == "" {
+			panic("query API key cannot be empty")
+		}
+		c.queryAPIKey = apiKey
 	}
 }
 
@@ -162,14 +181,54 @@ func NewClient(opts ...Option) *Client {
 
 // NewRemoteClient creates a client for a remote Nowledge Mem deployment.
 //
-// Remote deployments use a base URL such as "https://host/remote-api" and an
-// nmem API key. The key is sent as both Authorization: Bearer nmem_xxxx and
-// nmem_api_key=nmem_xxxx.
+// Remote deployments use the backend API URL, such as "https://mem.example.com",
+// and an nmem API key. Do not append the web app's frontend-only /remote-api
+// route. The key is sent as both Authorization: Bearer nmem_xxxx and
+// X-NMEM-API-Key: nmem_xxxx.
 func NewRemoteClient(rawURL, apiKey string, opts ...Option) *Client {
 	remoteOpts := make([]Option, 0, len(opts)+2)
 	remoteOpts = append(remoteOpts, WithBaseURL(rawURL), WithAPIKey(apiKey))
 	remoteOpts = append(remoteOpts, opts...)
 	return NewClient(remoteOpts...)
+}
+
+// NewClientFromEnv creates a client from NMEM_API_URL and NMEM_API_KEY.
+//
+// Explicit options are applied after environment-derived options.
+func NewClientFromEnv(opts ...Option) *Client {
+	envOpts := optionsFromClientConfig(os.Getenv(envAPIURL), os.Getenv(envAPIKey))
+	envOpts = append(envOpts, opts...)
+	return NewClient(envOpts...)
+}
+
+// ClientConfig is the shared local client configuration written by nmem.
+type ClientConfig struct {
+	APIURL string `json:"apiUrl"`
+	APIKey string `json:"apiKey"`
+}
+
+// NewClientFromConfig creates a client from ~/.nowledge-mem/config.json, with
+// NMEM_API_URL and NMEM_API_KEY overriding file values when present.
+//
+// Explicit options are applied last.
+func NewClientFromConfig(opts ...Option) (*Client, error) {
+	cfg, err := readClientConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	apiURL := cfg.APIURL
+	apiKey := cfg.APIKey
+	if envURL := os.Getenv(envAPIURL); envURL != "" {
+		apiURL = envURL
+	}
+	if envKey := os.Getenv(envAPIKey); envKey != "" {
+		apiKey = envKey
+	}
+
+	configOpts := optionsFromClientConfig(apiURL, apiKey)
+	configOpts = append(configOpts, opts...)
+	return NewClient(configOpts...), nil
 }
 
 // Close closes idle HTTP connections. Call this when done with the client.
@@ -223,6 +282,9 @@ func (c *Client) newRequest(ctx context.Context, method, path string, params url
 	if c.bearerToken != "" {
 		req.Header.Set("Authorization", "Bearer "+c.bearerToken)
 	}
+	if c.headerAPIKey != "" {
+		req.Header.Set("X-NMEM-API-Key", c.headerAPIKey)
+	}
 	return req, nil
 }
 
@@ -251,8 +313,8 @@ func (c *Client) requestURL(path string, params url.Values) (*url.URL, error) {
 			}
 		}
 	}
-	if c.apiKey != "" {
-		q.Set("nmem_api_key", c.apiKey)
+	if c.queryAPIKey != "" {
+		q.Set("nmem_api_key", c.queryAPIKey)
 	}
 	u.RawQuery = q.Encode()
 	return &u, nil
@@ -277,6 +339,41 @@ func joinURLPath(basePath, requestPath string) string {
 		return basePath
 	}
 	return strings.TrimRight(basePath, "/") + "/" + strings.TrimLeft(requestPath, "/")
+}
+
+func optionsFromClientConfig(apiURL, apiKey string) []Option {
+	opts := make([]Option, 0, 2)
+	if apiURL != "" {
+		opts = append(opts, WithBaseURL(apiURL))
+	}
+	if apiKey != "" {
+		opts = append(opts, WithAPIKey(apiKey))
+	}
+	return opts
+}
+
+func readClientConfig() (*ClientConfig, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return &ClientConfig{}, nil
+	}
+	path := filepath.Join(home, ".nowledge-mem", "config.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return &ClientConfig{}, nil
+		}
+		return nil, fmt.Errorf("read client config: %w", err)
+	}
+	if len(data) == 0 {
+		return &ClientConfig{}, nil
+	}
+
+	var cfg ClientConfig
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return nil, fmt.Errorf("decode client config: %w", err)
+	}
+	return &cfg, nil
 }
 
 func (c *Client) doBytes(ctx context.Context, method, path string, params url.Values, body any) ([]byte, error) {

@@ -114,14 +114,23 @@ func strPtr(s string) *string { return &s }
 // Custom base URL
 client := mem.NewClient(mem.WithBaseURL("http://192.168.1.100:14242"))
 
-// Remote deployment with nmem API key
-client := mem.NewRemoteClient("https://example.com/remote-api", os.Getenv("NMEM_API_KEY"))
+// Remote or LAN deployment with nmem API key
+client := mem.NewRemoteClient("https://mem.example.com", os.Getenv("NMEM_API_KEY"))
 
 // Equivalent explicit options:
 // client := mem.NewClient(
-//     mem.WithBaseURL("https://example.com/remote-api"),
+//     mem.WithBaseURL("https://mem.example.com"),
 //     mem.WithAPIKey(os.Getenv("NMEM_API_KEY")),
 // )
+
+// Read NMEM_API_URL and NMEM_API_KEY
+client := mem.NewClientFromEnv()
+
+// Or read ~/.nowledge-mem/config.json, with env vars overriding the file
+client, err := mem.NewClientFromConfig()
+if err != nil {
+    log.Fatal(err)
+}
 
 // Custom HTTP client
 client := mem.NewClient(mem.WithHTTPClient(&http.Client{Timeout: 60 * time.Second}))
@@ -133,9 +142,19 @@ client := mem.NewClient(mem.WithTimeout(60 * time.Second))
 defer client.Close()
 ```
 
-`NewClient()` targets the local unauthenticated API by default. `NewRemoteClient`
-and `WithAPIKey` are for remote deployments and send the key as both
-`Authorization: Bearer nmem_xxxx` and `nmem_api_key=nmem_xxxx`.
+`NewClient()` targets `http://127.0.0.1:14242`, which is usually
+unauthenticated for same-machine localhost access. LAN and remote deployments
+require an API key unless the server was explicitly started with auth disabled.
+
+Use the backend API URL directly, for example `https://mem.example.com`. Do not
+append the web app's frontend-only `/remote-api` route. API paths stay the same
+for local and remote access, such as `/health`, `/spaces/roster`, and
+`/memories`.
+
+`NewRemoteClient` and `WithAPIKey` send the key as both supported header forms:
+`Authorization: Bearer nmem_xxxx` and `X-NMEM-API-Key: nmem_xxxx`. If a proxy
+strips headers, use `WithAPIKeyQuery` explicitly to send
+`nmem_api_key=nmem_xxxx` in the query string.
 
 ## Error Handling
 
