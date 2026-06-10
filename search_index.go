@@ -3,11 +3,15 @@ package nowledgemem
 import "context"
 
 // SearchIndexService handles search index operations.
+//
+// It provides methods for checking index status and triggering reindexing.
 type SearchIndexService struct {
 	client *Client
 }
 
 // GetStatus returns status of LanceDB and hybrid search.
+//
+// GET /search-index/status
 func (s *SearchIndexService) GetStatus(ctx context.Context) (*SearchIndexStatus, error) {
 	var resp SearchIndexStatus
 	if err := s.client.do(ctx, "GET", "/search-index/status", nil, &resp); err != nil {
@@ -17,6 +21,8 @@ func (s *SearchIndexService) GetStatus(ctx context.Context) (*SearchIndexStatus,
 }
 
 // Reindex rebuilds the search index from the database.
+//
+// POST /search-index/reindex
 func (s *SearchIndexService) Reindex(ctx context.Context) (*SearchReindexResponse, error) {
 	var resp SearchReindexResponse
 	if err := s.client.do(ctx, "POST", "/search-index/reindex", nil, &resp); err != nil {
@@ -26,6 +32,8 @@ func (s *SearchIndexService) Reindex(ctx context.Context) (*SearchReindexRespons
 }
 
 // GetReindexStatus returns status of memories needing reindex.
+//
+// GET /search-index/reindex/status
 func (s *SearchIndexService) GetReindexStatus(ctx context.Context) (*ReindexStatus, error) {
 	var resp ReindexStatus
 	if err := s.client.do(ctx, "GET", "/search-index/reindex/status", nil, &resp); err != nil {
@@ -36,7 +44,7 @@ func (s *SearchIndexService) GetReindexStatus(ctx context.Context) (*ReindexStat
 
 // --- Search Index types ---
 
-// SearchReindexResponse is the response for POST /search-index/reindex.
+// SearchReindexResponse is the response from Reindex (POST /search-index/reindex).
 type SearchReindexResponse struct {
 	Success            bool     `json:"success"`
 	Memories           int      `json:"memories,omitempty"`
@@ -50,7 +58,7 @@ type SearchReindexResponse struct {
 	RestartRecommended bool     `json:"restart_recommended,omitempty"`
 }
 
-// SearchIndexStatus is the response for GET /search-index/status.
+// SearchIndexStatus is the response from GetStatus (GET /search-index/status).
 type SearchIndexStatus struct {
 	Ready       bool   `json:"ready"`
 	IndexType   string `json:"index_type"`
@@ -58,7 +66,7 @@ type SearchIndexStatus struct {
 	IndexPath   string `json:"index_path,omitempty"`
 }
 
-// ReindexStatus is the response for GET /search-index/reindex/status.
+// ReindexStatus is the response from GetReindexStatus (GET /search-index/reindex/status).
 type ReindexStatus struct {
 	Total      int `json:"total"`
 	NeedsIndex int `json:"needs_index"`

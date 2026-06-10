@@ -8,12 +8,12 @@ import (
 	"strconv"
 )
 
-// MemoriesService handles memory CRUD operations.
+// MemoriesService provides methods for memory CRUD, search, bulk operations, and lifecycle management.
 type MemoriesService struct {
 	client *Client
 }
 
-// List returns memories with filtering and pagination.
+// List returns memories with filtering and pagination. (GET /memories)
 func (s *MemoriesService) List(ctx context.Context, params *ListMemoriesParams) (*ListMemoriesResponse, error) {
 	q := url.Values{}
 	if params != nil {
@@ -43,7 +43,7 @@ func (s *MemoriesService) List(ctx context.Context, params *ListMemoriesParams) 
 	return &resp, nil
 }
 
-// Create creates a new memory with automatic entity extraction.
+// Create creates a new memory with automatic entity extraction. (POST /memories)
 func (s *MemoriesService) Create(ctx context.Context, req *CreateMemoryRequest) (*CreateMemoryResponse, error) {
 	var resp CreateMemoryResponse
 	if err := s.client.do(ctx, "POST", "/memories", req, &resp); err != nil {
@@ -52,7 +52,7 @@ func (s *MemoriesService) Create(ctx context.Context, req *CreateMemoryRequest) 
 	return &resp, nil
 }
 
-// Get retrieves a specific memory by ID.
+// Get retrieves a specific memory by ID with associated labels. (GET /memories/{id})
 func (s *MemoriesService) Get(ctx context.Context, memoryID string, spaceID string) (*MemoryListItem, error) {
 	q := url.Values{}
 	if spaceID != "" {
@@ -66,7 +66,7 @@ func (s *MemoriesService) Get(ctx context.Context, memoryID string, spaceID stri
 	return &resp, nil
 }
 
-// Update updates memory properties like importance, title, and content.
+// Update updates memory properties like importance, title, and content. (PATCH /memories/{id})
 func (s *MemoriesService) Update(ctx context.Context, memoryID string, updates map[string]any) (*MemoryListItem, error) {
 	var resp MemoryListItem
 	path := fmt.Sprintf("/memories/%s", url.PathEscape(memoryID))
@@ -76,7 +76,7 @@ func (s *MemoriesService) Update(ctx context.Context, memoryID string, updates m
 	return &resp, nil
 }
 
-// Delete deletes a memory and optionally its relationships.
+// Delete deletes a memory and optionally its relationships. (DELETE /memories/{id})
 func (s *MemoriesService) Delete(ctx context.Context, memoryID string, params *DeleteMemoryParams) (*DeleteMemoryResponse, error) {
 	q := url.Values{}
 	if params != nil {
@@ -93,7 +93,7 @@ func (s *MemoriesService) Delete(ctx context.Context, memoryID string, params *D
 	return &resp, nil
 }
 
-// Search performs a hybrid search across memories.
+// Search performs a hybrid search with filtering, metadata, and reasoning support. (POST /memories/search)
 func (s *MemoriesService) Search(ctx context.Context, req *SearchMemoriesRequest) ([]SearchResult, error) {
 	var resp []SearchResult
 	if err := s.client.do(ctx, "POST", "/memories/search", req, &resp); err != nil {
@@ -102,7 +102,7 @@ func (s *MemoriesService) Search(ctx context.Context, req *SearchMemoriesRequest
 	return resp, nil
 }
 
-// BulkMovePreview previews a bulk move between spaces.
+// BulkMovePreview previews a bulk move between spaces before changing records. (POST /memories/bulk/move/preview)
 func (s *MemoriesService) BulkMovePreview(ctx context.Context, req *BulkMovePreviewRequest) (*BulkMovePreviewResponse, error) {
 	var resp BulkMovePreviewResponse
 	if err := s.client.do(ctx, "POST", "/memories/bulk/move/preview", req, &resp); err != nil {
@@ -111,7 +111,7 @@ func (s *MemoriesService) BulkMovePreview(ctx context.Context, req *BulkMovePrev
 	return &resp, nil
 }
 
-// BulkMove moves selected memories into another space.
+// BulkMove moves selected memories, or all memories in one space, into another space. (POST /memories/bulk/move)
 func (s *MemoriesService) BulkMove(ctx context.Context, req *BulkMoveRequest) (*BulkMoveResponse, error) {
 	var resp BulkMoveResponse
 	if err := s.client.do(ctx, "POST", "/memories/bulk/move", req, &resp); err != nil {
@@ -120,7 +120,7 @@ func (s *MemoriesService) BulkMove(ctx context.Context, req *BulkMoveRequest) (*
 	return &resp, nil
 }
 
-// BulkDelete deletes selected memories.
+// BulkDelete deletes selected memories, or all memories in one space. (POST /memories/bulk/delete)
 func (s *MemoriesService) BulkDelete(ctx context.Context, req *BulkDeleteRequest) (*BulkDeleteResponse, error) {
 	var resp BulkDeleteResponse
 	if err := s.client.do(ctx, "POST", "/memories/bulk/delete", req, &resp); err != nil {
@@ -129,7 +129,7 @@ func (s *MemoriesService) BulkDelete(ctx context.Context, req *BulkDeleteRequest
 	return &resp, nil
 }
 
-// ToggleFavorite toggles favorite status for a memory.
+// ToggleFavorite toggles favorite status for a memory. (POST /memories/{id}/favorite)
 func (s *MemoriesService) ToggleFavorite(ctx context.Context, memoryID string) (*ToggleFavoriteResponse, error) {
 	var resp ToggleFavoriteResponse
 	path := fmt.Sprintf("/memories/%s/favorite", url.PathEscape(memoryID))
@@ -139,7 +139,7 @@ func (s *MemoriesService) ToggleFavorite(ctx context.Context, memoryID string) (
 	return &resp, nil
 }
 
-// GetLabels returns labels assigned to a memory.
+// GetLabels returns labels assigned to a memory. (GET /memories/{id}/labels)
 func (s *MemoriesService) GetLabels(ctx context.Context, memoryID string) ([]Label, error) {
 	var resp []Label
 	path := fmt.Sprintf("/memories/%s/labels", url.PathEscape(memoryID))
@@ -149,25 +149,25 @@ func (s *MemoriesService) GetLabels(ctx context.Context, memoryID string) ([]Lab
 	return resp, nil
 }
 
-// AssignLabel assigns a label to a memory.
+// AssignLabel assigns a label to a memory. (POST /memories/{id}/labels/{label_id})
 func (s *MemoriesService) AssignLabel(ctx context.Context, memoryID, labelID string) error {
 	path := fmt.Sprintf("/memories/%s/labels/%s", url.PathEscape(memoryID), url.PathEscape(labelID))
 	return s.client.do(ctx, "POST", path, nil, nil)
 }
 
-// RemoveLabel removes a label from a memory.
+// RemoveLabel removes a label from a memory. (DELETE /memories/{id}/labels/{label_id})
 func (s *MemoriesService) RemoveLabel(ctx context.Context, memoryID, labelID string) error {
 	path := fmt.Sprintf("/memories/%s/labels/%s", url.PathEscape(memoryID), url.PathEscape(labelID))
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
-// ExportOptions holds optional parameters for the Export method.
+// ExportOptions holds optional query parameters for the Export method.
 type ExportOptions struct {
 	Format         string `json:"format,omitempty"`
 	IncludeMetadata *bool `json:"include_metadata,omitempty"`
 }
 
-// Export exports a memory in the specified format (markdown, json, etc).
+// Export exports a memory in various formats. (GET /memories/{id}/export)
 func (s *MemoriesService) Export(ctx context.Context, memoryID string, opts *ExportOptions) ([]byte, error) {
 	q := url.Values{}
 	if opts != nil {
@@ -184,7 +184,7 @@ func (s *MemoriesService) Export(ctx context.Context, memoryID string, opts *Exp
 
 // --- Search types ---
 
-// SearchMemoriesRequest is the request body for POST /memories/search.
+// SearchMemoriesRequest is the request body for the memory search endpoint.
 type SearchMemoriesRequest struct {
 	Query             string   `json:"query"`
 	Mode              string   `json:"mode,omitempty"`
@@ -200,7 +200,7 @@ type SearchMemoriesRequest struct {
 	RecordedDateTo    string   `json:"recorded_date_to,omitempty"`
 }
 
-// SearchResult is a single search result.
+// SearchResult represents a single search result with the matched memory and relevance metadata.
 type SearchResult struct {
 	Memory             Memory           `json:"memory"`
 	SimilarityScore    float64          `json:"similarity_score"`
@@ -212,7 +212,7 @@ type SearchResult struct {
 
 // --- Bulk types ---
 
-// BulkMemorySelection describes a selection of memories for bulk operations.
+// BulkMemorySelection is a descriptor for selecting memories in bulk operations.
 type BulkMemorySelection struct {
 	MemoryIDs []string `json:"memory_ids,omitempty"`
 	SpaceID   string   `json:"space_id,omitempty"`
@@ -275,7 +275,7 @@ type ToggleFavoriteResponse struct {
 	IsFavorite bool `json:"is_favorite"`
 }
 
-// Reindex reindexes multiple memories or all needing reindex.
+// Reindex queues multiple memories, or all that need reindexing. (POST /memories/reindex)
 func (s *MemoriesService) Reindex(ctx context.Context, req *ReindexRequest) (*ReindexResponse, error) {
 	var resp ReindexResponse
 	if err := s.client.do(ctx, "POST", "/memories/reindex", req, &resp); err != nil {
@@ -284,7 +284,7 @@ func (s *MemoriesService) Reindex(ctx context.Context, req *ReindexRequest) (*Re
 	return &resp, nil
 }
 
-// GetReindexStatus returns status of memories needing reindex.
+// GetReindexStatus returns the count of memories that need reindexing. (GET /memories/reindex/status)
 func (s *MemoriesService) GetReindexStatus(ctx context.Context) (*MemoryReindexStatus, error) {
 	var resp MemoryReindexStatus
 	if err := s.client.do(ctx, "GET", "/memories/reindex/status", nil, &resp); err != nil {
@@ -329,13 +329,13 @@ type DeprecateMemoryRequest struct {
 	SpaceID             string `json:"space_id,omitempty"`
 }
 
-// Supersede marks a memory as replaced by a newer memory.
+// Supersede marks a memory as replaced by a newer one; keeps it in history but drops it from everyday recall. (POST /memories/{id}/supersede)
 func (s *MemoriesService) Supersede(ctx context.Context, memoryID string, req *SupersedeMemoryRequest) error {
 	path := fmt.Sprintf("/memories/%s/supersede", url.PathEscape(memoryID))
 	return s.client.do(ctx, "POST", path, req, nil)
 }
 
-// Deprecate marks a memory as deprecated while preserving it for graph history.
+// Deprecate retires an obsolete memory (no replacement); preserved for history, removed from default recall. (POST /memories/{id}/deprecate)
 func (s *MemoriesService) Deprecate(ctx context.Context, memoryID string, req *DeprecateMemoryRequest) error {
 	path := fmt.Sprintf("/memories/%s/deprecate", url.PathEscape(memoryID))
 	return s.client.do(ctx, "POST", path, req, nil)

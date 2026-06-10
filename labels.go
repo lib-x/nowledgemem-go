@@ -8,11 +8,15 @@ import (
 )
 
 // LabelsService handles label operations.
+//
+// It provides methods for creating, listing, updating, and deleting labels.
 type LabelsService struct {
 	client *Client
 }
 
 // List returns all labels with usage counts.
+//
+// GET /labels
 func (s *LabelsService) List(ctx context.Context, params *ListLabelsParams) ([]Label, error) {
 	q := url.Values{}
 	if params != nil {
@@ -34,6 +38,8 @@ func (s *LabelsService) List(ctx context.Context, params *ListLabelsParams) ([]L
 }
 
 // Create creates a new label.
+//
+// POST /labels
 func (s *LabelsService) Create(ctx context.Context, req *CreateLabelRequest) (*Label, error) {
 	q := url.Values{}
 	if req != nil {
@@ -55,6 +61,8 @@ func (s *LabelsService) Create(ctx context.Context, req *CreateLabelRequest) (*L
 }
 
 // Get returns a specific label by ID.
+//
+// GET /labels/{id}
 func (s *LabelsService) Get(ctx context.Context, labelID string) (*Label, error) {
 	var resp Label
 	path := fmt.Sprintf("/labels/%s", url.PathEscape(labelID))
@@ -65,6 +73,8 @@ func (s *LabelsService) Get(ctx context.Context, labelID string) (*Label, error)
 }
 
 // Update updates an existing label.
+//
+// PUT /labels/{id}
 func (s *LabelsService) Update(ctx context.Context, labelID string, req *UpdateLabelRequest) (*Label, error) {
 	var resp Label
 	path := fmt.Sprintf("/labels/%s", url.PathEscape(labelID))
@@ -75,6 +85,8 @@ func (s *LabelsService) Update(ctx context.Context, labelID string, req *UpdateL
 }
 
 // Delete deletes a label and all its relationships.
+//
+// DELETE /labels/{id}
 func (s *LabelsService) Delete(ctx context.Context, labelID string) error {
 	path := fmt.Sprintf("/labels/%s", url.PathEscape(labelID))
 	return s.client.do(ctx, "DELETE", path, nil, nil)
@@ -82,21 +94,21 @@ func (s *LabelsService) Delete(ctx context.Context, labelID string) error {
 
 // --- Label request types ---
 
-// ListLabelsParams are query parameters for GET /labels.
+// ListLabelsParams are query parameters for List (GET /labels).
 type ListLabelsParams struct {
 	Limit     int    `json:"limit,omitempty"`
 	OrderBy   string `json:"order_by,omitempty"`
 	OrderDesc bool   `json:"order_desc,omitempty"`
 }
 
-// CreateLabelRequest is the request body for POST /labels.
+// CreateLabelRequest is the request body for Create (POST /labels).
 type CreateLabelRequest struct {
 	Name        string `json:"name"`
 	Color       string `json:"color,omitempty"`
 	Description string `json:"description,omitempty"`
 }
 
-// UpdateLabelRequest is the request body for PUT /labels/{id}.
+// UpdateLabelRequest is the request body for Update (PUT /labels/{id}).
 type UpdateLabelRequest struct {
 	Name        string `json:"name,omitempty"`
 	Color       string `json:"color,omitempty"`

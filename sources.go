@@ -12,11 +12,16 @@ import (
 )
 
 // SourcesService handles source/library operations.
+//
+// It provides methods for listing, creating, updating, and deleting sources,
+// as well as ingesting files, URLs, and batches.
 type SourcesService struct {
 	client *Client
 }
 
 // List returns sources with optional filtering and pagination.
+//
+// GET /sources
 func (s *SourcesService) List(ctx context.Context, params *ListSourcesParams) (*ListSourcesResponse, error) {
 	q := url.Values{}
 	if params != nil {
@@ -44,6 +49,8 @@ func (s *SourcesService) List(ctx context.Context, params *ListSourcesParams) (*
 }
 
 // Search performs full-text search across source names and content.
+//
+// GET /sources/search
 func (s *SourcesService) Search(ctx context.Context, query string, limit int) ([]Source, error) {
 	q := url.Values{}
 	q.Set("q", query)
@@ -58,6 +65,8 @@ func (s *SourcesService) Search(ctx context.Context, query string, limit int) ([
 }
 
 // Get returns source detail with related memories and revision chain.
+//
+// GET /sources/{id}
 func (s *SourcesService) Get(ctx context.Context, sourceID string) (*Source, error) {
 	var resp Source
 	path := fmt.Sprintf("/sources/%s", url.PathEscape(sourceID))
@@ -68,6 +77,8 @@ func (s *SourcesService) Get(ctx context.Context, sourceID string) (*Source, err
 }
 
 // GetContent reads the parsed markdown content of a source.
+//
+// GET /sources/{id}/content
 func (s *SourcesService) GetContent(ctx context.Context, sourceID string) (string, error) {
 	var resp struct {
 		Content string `json:"content"`
@@ -80,6 +91,8 @@ func (s *SourcesService) GetContent(ctx context.Context, sourceID string) (strin
 }
 
 // Delete deletes a source and its search index records.
+//
+// DELETE /sources/{id}
 func (s *SourcesService) Delete(ctx context.Context, sourceID string, spaceID string) error {
 	q := url.Values{}
 	if spaceID != "" {
@@ -89,7 +102,9 @@ func (s *SourcesService) Delete(ctx context.Context, sourceID string, spaceID st
 	return s.client.doWithQuery(ctx, "DELETE", path, q, nil, nil)
 }
 
-// Update updates source processing state.
+// Update updates source processing state (reparse, ocr_reparse, or mark_stale).
+//
+// PATCH /sources/{id}
 func (s *SourcesService) Update(ctx context.Context, sourceID string, req *UpdateSourceRequest, spaceID string) (*Source, error) {
 	var resp Source
 	q := url.Values{}
@@ -103,7 +118,9 @@ func (s *SourcesService) Update(ctx context.Context, sourceID string, req *Updat
 	return &resp, nil
 }
 
-// IngestFile ingests a file through the full source pipeline.
+// IngestFile ingests a file as a new source via multipart upload.
+//
+// POST /sources/ingest/file
 func (s *SourcesService) IngestFile(ctx context.Context, req *IngestFileRequest) (*IngestSourceResponse, error) {
 	if req == nil {
 		return nil, fmt.Errorf("request is required")
@@ -152,7 +169,9 @@ func (s *SourcesService) IngestFile(ctx context.Context, req *IngestFileRequest)
 	return &resp, nil
 }
 
-// IngestURL fetches a URL and ingests through the source pipeline.
+// IngestURL ingests content from a URL.
+//
+// POST /sources/ingest/url
 func (s *SourcesService) IngestURL(ctx context.Context, req *IngestURLRequest) (*IngestSourceResponse, error) {
 	var resp IngestSourceResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/url", req, &resp); err != nil {
@@ -161,7 +180,9 @@ func (s *SourcesService) IngestURL(ctx context.Context, req *IngestURLRequest) (
 	return &resp, nil
 }
 
-// IngestByPath ingests a file by local filesystem path.
+// IngestByPath ingests a file from a server-side path.
+//
+// POST /sources/ingest/file-path
 func (s *SourcesService) IngestByPath(ctx context.Context, req *IngestByPathRequest) (*IngestSourceResponse, error) {
 	var resp IngestSourceResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/file-path", req, &resp); err != nil {
@@ -170,7 +191,9 @@ func (s *SourcesService) IngestByPath(ctx context.Context, req *IngestByPathRequ
 	return &resp, nil
 }
 
-// BatchIngest ingests a batch of files.
+// BatchIngest ingests a batch of files (folder import).
+//
+// POST /sources/ingest/batch
 func (s *SourcesService) BatchIngest(ctx context.Context, req *BatchIngestRequest) (*BatchIngestResponse, error) {
 	var resp BatchIngestResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/batch", req, &resp); err != nil {
@@ -181,12 +204,12 @@ func (s *SourcesService) BatchIngest(ctx context.Context, req *BatchIngestReques
 
 // --- Source request types ---
 
-// UpdateSourceRequest is the request body for PATCH /sources/{id}.
+// UpdateSourceRequest is the request body for Update (PATCH /sources/{id}).
 type UpdateSourceRequest struct {
 	Action string `json:"action"` // "reparse", "ocr_reparse", "mark_stale"
 }
 
-// IngestFileRequest is the multipart request body for POST /sources/ingest/file.
+// IngestFileRequest is the multipart request body for IngestFile (POST /sources/ingest/file).
 type IngestFileRequest struct {
 	File        io.Reader `json:"-"`
 	Filename    string    `json:"-"`
@@ -196,7 +219,7 @@ type IngestFileRequest struct {
 	SpaceID     string    `json:"space_id,omitempty"`
 }
 
-// IngestURLRequest is the request body for POST /sources/ingest/url.
+// IngestURLRequest is the request body for IngestURL (POST /sources/ingest/url).
 type IngestURLRequest struct {
 	URL         string   `json:"url"`
 	UserComment string   `json:"user_comment,omitempty"`
@@ -204,18 +227,18 @@ type IngestURLRequest struct {
 	SpaceID     string   `json:"space_id,omitempty"`
 }
 
-// IngestByPathRequest is the request body for POST /sources/ingest/file-path.
+// IngestByPathRequest is the request body for IngestByPath (POST /sources/ingest/file-path).
 type IngestByPathRequest struct {
 	FilePath string `json:"file_path"`
 	SpaceID  string `json:"space_id,omitempty"`
 }
 
-// BatchIngestFile is a single file entry in a batch ingest request.
+// BatchIngestFile represents a single file entry in a BatchIngestRequest.
 type BatchIngestFile struct {
 	FilePath string `json:"file_path"`
 }
 
-// BatchIngestRequest is the request body for POST /sources/ingest/batch.
+// BatchIngestRequest is the request body for BatchIngest (POST /sources/ingest/batch).
 type BatchIngestRequest struct {
 	Files             []BatchIngestFile `json:"files"`
 	FolderName        string            `json:"folder_name,omitempty"`
@@ -226,7 +249,7 @@ type BatchIngestRequest struct {
 	AccumulatedTotals map[string]any    `json:"accumulated_totals,omitempty"`
 }
 
-// BatchIngestResponse is the response body for POST /sources/ingest/batch.
+// BatchIngestResponse is the response from BatchIngest (POST /sources/ingest/batch).
 type BatchIngestResponse struct {
 	FolderName      string                 `json:"folder_name,omitempty"`
 	TotalIngested   int                    `json:"total_ingested"`
@@ -237,6 +260,8 @@ type BatchIngestResponse struct {
 }
 
 // UpdateContent updates the parsed markdown content of a source.
+//
+// PUT /sources/{id}/content
 func (s *SourcesService) UpdateContent(ctx context.Context, sourceID, content string) error {
 	path := fmt.Sprintf("/sources/%s/content", url.PathEscape(sourceID))
 	body := map[string]string{"content": content}
@@ -244,12 +269,16 @@ func (s *SourcesService) UpdateContent(ctx context.Context, sourceID, content st
 }
 
 // Extract triggers knowledge extraction from a source.
+//
+// POST /sources/{id}/extract
 func (s *SourcesService) Extract(ctx context.Context, sourceID string) error {
 	path := fmt.Sprintf("/sources/%s/extract", url.PathEscape(sourceID))
 	return s.client.do(ctx, "POST", path, nil, nil)
 }
 
-// Refetch re-fetches a URL source's content and re-parse.
+// Refetch re-fetches a URL source's content and re-parses it.
+//
+// POST /sources/{id}/refetch
 func (s *SourcesService) Refetch(ctx context.Context, sourceID string) (*Source, error) {
 	var resp Source
 	path := fmt.Sprintf("/sources/%s/refetch", url.PathEscape(sourceID))
@@ -260,6 +289,8 @@ func (s *SourcesService) Refetch(ctx context.Context, sourceID string) (*Source,
 }
 
 // GetLabels returns labels assigned to a source.
+//
+// GET /sources/{id}/labels
 func (s *SourcesService) GetLabels(ctx context.Context, sourceID string) ([]Label, error) {
 	var resp []Label
 	path := fmt.Sprintf("/sources/%s/labels", url.PathEscape(sourceID))
@@ -270,18 +301,24 @@ func (s *SourcesService) GetLabels(ctx context.Context, sourceID string) ([]Labe
 }
 
 // AssignLabel assigns a label to a source.
+//
+// POST /sources/{id}/labels/{label_id}
 func (s *SourcesService) AssignLabel(ctx context.Context, sourceID, labelID string) error {
 	path := fmt.Sprintf("/sources/%s/labels/%s", url.PathEscape(sourceID), url.PathEscape(labelID))
 	return s.client.do(ctx, "POST", path, nil, nil)
 }
 
 // RemoveLabel removes a label from a source.
+//
+// DELETE /sources/{id}/labels/{label_id}
 func (s *SourcesService) RemoveLabel(ctx context.Context, sourceID, labelID string) error {
 	path := fmt.Sprintf("/sources/%s/labels/%s", url.PathEscape(sourceID), url.PathEscape(labelID))
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
 // IngestFolderUpload uploads a folder preserving relative paths.
+//
+// POST /sources/ingest/folder-upload
 func (s *SourcesService) IngestFolderUpload(ctx context.Context, req *IngestFolderUploadRequest) (*FolderIngestResponse, error) {
 	if req == nil {
 		return nil, fmt.Errorf("request is required")
@@ -353,6 +390,8 @@ func (s *SourcesService) IngestFolderUpload(ctx context.Context, req *IngestFold
 }
 
 // IngestFolderSummary returns a summary of a folder before ingestion.
+//
+// POST /sources/ingest/folder-summary
 func (s *SourcesService) IngestFolderSummary(ctx context.Context, req *IngestFolderSummaryRequest) (*FolderIngestResponse, error) {
 	var resp FolderIngestResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/folder-summary", req, &resp); err != nil {
@@ -363,7 +402,7 @@ func (s *SourcesService) IngestFolderSummary(ctx context.Context, req *IngestFol
 
 // --- Source extended types ---
 
-// IngestFolderUploadRequest is the multipart request for POST /sources/ingest/folder-upload.
+// IngestFolderUploadRequest is the multipart request for IngestFolderUpload (POST /sources/ingest/folder-upload).
 type IngestFolderUploadRequest struct {
 	Files             []FolderUploadFile `json:"-"`
 	FolderName        string             `json:"folder_name"`
@@ -375,21 +414,21 @@ type IngestFolderUploadRequest struct {
 	AccumulatedTotals string             `json:"accumulated_totals,omitempty"`
 }
 
-// FolderUploadFile is one file in a multipart folder upload.
+// FolderUploadFile represents a single file in a folder upload.
 type FolderUploadFile struct {
 	File         io.Reader `json:"-"`
 	Filename     string    `json:"filename,omitempty"`
 	RelativePath string    `json:"relative_path,omitempty"`
 }
 
-// IngestFolderSummaryRequest is the request for POST /sources/ingest/folder-summary.
+// IngestFolderSummaryRequest is the request for IngestFolderSummary (POST /sources/ingest/folder-summary).
 type IngestFolderSummaryRequest struct {
 	FolderName        string         `json:"folder_name"`
 	AccumulatedTotals map[string]any `json:"accumulated_totals"`
 	SpaceID           string         `json:"space_id,omitempty"`
 }
 
-// IngestSourceResponse is one source ingestion result.
+// IngestSourceResponse is the result of a single source ingestion.
 type IngestSourceResponse struct {
 	SourceID       string `json:"source_id"`
 	OriginalName   string `json:"original_name"`
@@ -398,7 +437,7 @@ type IngestSourceResponse struct {
 	Message        string `json:"message,omitempty"`
 }
 
-// FolderIngestResponse is the response for folder upload and summary endpoints.
+// FolderIngestResponse is the response from IngestFolderUpload and IngestFolderSummary.
 type FolderIngestResponse struct {
 	FolderName      string                 `json:"folder_name"`
 	TotalIngested   int                    `json:"total_ingested"`
@@ -409,12 +448,16 @@ type FolderIngestResponse struct {
 }
 
 // GetRawFile serves the raw source file for native preview.
+//
+// GET /sources/{id}/raw
 func (s *SourcesService) GetRawFile(ctx context.Context, sourceID string) ([]byte, error) {
 	path := fmt.Sprintf("/sources/%s/raw", url.PathEscape(sourceID))
 	return s.client.doBytes(ctx, http.MethodGet, path, nil, nil)
 }
 
 // GetImage serves an extracted image from a source.
+//
+// GET /sources/{id}/images/{filename}
 func (s *SourcesService) GetImage(ctx context.Context, sourceID, filename string) ([]byte, error) {
 	path := fmt.Sprintf("/sources/%s/images/%s", url.PathEscape(sourceID), url.PathEscape(filename))
 	return s.client.doBytes(ctx, http.MethodGet, path, nil, nil)

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Memory represents a memory node in the knowledge base.
+// Memory represents a memory node in the knowledge base with content, metadata, and temporal information.
 type Memory struct {
 	ID                 string                 `json:"id"`
 	NodeType           string                 `json:"node_type,omitempty"`
@@ -48,7 +48,7 @@ type Memory struct {
 	ReviewStatus       string                 `json:"review_status,omitempty"`
 }
 
-// MemoryListItem is the summary view returned by list endpoints.
+// MemoryListItem is the summary view of a memory returned by list and get endpoints.
 type MemoryListItem struct {
 	ID           string         `json:"id"`
 	Title        string         `json:"title,omitempty"`
@@ -72,7 +72,7 @@ type SourceThread struct {
 	SpaceID string `json:"space_id,omitempty"`
 }
 
-// Pagination holds pagination metadata.
+// Pagination holds pagination metadata for list endpoints.
 type Pagination struct {
 	Limit   int  `json:"limit"`
 	Offset  int  `json:"offset"`
@@ -80,7 +80,7 @@ type Pagination struct {
 	HasMore bool `json:"has_more"`
 }
 
-// CreateMemoryRequest is the request body for POST /memories.
+// CreateMemoryRequest is the request body for creating a new memory.
 type CreateMemoryRequest struct {
 	ID               *string        `json:"id,omitempty"`
 	Content          string         `json:"content"`
@@ -100,7 +100,7 @@ type CreateMemoryRequest struct {
 	UnitType         *string        `json:"unit_type,omitempty"`
 }
 
-// CreateMemoryResponse is the response body for POST /memories.
+// CreateMemoryResponse is the response body after creating a memory, including extracted entities.
 type CreateMemoryResponse struct {
 	Memory               Memory     `json:"memory"`
 	ExtractedEntities    []Entity   `json:"extracted_entities,omitempty"`
@@ -110,13 +110,13 @@ type CreateMemoryResponse struct {
 	Warnings             []string   `json:"warnings,omitempty"`
 }
 
-// ListMemoriesResponse is the response body for GET /memories.
+// ListMemoriesResponse is the paginated response for listing memories.
 type ListMemoriesResponse struct {
 	Memories   []MemoryListItem `json:"memories"`
 	Pagination Pagination       `json:"pagination"`
 }
 
-// ListMemoriesParams are query parameters for GET /memories.
+// ListMemoriesParams holds query parameters for listing memories with filtering and pagination.
 type ListMemoriesParams struct {
 	Limit         int     `json:"limit,omitempty"`
 	Offset        int     `json:"offset,omitempty"`
@@ -126,14 +126,14 @@ type ListMemoriesParams struct {
 	IsCrystal     *bool   `json:"is_crystal,omitempty"`
 }
 
-// DeleteMemoryResponse is the response body for DELETE /memories/{id}.
+// DeleteMemoryResponse is the response body after deleting a memory.
 type DeleteMemoryResponse struct {
 	Message             string `json:"message"`
 	DeletedRelationships int   `json:"deleted_relationships,omitempty"`
 	DeletedEntities      int   `json:"deleted_entities,omitempty"`
 }
 
-// DeleteMemoryParams are query parameters for DELETE /memories/{id}.
+// DeleteMemoryParams holds query parameters for deleting a memory.
 type DeleteMemoryParams struct {
 	CascadeDelete bool   `json:"cascade_delete,omitempty"`
 	SpaceID       string `json:"space_id,omitempty"`
@@ -141,7 +141,7 @@ type DeleteMemoryParams struct {
 
 // --- Threads ---
 
-// Thread represents a conversation thread.
+// Thread represents a conversation thread with messages and metadata.
 type Thread struct {
 	ID           string         `json:"id"`
 	NodeType     string         `json:"node_type,omitempty"`
@@ -193,7 +193,7 @@ type MessageCreateRequest struct {
 	Role    string `json:"role"`
 }
 
-// CreateThreadRequest is the request body for POST /threads.
+// CreateThreadRequest is the request body for creating a new thread.
 type CreateThreadRequest struct {
 	ThreadID    string                `json:"thread_id"`
 	Title       *string               `json:"title,omitempty"`
@@ -208,7 +208,7 @@ type CreateThreadRequest struct {
 	Metadata    map[string]any        `json:"metadata,omitempty"`
 }
 
-// CreateThreadResponse is the response body for POST /threads.
+// CreateThreadResponse is the response body after creating a thread.
 type CreateThreadResponse struct {
 	Thread                 Thread          `json:"thread"`
 	Messages               []ThreadMessage `json:"messages,omitempty"`
@@ -218,13 +218,13 @@ type CreateThreadResponse struct {
 	AutoExtractionPerformed bool           `json:"auto_extraction_performed,omitempty"`
 }
 
-// ListThreadsResponse is the response body for GET /threads.
+// ListThreadsResponse is the paginated response for listing threads.
 type ListThreadsResponse struct {
 	Threads    []ThreadListItem `json:"threads"`
 	Pagination Pagination       `json:"pagination"`
 }
 
-// ListThreadsParams are query parameters for GET /threads.
+// ListThreadsParams holds query parameters for listing threads.
 type ListThreadsParams struct {
 	Limit   int    `json:"limit,omitempty"`
 	Offset  int    `json:"offset,omitempty"`
@@ -234,7 +234,7 @@ type ListThreadsParams struct {
 
 // --- Labels ---
 
-// Label represents a label/tag.
+// Label represents a label or tag that can be assigned to memories.
 type Label struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -247,7 +247,7 @@ type Label struct {
 
 // --- Entities ---
 
-// Entity represents an entity node in the knowledge graph.
+// Entity represents an entity node extracted from memories into the knowledge graph.
 type Entity struct {
 	ID                 string         `json:"id"`
 	NodeType           string         `json:"node_type,omitempty"`
@@ -266,7 +266,7 @@ type Entity struct {
 	TemporalContext    string         `json:"temporal_context,omitempty"`
 }
 
-// EntityWithStats wraps an Entity with mention count.
+// EntityWithStats wraps an Entity with its mention count across memories.
 type EntityWithStats struct {
 	Entity      Entity `json:"entity"`
 	MentionCount int   `json:"mention_count"`
@@ -274,7 +274,7 @@ type EntityWithStats struct {
 
 // --- Spaces ---
 
-// Space represents a space profile.
+// Space represents an isolation space profile with configuration and usage stats.
 type Space struct {
 	ID                   string       `json:"id"`
 	Key                  string       `json:"key,omitempty"`
@@ -298,7 +298,7 @@ type SpaceUsage struct {
 	HasWorkingMemory bool `json:"hasWorkingMemory"`
 }
 
-// ListSpacesResponse is the response body for GET /spaces.
+// ListSpacesResponse is the response for listing spaces.
 type ListSpacesResponse struct {
 	Enabled bool    `json:"enabled"`
 	Spaces  []Space `json:"spaces"`
@@ -306,7 +306,7 @@ type ListSpacesResponse struct {
 
 // --- Sources ---
 
-// Source represents a library source (file, URL, etc.).
+// Source represents a library source such as a file, URL, or ingested document.
 type Source struct {
 	ID             string         `json:"id"`
 	SourceType     string         `json:"source_type,omitempty"`
@@ -331,13 +331,13 @@ type Source struct {
 	LabelIDs       []string       `json:"label_ids,omitempty"`
 }
 
-// ListSourcesResponse is the response body for GET /sources.
+// ListSourcesResponse is the response for listing sources.
 type ListSourcesResponse struct {
 	Sources []Source `json:"sources"`
 	Total   int      `json:"total"`
 }
 
-// ListSourcesParams are query parameters for GET /sources.
+// ListSourcesParams holds query parameters for listing sources.
 type ListSourcesParams struct {
 	Limit          int    `json:"limit,omitempty"`
 	Offset         int    `json:"offset,omitempty"`
@@ -348,7 +348,7 @@ type ListSourcesParams struct {
 
 // --- Health ---
 
-// HealthCheck is the response body for GET /health.
+// HealthCheck is the response body for the health check endpoint.
 type HealthCheck struct {
 	Status                       string            `json:"status"`
 	Version                      string            `json:"version"`
@@ -399,7 +399,7 @@ type ContentStoreInfo struct {
 
 // --- FS ---
 
-// FSEntry represents a file/directory in the Nowledge FS tree.
+// FSEntry represents a file or directory in the Nowledge FS tree.
 type FSEntry struct {
 	Path  string `json:"path"`
 	Name  string `json:"name"`
@@ -408,14 +408,14 @@ type FSEntry struct {
 	IsDir bool   `json:"is_dir,omitempty"`
 }
 
-// FSListResponse is the response body for GET /fs/ls.
+// FSListResponse is the response for listing files and directories.
 type FSListResponse struct {
 	Entries  []FSEntry `json:"entries"`
 	Cursor   string    `json:"cursor,omitempty"`
 	HasMore  bool      `json:"has_more,omitempty"`
 }
 
-// FSCatResponse is the response body for GET /fs/cat.
+// FSCatResponse is the response for reading a file's contents.
 type FSCatResponse struct {
 	Path       string         `json:"path"`
 	Body       string         `json:"body"`
@@ -423,7 +423,7 @@ type FSCatResponse struct {
 	TotalLines int            `json:"total_lines,omitempty"`
 }
 
-// FSStatResponse is the response body for GET /fs/stat.
+// FSStatResponse is the response for getting file or directory metadata.
 type FSStatResponse struct {
 	Path         string         `json:"path"`
 	Type         string         `json:"type"`
@@ -433,18 +433,18 @@ type FSStatResponse struct {
 	Metadata     map[string]any `json:"metadata,omitempty"`
 }
 
-// FSWriteRequest is the request body for POST /fs/write.
+// FSWriteRequest is the request body for writing a file.
 type FSWriteRequest struct {
 	Path string `json:"path"`
 	Body string `json:"body"`
 }
 
-// FSDeleteRequest is the request body for POST /fs/delete.
+// FSDeleteRequest is the request body for deleting a file.
 type FSDeleteRequest struct {
 	Path string `json:"path"`
 }
 
-// FSSearchResponse is the response body for GET /fs/find, /fs/recall.
+// FSSearchResponse is the response for file search and recall operations.
 type FSSearchResponse struct {
 	Paths []string `json:"paths"`
 }
@@ -456,14 +456,14 @@ type FSGrepMatch struct {
 	Text string `json:"text"`
 }
 
-// FSGrepResponse is the response body for GET /fs/grep.
+// FSGrepResponse is the response for grep search within files.
 type FSGrepResponse struct {
 	Matches []FSGrepMatch `json:"matches"`
 }
 
 // --- Agent ---
 
-// AgentStatus is the response body for GET /agent/status.
+// AgentStatus is the response for the agent status endpoint.
 type AgentStatus struct {
 	Running         bool   `json:"running"`
 	CurrentTask     string `json:"current_task,omitempty"`
@@ -473,7 +473,7 @@ type AgentStatus struct {
 
 // --- Graph ---
 
-// GraphAnalysis is the response body for GET /graph/analysis.
+// GraphAnalysis is the response for the graph analysis endpoint.
 type GraphAnalysis struct {
 	NodeCount       int              `json:"node_count"`
 	EdgeCount       int              `json:"edge_count"`
@@ -482,7 +482,7 @@ type GraphAnalysis struct {
 	CentralityScores map[string]float64 `json:"centrality_scores,omitempty"`
 }
 
-// Community represents a knowledge community.
+// Community represents a knowledge community detected in the graph.
 type Community struct {
 	ID          string   `json:"id"`
 	Name        string   `json:"name"`
@@ -493,7 +493,7 @@ type Community struct {
 
 // --- Error ---
 
-// APIError represents an error response from the API.
+// APIError represents an error response returned by the API.
 type APIError struct {
 	StatusCode int           `json:"-"`
 	Status     string        `json:"-"`

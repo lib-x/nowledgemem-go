@@ -11,12 +11,17 @@ import (
 	"strconv"
 )
 
-// DataService handles data export/import operations.
+// DataService handles data export and import operations.
+//
+// It provides methods for exporting data to archives, importing from previous exports,
+// and forcing database checkpoints.
 type DataService struct {
 	client *Client
 }
 
-// Export exports a portable data bundle to a server-side path.
+// Export exports data to a portable archive at a server-side path.
+//
+// POST /data/export
 func (s *DataService) Export(ctx context.Context, req *DataExportRequest) (*DataExportResponse, error) {
 	var resp DataExportResponse
 	if err := s.client.do(ctx, "POST", "/data/export", req, &resp); err != nil {
@@ -25,12 +30,16 @@ func (s *DataService) Export(ctx context.Context, req *DataExportRequest) (*Data
 	return &resp, nil
 }
 
-// DownloadExport creates and downloads a ZIP export.
+// DownloadExport exports data as a downloadable ZIP file.
+//
+// POST /data/export/download
 func (s *DataService) DownloadExport(ctx context.Context, req *DataExportDownloadRequest) ([]byte, error) {
 	return s.client.doBytes(ctx, http.MethodPost, "/data/export/download", nil, req)
 }
 
-// Import imports data from a server-side export path.
+// Import imports data from a previous export at a server-side path.
+//
+// POST /data/import
 func (s *DataService) Import(ctx context.Context, req *DataImportRequest) (*DataImportResponse, error) {
 	var resp DataImportResponse
 	if err := s.client.do(ctx, "POST", "/data/import", req, &resp); err != nil {
@@ -40,6 +49,8 @@ func (s *DataService) Import(ctx context.Context, req *DataImportRequest) (*Data
 }
 
 // ImportStatus checks status of a data import job.
+//
+// GET /data/import/status/{id}
 func (s *DataService) ImportStatus(ctx context.Context, jobID string) (*DataImportStatus, error) {
 	var resp DataImportStatus
 	path := fmt.Sprintf("/data/import/status/%s", url.PathEscape(jobID))
@@ -50,13 +61,15 @@ func (s *DataService) ImportStatus(ctx context.Context, jobID string) (*DataImpo
 }
 
 // Checkpoint forces a database checkpoint.
+//
+// POST /data/checkpoint
 func (s *DataService) Checkpoint(ctx context.Context) error {
 	return s.client.do(ctx, "POST", "/data/checkpoint", nil, nil)
 }
 
 // --- Data types ---
 
-// DataExportRequest is the request for POST /data/export.
+// DataExportRequest is the request for Export (POST /data/export).
 type DataExportRequest struct {
 	ExportPath                   string `json:"export_path"`
 	Compress                     bool   `json:"compress,omitempty"`
@@ -75,9 +88,9 @@ type DataExportRequest struct {
 	IncludeSourceFiles           *bool  `json:"include_source_files,omitempty"`
 }
 
-// DataExportDownloadRequest is the request for POST /data/export/download.
-// This endpoint streams a ZIP directly to the client and does not require
-// a server-side path.
+// DataExportDownloadRequest is the request for DownloadExport (POST /data/export/download).
+//
+// This endpoint streams a ZIP directly to the client and does not require a server-side path.
 type DataExportDownloadRequest struct {
 	IncludeMemories              *bool `json:"include_memories,omitempty"`
 	IncludeThreads               *bool `json:"include_threads,omitempty"`
@@ -93,14 +106,14 @@ type DataExportDownloadRequest struct {
 	IncludeSourceFiles           *bool `json:"include_source_files,omitempty"`
 }
 
-// DataExportResponse is the response for POST /data/export.
+// DataExportResponse is the response from Export (POST /data/export).
 type DataExportResponse struct {
 	Path      string `json:"path"`
 	SizeBytes int64  `json:"size_bytes"`
 	ItemCount int    `json:"item_count"`
 }
 
-// DataImportRequest is the request for POST /data/import.
+// DataImportRequest is the request for Import (POST /data/import).
 type DataImportRequest struct {
 	ImportPath                   string `json:"import_path"`
 	Mode                         string `json:"mode,omitempty"`
@@ -118,14 +131,14 @@ type DataImportRequest struct {
 	IncludeSourceFiles           *bool  `json:"include_source_files,omitempty"`
 }
 
-// DataImportResponse is the response for POST /data/import.
+// DataImportResponse is the response from Import and UploadImport.
 type DataImportResponse struct {
 	JobID   string `json:"job_id"`
 	Status  string `json:"status"`
 	Message string `json:"message,omitempty"`
 }
 
-// DataImportStatus is the response for GET /data/import/status/{job_id}.
+// DataImportStatus is the response from ImportStatus (GET /data/import/status/{id}).
 type DataImportStatus struct {
 	JobID    string  `json:"job_id"`
 	Status   string  `json:"status"`
@@ -136,7 +149,7 @@ type DataImportStatus struct {
 	Message  string  `json:"message,omitempty"`
 }
 
-// UploadImportRequest is the request for POST /data/import/upload.
+// UploadImportRequest is the multipart request for UploadImport (POST /data/import/upload).
 type UploadImportRequest struct {
 	File                        io.Reader `json:"-"`
 	Filename                    string    `json:"-"`
@@ -155,8 +168,9 @@ type UploadImportRequest struct {
 	IncludeSourceFiles          *bool     `json:"include_source_files,omitempty"`
 }
 
-// UploadImport uploads a ZIP export from web and remote clients.
-// file is the ZIP file content, filename is the name of the file.
+// UploadImport imports data from an uploaded ZIP file.
+//
+// POST /data/import/upload
 func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest) (*DataImportResponse, error) {
 	if req == nil {
 		return nil, fmt.Errorf("request is required")

@@ -2,12 +2,12 @@ package nowledgemem
 
 import "context"
 
-// DistillationService handles memory distillation from threads.
+// DistillationService provides methods for creating memories from conversation threads.
 type DistillationService struct {
 	client *Client
 }
 
-// Triage performs a lightweight check: does this conversation have save-worthy content?
+// Triage performs a lightweight check to determine if a conversation has save-worthy content. (POST /memories/distill/triage)
 func (s *DistillationService) Triage(ctx context.Context, req *TriageRequest) (*TriageResponse, error) {
 	var resp TriageResponse
 	if err := s.client.do(ctx, "POST", "/memories/distill/triage", req, &resp); err != nil {
@@ -16,7 +16,7 @@ func (s *DistillationService) Triage(ctx context.Context, req *TriageRequest) (*
 	return &resp, nil
 }
 
-// Preview previews distillation results without creating memories.
+// Preview previews distillation results without creating memories. (POST /memories/distill/preview)
 func (s *DistillationService) Preview(ctx context.Context, req *DistillPreviewRequest) (*DistillPreviewResponse, error) {
 	var resp DistillPreviewResponse
 	if err := s.client.do(ctx, "POST", "/memories/distill/preview", req, &resp); err != nil {
@@ -25,7 +25,7 @@ func (s *DistillationService) Preview(ctx context.Context, req *DistillPreviewRe
 	return &resp, nil
 }
 
-// Distill creates memories from thread content after distillation.
+// Distill creates memories from a conversation thread. (POST /memories/distill)
 func (s *DistillationService) Distill(ctx context.Context, req *DistillRequest) (*DistillResponse, error) {
 	var resp DistillResponse
 	if err := s.client.do(ctx, "POST", "/memories/distill", req, &resp); err != nil {
@@ -34,7 +34,7 @@ func (s *DistillationService) Distill(ctx context.Context, req *DistillRequest) 
 	return &resp, nil
 }
 
-// Plan creates a distillation plan.
+// Plan creates a distillation plan for a thread. (POST /memories/distill/plan)
 func (s *DistillationService) Plan(ctx context.Context, req *DistillPlanRequest) (*DistillPlanResponse, error) {
 	var resp DistillPlanResponse
 	if err := s.client.do(ctx, "POST", "/memories/distill/plan", req, &resp); err != nil {
@@ -43,7 +43,7 @@ func (s *DistillationService) Plan(ctx context.Context, req *DistillPlanRequest)
 	return &resp, nil
 }
 
-// Schedule schedules a distillation job.
+// Schedule schedules a distillation job for a thread. (POST /memories/distill/schedule)
 func (s *DistillationService) Schedule(ctx context.Context, req *DistillScheduleRequest) (*DistillScheduleResponse, error) {
 	var resp DistillScheduleResponse
 	if err := s.client.do(ctx, "POST", "/memories/distill/schedule", req, &resp); err != nil {

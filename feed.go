@@ -8,12 +8,17 @@ import (
 	"strconv"
 )
 
-// FeedService handles feed event operations.
+// FeedService handles feed event and agent input operations.
+//
+// It provides methods for listing, resolving, retrying, and deleting feed events,
+// as well as streaming agent input and persisting questions.
 type FeedService struct {
 	client *Client
 }
 
-// GetEvents returns feed events with filtering.
+// GetEvents returns feed events from time-partitioned JSONL files.
+//
+// GET /agent/feed/events
 func (s *FeedService) GetEvents(ctx context.Context, params *FeedEventsParams) ([]FeedEvent, error) {
 	q := url.Values{}
 	if params != nil {
@@ -58,7 +63,9 @@ func (s *FeedService) GetEvents(ctx context.Context, params *FeedEventsParams) (
 	return resp, nil
 }
 
-// ResolveEvent resolves an action-required event.
+// ResolveEvent resolves an action-required event with optional graph mutations.
+//
+// POST /agent/feed/events/{id}/resolve
 func (s *FeedService) ResolveEvent(ctx context.Context, eventID string, req *ResolveEventRequest) error {
 	path := fmt.Sprintf("/agent/feed/events/%s/resolve", url.PathEscape(eventID))
 	q := url.Values{}
@@ -80,18 +87,24 @@ func (s *FeedService) ResolveEvent(ctx context.Context, eventID string, req *Res
 }
 
 // RetryEvent retries a failed background task.
+//
+// POST /agent/feed/events/{id}/retry
 func (s *FeedService) RetryEvent(ctx context.Context, eventID string) error {
 	path := fmt.Sprintf("/agent/feed/events/%s/retry", url.PathEscape(eventID))
 	return s.client.do(ctx, "POST", path, nil, nil)
 }
 
 // DeleteEvent soft-deletes a feed event.
+//
+// DELETE /agent/feed/events/{id}
 func (s *FeedService) DeleteEvent(ctx context.Context, eventID string) error {
 	path := fmt.Sprintf("/agent/feed/events/%s", url.PathEscape(eventID))
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
-// StreamInput streams agent processing of feed input.
+// StreamInput streams agent processing of feed input via Wire Protocol.
+//
+// POST /agent/feed/input/stream
 //
 // The caller owns the returned response body and must close it.
 func (s *FeedService) StreamInput(ctx context.Context, req *FeedInputStreamRequest) (*http.Response, error) {
@@ -99,13 +112,15 @@ func (s *FeedService) StreamInput(ctx context.Context, req *FeedInputStreamReque
 }
 
 // PersistQuestion persists a question and agent response as a feed event.
+//
+// POST /agent/feed/input/persist-question
 func (s *FeedService) PersistQuestion(ctx context.Context, req *PersistQuestionRequest) error {
 	return s.client.do(ctx, "POST", "/agent/feed/input/persist-question", req, nil)
 }
 
 // --- Feed types ---
 
-// FeedEventsParams are parameters for GET /agent/feed/events.
+// FeedEventsParams are query parameters for GetEvents (GET /agent/feed/events).
 type FeedEventsParams struct {
 	Limit          int    `json:"limit,omitempty"`
 	Offset         int    `json:"offset,omitempty"`
@@ -120,7 +135,7 @@ type FeedEventsParams struct {
 	IncludeTotal   *bool  `json:"include_total,omitempty"`
 }
 
-// FeedEvent represents a feed event.
+// FeedEvent represents a single feed event.
 type FeedEvent struct {
 	ID        string         `json:"id"`
 	EventType string         `json:"event_type"`
@@ -132,7 +147,7 @@ type FeedEvent struct {
 	Metadata  map[string]any `json:"metadata,omitempty"`
 }
 
-// ResolveEventRequest is the request for POST /agent/feed/events/{id}/resolve.
+// ResolveEventRequest is the request for ResolveEvent (POST /agent/feed/events/{id}/resolve).
 type ResolveEventRequest struct {
 	Resolution     string `json:"resolution"`               // "accepted", "dismissed", "merged"
 	Action         string `json:"action,omitempty"`         // "delete_memory", "keep_newer", "keep_both"
@@ -140,7 +155,7 @@ type ResolveEventRequest struct {
 	ResolutionNote string `json:"resolution_note,omitempty"`
 }
 
-// FeedInputStreamRequest is the request for POST /agent/feed/input/stream.
+// FeedInputStreamRequest is the request for StreamInput (POST /agent/feed/input/stream).
 type FeedInputStreamRequest struct {
 	Content  string `json:"content"`
 	Source   string `json:"source,omitempty"`
@@ -149,7 +164,7 @@ type FeedInputStreamRequest struct {
 	SpaceID  string `json:"space_id,omitempty"`
 }
 
-// PersistQuestionRequest is the request for POST /agent/feed/input/persist-question.
+// PersistQuestionRequest is the request for PersistQuestion (POST /agent/feed/input/persist-question).
 type PersistQuestionRequest struct {
 	Question string `json:"question"`
 	Response string `json:"response"`
