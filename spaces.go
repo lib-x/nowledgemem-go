@@ -59,9 +59,20 @@ func (s *SpacesService) Update(ctx context.Context, spaceID string, req *UpdateS
 }
 
 // Delete removes an empty space profile.
-func (s *SpacesService) Delete(ctx context.Context, spaceID string) error {
+func (s *SpacesService) Delete(ctx context.Context, spaceID string, params *DeleteSpaceParams) (*ListSpacesResponse, error) {
 	path := fmt.Sprintf("/spaces/%s", url.PathEscape(spaceID))
-	return s.client.do(ctx, "DELETE", path, nil, nil)
+	var q url.Values
+	if params != nil {
+		q = url.Values{}
+		if params.PurgeWorkingMemory {
+			q.Set("purge_working_memory", "true")
+		}
+	}
+	var resp ListSpacesResponse
+	if err := s.client.doWithQuery(ctx, "DELETE", path, q, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }
 
 // UpdateConfig enables or disables spaces at the product level.
@@ -71,6 +82,11 @@ func (s *SpacesService) UpdateConfig(ctx context.Context, req *SpacesConfigReque
 
 // --- Space request types ---
 
+// DeleteSpaceParams are query parameters for DELETE /spaces/{id}.
+type DeleteSpaceParams struct {
+	PurgeWorkingMemory bool `json:"purge_working_memory,omitempty"`
+}
+
 // SpacesConfigRequest is the request for POST /spaces/config.
 type SpacesConfigRequest struct {
 	Enabled bool `json:"enabled"`
@@ -78,18 +94,20 @@ type SpacesConfigRequest struct {
 
 // CreateSpaceRequest is the request body for POST /spaces.
 type CreateSpaceRequest struct {
-	Name                 string `json:"name"`
-	Description          string `json:"description,omitempty"`
-	Icon                 string `json:"icon,omitempty"`
-	Instructions         string `json:"instructions,omitempty"`
-	DefaultRetrievalMode string `json:"defaultRetrievalMode,omitempty"`
+	Name                 string   `json:"name"`
+	Description          string   `json:"description,omitempty"`
+	Icon                 string   `json:"icon,omitempty"`
+	Instructions         string   `json:"instructions,omitempty"`
+	SharedSpaceIds       []string `json:"sharedSpaceIds,omitempty"`
+	DefaultRetrievalMode string   `json:"defaultRetrievalMode,omitempty"`
 }
 
 // UpdateSpaceRequest is the request body for PATCH /spaces/{id}.
 type UpdateSpaceRequest struct {
-	Name                 *string `json:"name,omitempty"`
-	Description          *string `json:"description,omitempty"`
-	Icon                 *string `json:"icon,omitempty"`
-	Instructions         *string `json:"instructions,omitempty"`
-	DefaultRetrievalMode *string `json:"defaultRetrievalMode,omitempty"`
+	Name                 *string  `json:"name,omitempty"`
+	Description          *string  `json:"description,omitempty"`
+	Icon                 *string  `json:"icon,omitempty"`
+	Instructions         *string  `json:"instructions,omitempty"`
+	SharedSpaceIds       []string `json:"sharedSpaceIds,omitempty"`
+	DefaultRetrievalMode *string  `json:"defaultRetrievalMode,omitempty"`
 }

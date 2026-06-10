@@ -17,8 +17,12 @@ func (s *SearchIndexService) GetStatus(ctx context.Context) (*SearchIndexStatus,
 }
 
 // Reindex rebuilds the search index from the database.
-func (s *SearchIndexService) Reindex(ctx context.Context) error {
-	return s.client.do(ctx, "POST", "/search-index/reindex", nil, nil)
+func (s *SearchIndexService) Reindex(ctx context.Context) (*SearchReindexResponse, error) {
+	var resp SearchReindexResponse
+	if err := s.client.do(ctx, "POST", "/search-index/reindex", nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }
 
 // GetReindexStatus returns status of memories needing reindex.
@@ -31,6 +35,20 @@ func (s *SearchIndexService) GetReindexStatus(ctx context.Context) (*ReindexStat
 }
 
 // --- Search Index types ---
+
+// SearchReindexResponse is the response for POST /search-index/reindex.
+type SearchReindexResponse struct {
+	Success            bool     `json:"success"`
+	Memories           int      `json:"memories,omitempty"`
+	Messages           int      `json:"messages,omitempty"`
+	Sources            int      `json:"sources,omitempty"`
+	SourceChunks       int      `json:"source_chunks,omitempty"`
+	Communities        int      `json:"communities,omitempty"`
+	Entities           int      `json:"entities,omitempty"`
+	Errors             []string `json:"errors,omitempty"`
+	Message            string   `json:"message,omitempty"`
+	RestartRecommended bool     `json:"restart_recommended,omitempty"`
+}
 
 // SearchIndexStatus is the response for GET /search-index/status.
 type SearchIndexStatus struct {

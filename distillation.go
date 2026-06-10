@@ -56,9 +56,9 @@ func (s *DistillationService) Schedule(ctx context.Context, req *DistillSchedule
 
 // TriageRequest is the request for POST /memories/distill/triage.
 type TriageRequest struct {
-	ThreadID      string  `json:"thread_id"`
-	ThreadContent *string `json:"thread_content,omitempty"`
-	SpaceID       *string `json:"space_id,omitempty"`
+	ThreadID          string  `json:"thread_id"`
+	ThreadContent     *string `json:"thread_content,omitempty"`
+	PreferredLanguage *string `json:"preferred_language,omitempty"`
 }
 
 // TriageResponse is the response for POST /memories/distill/triage.
@@ -70,30 +70,35 @@ type TriageResponse struct {
 
 // DistillPreviewRequest is the request for POST /memories/distill/preview.
 type DistillPreviewRequest struct {
-	ThreadID              string   `json:"thread_id"`
-	ThreadTitle           *string  `json:"thread_title,omitempty"`
-	ThreadContent         *string  `json:"thread_content,omitempty"`
-	DistillationType      *string  `json:"distillation_type,omitempty"`
-	ExtractionLevel       *string  `json:"extraction_level,omitempty"`
-	SelectedMessageIndices []int   `json:"selected_message_indices,omitempty"`
-	PreferredLanguage     *string  `json:"preferred_language,omitempty"`
-	SpaceID               *string  `json:"space_id,omitempty"`
+	ThreadID               string   `json:"thread_id"`
+	ThreadTitle            *string  `json:"thread_title,omitempty"`
+	ThreadContent          *string  `json:"thread_content,omitempty"`
+	DistillationType       *string  `json:"distillation_type,omitempty"`
+	ExtractionLevel        *string  `json:"extraction_level,omitempty"`
+	CacheKey               *string  `json:"cache_key,omitempty"`
+	SelectedMessageIndices []int    `json:"selected_message_indices,omitempty"`
+	PreferredLanguage      *string  `json:"preferred_language,omitempty"`
+	ForceDistill           *bool    `json:"force_distill,omitempty"`
+	SpaceID                *string  `json:"space_id,omitempty"`
 }
 
 // DistillPreviewResponse is the response for POST /memories/distill/preview.
 type DistillPreviewResponse struct {
-	ProposedMemories []ProposedMemory `json:"proposed_memories"`
-	CacheKey         string           `json:"cache_key,omitempty"`
-}
-
-// ProposedMemory is a memory proposed by distillation preview.
-type ProposedMemory struct {
-	Content    string   `json:"content"`
-	Title      string   `json:"title,omitempty"`
-	Importance float64  `json:"importance,omitempty"`
-	Confidence float64  `json:"confidence,omitempty"`
-	Labels     []string `json:"labels,omitempty"`
-	UnitType   string   `json:"unit_type,omitempty"`
+	Success                  bool             `json:"success"`
+	CacheKey                 string           `json:"cache_key,omitempty"`
+	DistillationType         string           `json:"distillation_type,omitempty"`
+	ProcessingTime           float64          `json:"processing_time,omitempty"`
+	Memories                 []Memory         `json:"memories,omitempty"`
+	Entities                 []Entity         `json:"entities,omitempty"`
+	Relationships            []KGRelation     `json:"relationships,omitempty"`
+	Insights                 []map[string]any `json:"insights,omitempty"`
+	Summary                  string           `json:"summary,omitempty"`
+	Error                    string           `json:"error,omitempty"`
+	DirectAllowed            bool             `json:"direct_allowed,omitempty"`
+	RecommendedExecutionMode string           `json:"recommended_execution_mode,omitempty"`
+	MessageCount             int              `json:"message_count,omitempty"`
+	CharCount                int              `json:"char_count,omitempty"`
+	BackgroundDelaySeconds   float64          `json:"background_delay_seconds,omitempty"`
 }
 
 // DistillRequest is the request for POST /memories/distill.
@@ -112,9 +117,12 @@ type DistillRequest struct {
 
 // DistillResponse is the response for POST /memories/distill.
 type DistillResponse struct {
-	CreatedMemories  []Memory `json:"created_memories"`
-	Skipped          bool     `json:"skipped,omitempty"`
-	SkipReason       string   `json:"skip_reason,omitempty"`
+	Memory               Memory   `json:"memory"`
+	ExtractedEntities    []Entity `json:"extracted_entities,omitempty"`
+	AssignedLabels       []string `json:"assigned_labels,omitempty"`
+	CreatedRelationships int      `json:"created_relationships,omitempty"`
+	Action               string   `json:"action,omitempty"`
+	Warnings             []string `json:"warnings,omitempty"`
 }
 
 // DistillPlanRequest is the request for POST /memories/distill/plan.

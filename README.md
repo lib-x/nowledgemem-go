@@ -66,8 +66,8 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    for _, r := range results.Results {
-        fmt.Printf("- %s (score: %.2f)\n", r.Title, r.Score)
+    for _, r := range results {
+        fmt.Printf("- %s (score: %.2f)\n", r.Memory.Title, r.SimilarityScore)
     }
 
     // List threads
@@ -142,9 +142,24 @@ client := mem.NewClient(mem.WithTimeout(60 * time.Second))
 defer client.Close()
 ```
 
-`NewClient()` targets `http://127.0.0.1:14242`, which is usually
-unauthenticated for same-machine localhost access. LAN and remote deployments
-require an API key unless the server was explicitly started with auth disabled.
+`NewClient()` targets `http://127.0.0.1:14242`. Same-machine localhost API
+requests do not need an API key by default:
+
+```bash
+curl "http://127.0.0.1:14242/health"
+curl "http://127.0.0.1:14242/spaces/roster"
+```
+
+The only localhost exception is when you explicitly enable "Require API key on
+localhost" in Nowledge Mem settings. In that case, use `WithAPIKey` even for the
+local client:
+
+```go
+client := mem.NewClient(mem.WithAPIKey(os.Getenv("NMEM_API_KEY")))
+```
+
+LAN and remote deployments require an API key unless the server was explicitly
+started with auth disabled.
 
 Use the backend API URL directly, for example `https://mem.example.com`. Do not
 append the web app's frontend-only `/remote-api` route. API paths stay the same

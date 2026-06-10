@@ -12,10 +12,10 @@ type KGService struct {
 }
 
 // PreviewExtraction previews KG extraction for a memory before applying.
-func (s *KGService) PreviewExtraction(ctx context.Context, memoryID string) (*KGPreviewResponse, error) {
+func (s *KGService) PreviewExtraction(ctx context.Context, memoryID string, req *KGPreviewRequest) (*KGPreviewResponse, error) {
 	var resp KGPreviewResponse
 	path := fmt.Sprintf("/memories/%s/extract-kg/preview", url.PathEscape(memoryID))
-	if err := s.client.do(ctx, "POST", path, nil, &resp); err != nil {
+	if err := s.client.do(ctx, "POST", path, req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -33,10 +33,26 @@ func (s *KGService) ApplyExtraction(ctx context.Context, memoryID string, req *K
 
 // --- KG types ---
 
+// KGPreviewRequest is the request for POST /memories/{id}/extract-kg/preview.
+type KGPreviewRequest struct {
+	ForceReextraction bool   `json:"force_reextraction,omitempty"`
+	ExtractionLevel   string `json:"extraction_level,omitempty"`
+	UseRemoteLLM      bool   `json:"use_remote_llm,omitempty"`
+	PreferredLanguage string `json:"preferred_language,omitempty"`
+}
+
 // KGPreviewResponse is the response for POST /memories/{id}/extract-kg/preview.
 type KGPreviewResponse struct {
-	Entities      []Entity     `json:"entities"`
-	Relationships []KGRelation `json:"relationships"`
+	MemoryID            string       `json:"memory_id"`
+	MemoryTitle         string       `json:"memory_title"`
+	MemoryContent       string       `json:"memory_content"`
+	Entities            []Entity     `json:"entities"`
+	Relationships       []KGRelation `json:"relationships"`
+	ExtractionConfidence float64     `json:"extraction_confidence"`
+	EntitiesCount       int          `json:"entities_count"`
+	RelationshipsCount  int          `json:"relationships_count"`
+	KGAlreadyExtracted  bool         `json:"kg_already_extracted"`
+	CanExtract          bool         `json:"can_extract"`
 }
 
 // KGRelation represents a relationship between entities.
@@ -49,12 +65,17 @@ type KGRelation struct {
 
 // KGApplyRequest is the request for POST /memories/{id}/extract-kg/apply.
 type KGApplyRequest struct {
-	Entities      []Entity     `json:"entities,omitempty"`
-	Relationships []KGRelation `json:"relationships,omitempty"`
+	Entities              []Entity     `json:"entities,omitempty"`
+	Relationships         []KGRelation `json:"relationships,omitempty"`
+	ExtractionConfidence  *float64     `json:"extraction_confidence,omitempty"`
 }
 
 // KGApplyResponse is the response for POST /memories/{id}/extract-kg/apply.
 type KGApplyResponse struct {
-	CreatedEntities      int `json:"created_entities"`
-	CreatedRelationships int `json:"created_relationships"`
+	Success             bool   `json:"success"`
+	MemoryID            string `json:"memory_id,omitempty"`
+	EntitiesCreated     int    `json:"entities_created"`
+	RelationshipsCreated int   `json:"relationships_created"`
+	MetadataUpdated     bool   `json:"metadata_updated,omitempty"`
+	Error               string `json:"error,omitempty"`
 }

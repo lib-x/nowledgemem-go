@@ -26,7 +26,7 @@ func (s *DataService) Export(ctx context.Context, req *DataExportRequest) (*Data
 }
 
 // DownloadExport creates and downloads a ZIP export.
-func (s *DataService) DownloadExport(ctx context.Context, req *DataExportRequest) ([]byte, error) {
+func (s *DataService) DownloadExport(ctx context.Context, req *DataExportDownloadRequest) ([]byte, error) {
 	return s.client.doBytes(ctx, http.MethodPost, "/data/export/download", nil, req)
 }
 
@@ -58,16 +58,39 @@ func (s *DataService) Checkpoint(ctx context.Context) error {
 
 // DataExportRequest is the request for POST /data/export.
 type DataExportRequest struct {
-	ExportPath         string `json:"export_path"`
-	Compress           bool   `json:"compress,omitempty"`
-	Overwrite          bool   `json:"overwrite,omitempty"`
-	IncludeMemories    *bool  `json:"include_memories,omitempty"`
-	IncludeThreads     *bool  `json:"include_threads,omitempty"`
-	IncludeMessages    *bool  `json:"include_messages,omitempty"`
-	IncludeEntities    *bool  `json:"include_entities,omitempty"`
-	IncludeLabels      *bool  `json:"include_labels,omitempty"`
-	IncludeSources     *bool  `json:"include_sources,omitempty"`
-	IncludeCommunities *bool  `json:"include_communities,omitempty"`
+	ExportPath                   string `json:"export_path"`
+	Compress                     bool   `json:"compress,omitempty"`
+	Overwrite                    bool   `json:"overwrite,omitempty"`
+	IncludeMemories              *bool  `json:"include_memories,omitempty"`
+	IncludeThreads               *bool  `json:"include_threads,omitempty"`
+	IncludeMessages              *bool  `json:"include_messages,omitempty"`
+	IncludeEntities              *bool  `json:"include_entities,omitempty"`
+	IncludeLabels                *bool  `json:"include_labels,omitempty"`
+	IncludeSources               *bool  `json:"include_sources,omitempty"`
+	IncludeCommunities           *bool  `json:"include_communities,omitempty"`
+	IncludeSkills                *bool  `json:"include_skills,omitempty"`
+	IncludeEdges                 *bool  `json:"include_edges,omitempty"`
+	IncludeWorkingMemory         *bool  `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive  *bool  `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles           *bool  `json:"include_source_files,omitempty"`
+}
+
+// DataExportDownloadRequest is the request for POST /data/export/download.
+// This endpoint streams a ZIP directly to the client and does not require
+// a server-side path.
+type DataExportDownloadRequest struct {
+	IncludeMemories              *bool `json:"include_memories,omitempty"`
+	IncludeThreads               *bool `json:"include_threads,omitempty"`
+	IncludeMessages              *bool `json:"include_messages,omitempty"`
+	IncludeEntities              *bool `json:"include_entities,omitempty"`
+	IncludeLabels                *bool `json:"include_labels,omitempty"`
+	IncludeSources               *bool `json:"include_sources,omitempty"`
+	IncludeCommunities           *bool `json:"include_communities,omitempty"`
+	IncludeSkills                *bool `json:"include_skills,omitempty"`
+	IncludeEdges                 *bool `json:"include_edges,omitempty"`
+	IncludeWorkingMemory         *bool `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive  *bool `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles           *bool `json:"include_source_files,omitempty"`
 }
 
 // DataExportResponse is the response for POST /data/export.
@@ -79,8 +102,20 @@ type DataExportResponse struct {
 
 // DataImportRequest is the request for POST /data/import.
 type DataImportRequest struct {
-	ImportPath string `json:"import_path"`
-	Overwrite  bool   `json:"overwrite,omitempty"`
+	ImportPath                   string `json:"import_path"`
+	Mode                         string `json:"mode,omitempty"`
+	IncludeMemories              *bool  `json:"include_memories,omitempty"`
+	IncludeThreads               *bool  `json:"include_threads,omitempty"`
+	IncludeMessages              *bool  `json:"include_messages,omitempty"`
+	IncludeEntities              *bool  `json:"include_entities,omitempty"`
+	IncludeLabels                *bool  `json:"include_labels,omitempty"`
+	IncludeSources               *bool  `json:"include_sources,omitempty"`
+	IncludeCommunities           *bool  `json:"include_communities,omitempty"`
+	IncludeSkills                *bool  `json:"include_skills,omitempty"`
+	IncludeEdges                 *bool  `json:"include_edges,omitempty"`
+	IncludeWorkingMemory         *bool  `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive  *bool  `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles           *bool  `json:"include_source_files,omitempty"`
 }
 
 // DataImportResponse is the response for POST /data/import.
@@ -103,18 +138,21 @@ type DataImportStatus struct {
 
 // UploadImportRequest is the request for POST /data/import/upload.
 type UploadImportRequest struct {
-	File                 io.Reader `json:"-"`
-	Filename             string    `json:"-"`
-	Mode                 string    `json:"mode,omitempty"`
-	IncludeMemories      *bool     `json:"include_memories,omitempty"`
-	IncludeThreads       *bool     `json:"include_threads,omitempty"`
-	IncludeMessages      *bool     `json:"include_messages,omitempty"`
-	IncludeEntities      *bool     `json:"include_entities,omitempty"`
-	IncludeLabels        *bool     `json:"include_labels,omitempty"`
-	IncludeSources       *bool     `json:"include_sources,omitempty"`
-	IncludeCommunities   *bool     `json:"include_communities,omitempty"`
-	IncludeEdges         *bool     `json:"include_edges,omitempty"`
-	IncludeWorkingMemory *bool     `json:"include_working_memory,omitempty"`
+	File                        io.Reader `json:"-"`
+	Filename                    string    `json:"-"`
+	Mode                        string    `json:"mode,omitempty"`
+	IncludeMemories             *bool     `json:"include_memories,omitempty"`
+	IncludeThreads              *bool     `json:"include_threads,omitempty"`
+	IncludeMessages             *bool     `json:"include_messages,omitempty"`
+	IncludeEntities             *bool     `json:"include_entities,omitempty"`
+	IncludeLabels               *bool     `json:"include_labels,omitempty"`
+	IncludeSources              *bool     `json:"include_sources,omitempty"`
+	IncludeCommunities          *bool     `json:"include_communities,omitempty"`
+	IncludeSkills               *bool     `json:"include_skills,omitempty"`
+	IncludeEdges                *bool     `json:"include_edges,omitempty"`
+	IncludeWorkingMemory        *bool     `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive *bool     `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles          *bool     `json:"include_source_files,omitempty"`
 }
 
 // UploadImport uploads a ZIP export from web and remote clients.
@@ -174,6 +212,15 @@ func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest
 	}
 	if req.IncludeWorkingMemory != nil {
 		writer.WriteField("include_working_memory", strconv.FormatBool(*req.IncludeWorkingMemory))
+	}
+	if req.IncludeSkills != nil {
+		writer.WriteField("include_skills", strconv.FormatBool(*req.IncludeSkills))
+	}
+	if req.IncludeWorkingMemoryArchive != nil {
+		writer.WriteField("include_working_memory_archive", strconv.FormatBool(*req.IncludeWorkingMemoryArchive))
+	}
+	if req.IncludeSourceFiles != nil {
+		writer.WriteField("include_source_files", strconv.FormatBool(*req.IncludeSourceFiles))
 	}
 
 	if err := writer.Close(); err != nil {

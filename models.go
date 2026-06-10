@@ -62,6 +62,7 @@ type MemoryListItem struct {
 	Confidence   float64        `json:"confidence,omitempty"`
 	SpaceID      string         `json:"space_id,omitempty"`
 	Metadata     map[string]any `json:"metadata,omitempty"`
+	UnitType     string         `json:"unit_type,omitempty"`
 }
 
 // SourceThread is a lightweight thread reference attached to a memory.
@@ -87,6 +88,7 @@ type CreateMemoryRequest struct {
 	SourceThreadID   *string        `json:"source_thread_id,omitempty"`
 	SourceMsgRange   map[string]int `json:"source_message_range,omitempty"`
 	Source           *string        `json:"source,omitempty"`
+	SourceMessageID  *string        `json:"source_message_id,omitempty"`
 	Importance       *float64       `json:"importance,omitempty"`
 	Confidence       *float64       `json:"confidence,omitempty"`
 	Labels           []string       `json:"labels,omitempty"`

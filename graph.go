@@ -91,10 +91,22 @@ func (s *GraphService) ListJobs(ctx context.Context, limit int) ([]AugmentationJ
 
 // --- Graph types ---
 
+// GraphCapabilities holds graph analysis feature flags.
+type GraphCapabilities struct {
+	CommunityDetection   bool `json:"community_detection"`
+	PagerankCalculation  bool `json:"pagerank_calculation"`
+	UnifiedGraphAnalysis bool `json:"unified_graph_analysis"`
+	LLMSummarization     bool `json:"llm_summarization"`
+}
+
 // GraphHealthResponse is the response body for GET /graph/health.
 type GraphHealthResponse struct {
-	Status    string `json:"status"`
-	AlgoReady bool   `json:"algo_ready"`
+	Status              string            `json:"status"`
+	Error               string            `json:"error,omitempty"`
+	AlgoExtensionLoaded bool              `json:"algo_extension_loaded"`
+	DbConnection        string            `json:"db_connection,omitempty"`
+	Capabilities        GraphCapabilities `json:"capabilities"`
+	CheckedAt           string            `json:"checked_at,omitempty"`
 }
 
 // CleanupOrphansResponse is the response body for DELETE /graph/orphans.
@@ -104,8 +116,8 @@ type CleanupOrphansResponse struct {
 
 // StartAugmentationRequest is the request body for POST /graph/augmentation/start.
 type StartAugmentationRequest struct {
-	JobType string `json:"job_type"`
-	Params  map[string]any `json:"params,omitempty"`
+	JobType    string         `json:"job_type"`
+	Parameters map[string]any `json:"parameters,omitempty"`
 }
 
 // AugmentationJob represents an augmentation job.

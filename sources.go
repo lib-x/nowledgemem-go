@@ -80,16 +80,24 @@ func (s *SourcesService) GetContent(ctx context.Context, sourceID string) (strin
 }
 
 // Delete deletes a source and its search index records.
-func (s *SourcesService) Delete(ctx context.Context, sourceID string) error {
+func (s *SourcesService) Delete(ctx context.Context, sourceID string, spaceID string) error {
+	q := url.Values{}
+	if spaceID != "" {
+		q.Set("space_id", spaceID)
+	}
 	path := fmt.Sprintf("/sources/%s", url.PathEscape(sourceID))
-	return s.client.do(ctx, "DELETE", path, nil, nil)
+	return s.client.doWithQuery(ctx, "DELETE", path, q, nil, nil)
 }
 
-// Update updates source lifecycle state.
-func (s *SourcesService) Update(ctx context.Context, sourceID string, req *UpdateSourceRequest) (*Source, error) {
+// Update updates source processing state.
+func (s *SourcesService) Update(ctx context.Context, sourceID string, req *UpdateSourceRequest, spaceID string) (*Source, error) {
 	var resp Source
+	q := url.Values{}
+	if spaceID != "" {
+		q.Set("space_id", spaceID)
+	}
 	path := fmt.Sprintf("/sources/%s", url.PathEscape(sourceID))
-	if err := s.client.do(ctx, "PATCH", path, req, &resp); err != nil {
+	if err := s.client.doWithQuery(ctx, "PATCH", path, q, req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -145,8 +153,8 @@ func (s *SourcesService) IngestFile(ctx context.Context, req *IngestFileRequest)
 }
 
 // IngestURL fetches a URL and ingests through the source pipeline.
-func (s *SourcesService) IngestURL(ctx context.Context, req *IngestURLRequest) (*Source, error) {
-	var resp Source
+func (s *SourcesService) IngestURL(ctx context.Context, req *IngestURLRequest) (*IngestSourceResponse, error) {
+	var resp IngestSourceResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/url", req, &resp); err != nil {
 		return nil, err
 	}
@@ -154,8 +162,8 @@ func (s *SourcesService) IngestURL(ctx context.Context, req *IngestURLRequest) (
 }
 
 // IngestByPath ingests a file by local filesystem path.
-func (s *SourcesService) IngestByPath(ctx context.Context, req *IngestByPathRequest) (*Source, error) {
-	var resp Source
+func (s *SourcesService) IngestByPath(ctx context.Context, req *IngestByPathRequest) (*IngestSourceResponse, error) {
+	var resp IngestSourceResponse
 	if err := s.client.do(ctx, "POST", "/sources/ingest/file-path", req, &resp); err != nil {
 		return nil, err
 	}
@@ -175,7 +183,7 @@ func (s *SourcesService) BatchIngest(ctx context.Context, req *BatchIngestReques
 
 // UpdateSourceRequest is the request body for PATCH /sources/{id}.
 type UpdateSourceRequest struct {
-	LifecycleState string `json:"lifecycle_state,omitempty"`
+	Action string `json:"action"` // "reparse", "ocr_reparse", "mark_stale"
 }
 
 // IngestFileRequest is the multipart request body for POST /sources/ingest/file.
@@ -190,8 +198,10 @@ type IngestFileRequest struct {
 
 // IngestURLRequest is the request body for POST /sources/ingest/url.
 type IngestURLRequest struct {
-	URL     string `json:"url"`
-	SpaceID string `json:"space_id,omitempty"`
+	URL         string   `json:"url"`
+	UserComment string   `json:"user_comment,omitempty"`
+	Labels      []string `json:"labels,omitempty"`
+	SpaceID     string   `json:"space_id,omitempty"`
 }
 
 // IngestByPathRequest is the request body for POST /sources/ingest/file-path.
@@ -200,16 +210,30 @@ type IngestByPathRequest struct {
 	SpaceID  string `json:"space_id,omitempty"`
 }
 
+// BatchIngestFile is a single file entry in a batch ingest request.
+type BatchIngestFile struct {
+	FilePath string `json:"file_path"`
+}
+
 // BatchIngestRequest is the request body for POST /sources/ingest/batch.
 type BatchIngestRequest struct {
-	FilePaths []string `json:"file_paths"`
-	SpaceID   string   `json:"space_id,omitempty"`
+	Files             []BatchIngestFile `json:"files"`
+	FolderName        string            `json:"folder_name,omitempty"`
+	UserComment       string            `json:"user_comment,omitempty"`
+	Labels            []string          `json:"labels,omitempty"`
+	SpaceID           string            `json:"space_id,omitempty"`
+	EmitFeedEvent     *bool             `json:"emit_feed_event,omitempty"`
+	AccumulatedTotals map[string]any    `json:"accumulated_totals,omitempty"`
 }
 
 // BatchIngestResponse is the response body for POST /sources/ingest/batch.
 type BatchIngestResponse struct {
-	Sources []Source `json:"sources"`
-	Failed  []string `json:"failed,omitempty"`
+	FolderName      string                 `json:"folder_name,omitempty"`
+	TotalIngested   int                    `json:"total_ingested"`
+	TotalDuplicates int                    `json:"total_duplicates"`
+	TotalErrors     int                    `json:"total_errors"`
+	Results         []IngestSourceResponse `json:"results,omitempty"`
+	Message         string                 `json:"message,omitempty"`
 }
 
 // UpdateContent updates the parsed markdown content of a source.

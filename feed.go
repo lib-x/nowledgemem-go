@@ -44,6 +44,12 @@ func (s *FeedService) GetEvents(ctx context.Context, params *FeedEventsParams) (
 		if params.Source != "" {
 			q.Set("source", params.Source)
 		}
+		if params.SpaceID != "" {
+			q.Set("space_id", params.SpaceID)
+		}
+		if params.IncludeTotal != nil {
+			q.Set("include_total", strconv.FormatBool(*params.IncludeTotal))
+		}
 	}
 	var resp []FeedEvent
 	if err := s.client.doQuery(ctx, "/agent/feed/events", q, &resp); err != nil {
@@ -55,7 +61,22 @@ func (s *FeedService) GetEvents(ctx context.Context, params *FeedEventsParams) (
 // ResolveEvent resolves an action-required event.
 func (s *FeedService) ResolveEvent(ctx context.Context, eventID string, req *ResolveEventRequest) error {
 	path := fmt.Sprintf("/agent/feed/events/%s/resolve", url.PathEscape(eventID))
-	return s.client.do(ctx, "POST", path, req, nil)
+	q := url.Values{}
+	if req != nil {
+		if req.Resolution != "" {
+			q.Set("resolution", req.Resolution)
+		}
+		if req.Action != "" {
+			q.Set("action", req.Action)
+		}
+		if req.MemoryIDs != "" {
+			q.Set("memory_ids", req.MemoryIDs)
+		}
+		if req.ResolutionNote != "" {
+			q.Set("resolution_note", req.ResolutionNote)
+		}
+	}
+	return s.client.doWithQuery(ctx, "POST", path, q, nil, nil)
 }
 
 // RetryEvent retries a failed background task.
@@ -95,6 +116,8 @@ type FeedEventsParams struct {
 	DateFrom       string `json:"date_from,omitempty"`
 	DateTo         string `json:"date_to,omitempty"`
 	Source         string `json:"source,omitempty"`
+	SpaceID        string `json:"space_id,omitempty"`
+	IncludeTotal   *bool  `json:"include_total,omitempty"`
 }
 
 // FeedEvent represents a feed event.
@@ -111,8 +134,10 @@ type FeedEvent struct {
 
 // ResolveEventRequest is the request for POST /agent/feed/events/{id}/resolve.
 type ResolveEventRequest struct {
-	Resolution     string         `json:"resolution,omitempty"`
-	GraphMutations map[string]any `json:"graph_mutations,omitempty"`
+	Resolution     string `json:"resolution"`               // "accepted", "dismissed", "merged"
+	Action         string `json:"action,omitempty"`         // "delete_memory", "keep_newer", "keep_both"
+	MemoryIDs      string `json:"memory_ids,omitempty"`     // comma-separated
+	ResolutionNote string `json:"resolution_note,omitempty"`
 }
 
 // FeedInputStreamRequest is the request for POST /agent/feed/input/stream.

@@ -63,8 +63,8 @@ func ExampleNewClient_withOptions() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range results.Results {
-		fmt.Printf("- %s (score: %.2f)\n", r.Title, r.Score)
+	for _, r := range results {
+		fmt.Printf("- %s (score: %.2f)\n", r.Memory.Title, r.SimilarityScore)
 	}
 }
 

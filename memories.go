@@ -94,12 +94,12 @@ func (s *MemoriesService) Delete(ctx context.Context, memoryID string, params *D
 }
 
 // Search performs a hybrid search across memories.
-func (s *MemoriesService) Search(ctx context.Context, req *SearchMemoriesRequest) (*SearchMemoriesResponse, error) {
-	var resp SearchMemoriesResponse
+func (s *MemoriesService) Search(ctx context.Context, req *SearchMemoriesRequest) ([]SearchResult, error) {
+	var resp []SearchResult
 	if err := s.client.do(ctx, "POST", "/memories/search", req, &resp); err != nil {
 		return nil, err
 	}
-	return &resp, nil
+	return resp, nil
 }
 
 // BulkMovePreview previews a bulk move between spaces.
@@ -161,11 +161,22 @@ func (s *MemoriesService) RemoveLabel(ctx context.Context, memoryID, labelID str
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
+// ExportOptions holds optional parameters for the Export method.
+type ExportOptions struct {
+	Format         string `json:"format,omitempty"`
+	IncludeMetadata *bool `json:"include_metadata,omitempty"`
+}
+
 // Export exports a memory in the specified format (markdown, json, etc).
-func (s *MemoriesService) Export(ctx context.Context, memoryID, format string) ([]byte, error) {
+func (s *MemoriesService) Export(ctx context.Context, memoryID string, opts *ExportOptions) ([]byte, error) {
 	q := url.Values{}
-	if format != "" {
-		q.Set("format", format)
+	if opts != nil {
+		if opts.Format != "" {
+			q.Set("format", opts.Format)
+		}
+		if opts.IncludeMetadata != nil {
+			q.Set("include_metadata", strconv.FormatBool(*opts.IncludeMetadata))
+		}
 	}
 	path := fmt.Sprintf("/memories/%s/export", url.PathEscape(memoryID))
 	return s.client.doBytes(ctx, http.MethodGet, path, q, nil)
@@ -175,69 +186,88 @@ func (s *MemoriesService) Export(ctx context.Context, memoryID, format string) (
 
 // SearchMemoriesRequest is the request body for POST /memories/search.
 type SearchMemoriesRequest struct {
-	Query      string   `json:"query"`
-	SpaceID    string   `json:"space_id,omitempty"`
-	Limit      int      `json:"limit,omitempty"`
-	Offset     int      `json:"offset,omitempty"`
-	Labels     []string `json:"labels,omitempty"`
-	SourceType string   `json:"source_type,omitempty"`
-}
-
-// SearchMemoriesResponse is the response body for POST /memories/search.
-type SearchMemoriesResponse struct {
-	Results []SearchResult `json:"results"`
-	Total   int            `json:"total"`
-	Query   string         `json:"query"`
+	Query             string   `json:"query"`
+	Mode              string   `json:"mode,omitempty"`
+	Limit             int      `json:"limit,omitempty"`
+	SpaceID           string   `json:"space_id,omitempty"`
+	FilterLabels      []string `json:"filter_labels,omitempty"`
+	UnitType          string   `json:"unit_type,omitempty"`
+	IncludeEntities   *bool    `json:"include_entities,omitempty"`
+	EventDateFrom     string   `json:"event_date_from,omitempty"`
+	EventDateTo       string   `json:"event_date_to,omitempty"`
+	TemporalContext   string   `json:"temporal_context,omitempty"`
+	RecordedDateFrom  string   `json:"recorded_date_from,omitempty"`
+	RecordedDateTo    string   `json:"recorded_date_to,omitempty"`
 }
 
 // SearchResult is a single search result.
 type SearchResult struct {
-	ID      string  `json:"id"`
-	Title   string  `json:"title,omitempty"`
-	Content string  `json:"content,omitempty"`
-	Score   float64 `json:"score"`
-	SpaceID string  `json:"space_id,omitempty"`
-	Source  string  `json:"source,omitempty"`
+	Memory             Memory           `json:"memory"`
+	SimilarityScore    float64          `json:"similarity_score"`
+	RelevanceReason    string           `json:"relevance_reason,omitempty"`
+	RelatedEntities    []Entity         `json:"related_entities,omitempty"`
+	EvolvesContext     map[string]any   `json:"evolves_context,omitempty"`
+	RelatedMemoryLinks []map[string]any `json:"related_memory_links,omitempty"`
 }
 
 // --- Bulk types ---
 
+// BulkMemorySelection describes a selection of memories for bulk operations.
+type BulkMemorySelection struct {
+	MemoryIDs []string `json:"memory_ids,omitempty"`
+	SpaceID   string   `json:"space_id,omitempty"`
+	SelectAll bool     `json:"select_all,omitempty"`
+}
+
 // BulkMovePreviewRequest is the request for POST /memories/bulk/move/preview.
 type BulkMovePreviewRequest struct {
-	MemoryIDs []string `json:"memory_ids,omitempty"`
-	FromSpace string   `json:"from_space,omitempty"`
-	ToSpace   string   `json:"to_space"`
+	Selection     BulkMemorySelection `json:"selection"`
+	TargetSpaceID string              `json:"target_space_id"`
 }
 
 // BulkMovePreviewResponse is the response for POST /memories/bulk/move/preview.
 type BulkMovePreviewResponse struct {
-	WillMove  int      `json:"will_move"`
-	Conflicts []string `json:"conflicts,omitempty"`
+	Count          int    `json:"count"`
+	MaxAllowed     int    `json:"max_allowed,omitempty"`
+	LimitExceeded  bool   `json:"limit_exceeded,omitempty"`
+	SourceSpaceID  string `json:"source_space_id,omitempty"`
+	TargetSpaceID  string `json:"target_space_id,omitempty"`
+	SelectionMode  string `json:"selection_mode,omitempty"`
+	ExcludedCount  int    `json:"excluded_count,omitempty"`
+	Message        string `json:"message,omitempty"`
 }
 
 // BulkMoveRequest is the request for POST /memories/bulk/move.
 type BulkMoveRequest struct {
-	MemoryIDs []string `json:"memory_ids,omitempty"`
-	FromSpace string   `json:"from_space,omitempty"`
-	ToSpace   string   `json:"to_space"`
+	Selection     BulkMemorySelection `json:"selection"`
+	TargetSpaceID string              `json:"target_space_id"`
 }
 
 // BulkMoveResponse is the response for POST /memories/bulk/move.
 type BulkMoveResponse struct {
-	Moved  int `json:"moved"`
-	Failed int `json:"failed"`
+	MovedCount        int    `json:"moved_count"`
+	FailedCount       int    `json:"failed_count"`
+	SourceSpaceID     string `json:"source_space_id,omitempty"`
+	TargetSpaceID     string `json:"target_space_id,omitempty"`
+	IndexUpdatedCount int    `json:"index_updated_count,omitempty"`
+	IndexRepairNeeded bool   `json:"index_repair_needed,omitempty"`
+	Message           string `json:"message,omitempty"`
 }
 
 // BulkDeleteRequest is the request for POST /memories/bulk/delete.
 type BulkDeleteRequest struct {
-	MemoryIDs []string `json:"memory_ids,omitempty"`
-	SpaceID   string   `json:"space_id,omitempty"`
+	Selection     BulkMemorySelection `json:"selection"`
+	CascadeDelete bool                `json:"cascade_delete,omitempty"`
 }
 
 // BulkDeleteResponse is the response for POST /memories/bulk/delete.
 type BulkDeleteResponse struct {
-	Deleted int `json:"deleted"`
-	Failed  int `json:"failed"`
+	DeletedCount  int              `json:"deleted_count"`
+	FailedCount   int              `json:"failed_count"`
+	SourceSpaceID string           `json:"source_space_id,omitempty"`
+	CascadeDelete bool             `json:"cascade_delete,omitempty"`
+	Results       []map[string]any `json:"results,omitempty"`
+	Message       string           `json:"message,omitempty"`
 }
 
 // ToggleFavoriteResponse is the response for POST /memories/{id}/favorite.
@@ -281,4 +311,32 @@ type ReindexResponse struct {
 type MemoryReindexStatus struct {
 	Total        int `json:"total"`
 	NeedsReindex int `json:"needs_reindex"`
+}
+
+// --- Supersede / Deprecate ---
+
+// SupersedeMemoryRequest is the request for POST /memories/{id}/supersede.
+type SupersedeMemoryRequest struct {
+	NewerMemoryID string `json:"newer_memory_id"`
+	Reason        string `json:"reason,omitempty"`
+	SpaceID       string `json:"space_id,omitempty"`
+}
+
+// DeprecateMemoryRequest is the request for POST /memories/{id}/deprecate.
+type DeprecateMemoryRequest struct {
+	Reason              string `json:"reason,omitempty"`
+	ReplacementMemoryID string `json:"replacement_memory_id,omitempty"`
+	SpaceID             string `json:"space_id,omitempty"`
+}
+
+// Supersede marks a memory as replaced by a newer memory.
+func (s *MemoriesService) Supersede(ctx context.Context, memoryID string, req *SupersedeMemoryRequest) error {
+	path := fmt.Sprintf("/memories/%s/supersede", url.PathEscape(memoryID))
+	return s.client.do(ctx, "POST", path, req, nil)
+}
+
+// Deprecate marks a memory as deprecated while preserving it for graph history.
+func (s *MemoriesService) Deprecate(ctx context.Context, memoryID string, req *DeprecateMemoryRequest) error {
+	path := fmt.Sprintf("/memories/%s/deprecate", url.PathEscape(memoryID))
+	return s.client.do(ctx, "POST", path, req, nil)
 }

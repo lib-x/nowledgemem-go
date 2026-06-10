@@ -35,8 +35,20 @@ func (s *LabelsService) List(ctx context.Context, params *ListLabelsParams) ([]L
 
 // Create creates a new label.
 func (s *LabelsService) Create(ctx context.Context, req *CreateLabelRequest) (*Label, error) {
+	q := url.Values{}
+	if req != nil {
+		if req.Name != "" {
+			q.Set("name", req.Name)
+		}
+		if req.Color != "" {
+			q.Set("color", req.Color)
+		}
+		if req.Description != "" {
+			q.Set("description", req.Description)
+		}
+	}
 	var resp Label
-	if err := s.client.do(ctx, "POST", "/labels", req, &resp); err != nil {
+	if err := s.client.doWithQuery(ctx, "POST", "/labels", q, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
