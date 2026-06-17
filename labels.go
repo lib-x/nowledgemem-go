@@ -92,6 +92,95 @@ func (s *LabelsService) Delete(ctx context.Context, labelID string) error {
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
+// Health returns label system health and maintenance status.
+//
+// GET /labels/health
+func (s *LabelsService) Health(ctx context.Context) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.do(ctx, "GET", "/labels/health", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// MergeCandidates returns likely duplicate or overlapping labels.
+//
+// GET /labels/merge-candidates
+func (s *LabelsService) MergeCandidates(ctx context.Context, params *LabelMergeCandidatesParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.SimFloor > 0 {
+			q.Set("sim_floor", strconv.FormatFloat(params.SimFloor, 'f', -1, 64))
+		}
+		if params.MaxLabels > 0 {
+			q.Set("max_labels", strconv.Itoa(params.MaxLabels))
+		}
+		if params.MaxPairs > 0 {
+			q.Set("max_pairs", strconv.Itoa(params.MaxPairs))
+		}
+	}
+	var resp map[string]any
+	if err := s.client.doQuery(ctx, "/labels/merge-candidates", q, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// Merge merges one label into another.
+//
+// POST /labels/merge
+func (s *LabelsService) Merge(ctx context.Context, sourceID, targetID string) (map[string]any, error) {
+	q := url.Values{
+		"source_id": {sourceID},
+		"target_id": {targetID},
+	}
+	var resp map[string]any
+	if err := s.client.doWithQuery(ctx, "POST", "/labels/merge", q, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// ConsolidationPreview previews label consolidation candidates.
+//
+// POST /labels/consolidation-preview
+func (s *LabelsService) ConsolidationPreview(ctx context.Context, params *LabelConsolidationPreviewParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.SimFloor > 0 {
+			q.Set("sim_floor", strconv.FormatFloat(params.SimFloor, 'f', -1, 64))
+		}
+		if params.MaxPairs > 0 {
+			q.Set("max_pairs", strconv.Itoa(params.MaxPairs))
+		}
+	}
+	var resp map[string]any
+	if err := s.client.doWithQuery(ctx, "POST", "/labels/consolidation-preview", q, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// Consolidate runs label consolidation.
+//
+// POST /labels/consolidate
+func (s *LabelsService) Consolidate(ctx context.Context, params *LabelConsolidateParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.DryRun != nil {
+			q.Set("dry_run", strconv.FormatBool(*params.DryRun))
+		}
+		if params.MaxGroups > 0 {
+			q.Set("max_groups", strconv.Itoa(params.MaxGroups))
+		}
+	}
+	var resp map[string]any
+	if err := s.client.doWithQuery(ctx, "POST", "/labels/consolidate", q, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // --- Label request types ---
 
 // ListLabelsParams are query parameters for List (GET /labels).
@@ -113,4 +202,23 @@ type UpdateLabelRequest struct {
 	Name        string `json:"name,omitempty"`
 	Color       string `json:"color,omitempty"`
 	Description string `json:"description,omitempty"`
+}
+
+// LabelMergeCandidatesParams are query parameters for MergeCandidates.
+type LabelMergeCandidatesParams struct {
+	SimFloor  float64 `json:"sim_floor,omitempty"`
+	MaxLabels int     `json:"max_labels,omitempty"`
+	MaxPairs  int     `json:"max_pairs,omitempty"`
+}
+
+// LabelConsolidationPreviewParams are query parameters for ConsolidationPreview.
+type LabelConsolidationPreviewParams struct {
+	SimFloor float64 `json:"sim_floor,omitempty"`
+	MaxPairs int     `json:"max_pairs,omitempty"`
+}
+
+// LabelConsolidateParams are query parameters for Consolidate.
+type LabelConsolidateParams struct {
+	DryRun    *bool `json:"dry_run,omitempty"`
+	MaxGroups int   `json:"max_groups,omitempty"`
 }

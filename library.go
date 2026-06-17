@@ -31,6 +31,27 @@ func (s *LibraryService) ExportWiki(ctx context.Context, format string) ([]byte,
 	return s.client.doBytes(ctx, http.MethodGet, "/library/wiki-export", q, nil)
 }
 
+// ExportOKF exports the library as Open Knowledge Format JSON.
+func (s *LibraryService) ExportOKF(ctx context.Context, params *OKFExportParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.EntityLimit > 0 {
+			q.Set("entity_limit", strconv.Itoa(params.EntityLimit))
+		}
+		if params.TopPerCommunity > 0 {
+			q.Set("top_per_community", strconv.Itoa(params.TopPerCommunity))
+		}
+		if params.MaxMentionsPerEntity > 0 {
+			q.Set("max_mentions_per_entity", strconv.Itoa(params.MaxMentionsPerEntity))
+		}
+	}
+	var resp map[string]any
+	if err := s.client.doQuery(ctx, "/library/okf-export", q, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // GetWikiPageByEntity returns a wiki page for an entity.
 func (s *LibraryService) GetWikiPageByEntity(ctx context.Context, idOrName string) (*WikiPage, error) {
 	var resp WikiPage
@@ -96,6 +117,13 @@ type WikiPage struct {
 	Content  string         `json:"content"`
 	Type     string         `json:"type"`
 	Metadata map[string]any `json:"metadata,omitempty"`
+}
+
+// OKFExportParams are query parameters for ExportOKF.
+type OKFExportParams struct {
+	EntityLimit          int `json:"entity_limit,omitempty"`
+	TopPerCommunity      int `json:"top_per_community,omitempty"`
+	MaxMentionsPerEntity int `json:"max_mentions_per_entity,omitempty"`
 }
 
 // ExportWikiSummary exports wiki summary.

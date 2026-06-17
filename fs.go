@@ -113,6 +113,15 @@ func (s *FSService) Delete(ctx context.Context, path string) error {
 	return s.client.do(ctx, "POST", "/fs/delete", req, nil)
 }
 
+// Capabilities returns Nowledge FS capability metadata.
+func (s *FSService) Capabilities(ctx context.Context) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.do(ctx, "GET", "/fs/capabilities", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // CatString is a convenience method that returns just the body text.
 func (s *FSService) CatString(ctx context.Context, path string) (string, error) {
 	resp, err := s.Cat(ctx, path, 0, 0)

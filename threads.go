@@ -89,7 +89,7 @@ func (s *ThreadsService) Delete(ctx context.Context, threadID string, params *De
 	}
 	path := fmt.Sprintf("/threads/%s", url.PathEscape(threadID))
 	var resp DeleteThreadResponse
-	if err := s.client.doQuery(ctx, path, q, &resp); err != nil {
+	if err := s.client.doWithQuery(ctx, http.MethodDelete, path, q, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -175,6 +175,26 @@ func (s *ThreadsService) BulkDelete(ctx context.Context, threadIDs []string) (*T
 	return &resp, nil
 }
 
+// DeleteBulk deletes multiple threads using the DELETE /threads/bulk endpoint.
+//
+// DELETE /threads/bulk
+func (s *ThreadsService) DeleteBulk(ctx context.Context, req *BulkDeleteThreadsRequest, params *BulkDeleteThreadsParams) (*ThreadBulkDeleteResponse, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.CascadeDeleteMemories {
+			q.Set("cascade_delete_memories", "true")
+		}
+		if params.SpaceID != "" {
+			q.Set("space_id", params.SpaceID)
+		}
+	}
+	var resp ThreadBulkDeleteResponse
+	if err := s.client.doWithQuery(ctx, http.MethodDelete, "/threads/bulk", q, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // --- Thread types ---
 
 // ThreadSummary represents a lightweight thread summary with title and summary text.
@@ -243,6 +263,17 @@ type DeleteThreadResponse struct {
 	DeletedMessages int    `json:"deleted_messages,omitempty"`
 	DeletedMemories int    `json:"deleted_memories,omitempty"`
 	CascadeDeletion bool   `json:"cascade_deletion,omitempty"`
+}
+
+// BulkDeleteThreadsRequest is the request body for DeleteBulk.
+type BulkDeleteThreadsRequest struct {
+	ThreadIDs []string `json:"thread_ids"`
+}
+
+// BulkDeleteThreadsParams are query parameters for DeleteBulk.
+type BulkDeleteThreadsParams struct {
+	CascadeDeleteMemories bool   `json:"cascade_delete_memories,omitempty"`
+	SpaceID               string `json:"space_id,omitempty"`
 }
 
 // AppendMessagesRequest holds the body for appending messages to a thread.
@@ -618,12 +649,12 @@ type ThreadBulkDeleteSelectionRequest struct {
 
 // ThreadBulkDeleteResponse contains the result of a bulk thread deletion.
 type ThreadBulkDeleteResponse struct {
-	Message              string          `json:"message"`
-	DeletedCount         int             `json:"deleted_count"`
-	FailedCount          int             `json:"failed_count"`
-	TotalDeletedMessages int             `json:"total_deleted_messages,omitempty"`
-	TotalDeletedMemories int             `json:"total_deleted_memories,omitempty"`
-	CascadeDeletion      bool            `json:"cascade_deletion,omitempty"`
+	Message              string           `json:"message"`
+	DeletedCount         int              `json:"deleted_count"`
+	FailedCount          int              `json:"failed_count"`
+	TotalDeletedMessages int              `json:"total_deleted_messages,omitempty"`
+	TotalDeletedMemories int              `json:"total_deleted_memories,omitempty"`
+	CascadeDeletion      bool             `json:"cascade_deletion,omitempty"`
 	Results              []map[string]any `json:"results,omitempty"`
 }
 

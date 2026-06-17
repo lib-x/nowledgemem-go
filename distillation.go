@@ -52,6 +52,15 @@ func (s *DistillationService) Schedule(ctx context.Context, req *DistillSchedule
 	return &resp, nil
 }
 
+// BatchPlan creates a read-only distillation plan for a bulk thread selection. (POST /memories/distill/batch-plan)
+func (s *DistillationService) BatchPlan(ctx context.Context, req *ThreadDistillationBatchPlanRequest) (*ThreadDistillationBatchPlanResponse, error) {
+	var resp ThreadDistillationBatchPlanResponse
+	if err := s.client.do(ctx, "POST", "/memories/distill/batch-plan", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // --- Distillation types ---
 
 // TriageRequest is the request for POST /memories/distill/triage.
@@ -63,23 +72,23 @@ type TriageRequest struct {
 
 // TriageResponse is the response for POST /memories/distill/triage.
 type TriageResponse struct {
-	Worthy    bool    `json:"worthy"`
-	Reason    string  `json:"reason,omitempty"`
+	Worthy     bool    `json:"worthy"`
+	Reason     string  `json:"reason,omitempty"`
 	Confidence float64 `json:"confidence,omitempty"`
 }
 
 // DistillPreviewRequest is the request for POST /memories/distill/preview.
 type DistillPreviewRequest struct {
-	ThreadID               string   `json:"thread_id"`
-	ThreadTitle            *string  `json:"thread_title,omitempty"`
-	ThreadContent          *string  `json:"thread_content,omitempty"`
-	DistillationType       *string  `json:"distillation_type,omitempty"`
-	ExtractionLevel        *string  `json:"extraction_level,omitempty"`
-	CacheKey               *string  `json:"cache_key,omitempty"`
-	SelectedMessageIndices []int    `json:"selected_message_indices,omitempty"`
-	PreferredLanguage      *string  `json:"preferred_language,omitempty"`
-	ForceDistill           *bool    `json:"force_distill,omitempty"`
-	SpaceID                *string  `json:"space_id,omitempty"`
+	ThreadID               string  `json:"thread_id"`
+	ThreadTitle            *string `json:"thread_title,omitempty"`
+	ThreadContent          *string `json:"thread_content,omitempty"`
+	DistillationType       *string `json:"distillation_type,omitempty"`
+	ExtractionLevel        *string `json:"extraction_level,omitempty"`
+	CacheKey               *string `json:"cache_key,omitempty"`
+	SelectedMessageIndices []int   `json:"selected_message_indices,omitempty"`
+	PreferredLanguage      *string `json:"preferred_language,omitempty"`
+	ForceDistill           *bool   `json:"force_distill,omitempty"`
+	SpaceID                *string `json:"space_id,omitempty"`
 }
 
 // DistillPreviewResponse is the response for POST /memories/distill/preview.
@@ -103,16 +112,16 @@ type DistillPreviewResponse struct {
 
 // DistillRequest is the request for POST /memories/distill.
 type DistillRequest struct {
-	ThreadID              string   `json:"thread_id"`
-	ThreadTitle           *string  `json:"thread_title,omitempty"`
-	ThreadContent         *string  `json:"thread_content,omitempty"`
-	DistillationType      *string  `json:"distillation_type,omitempty"`
-	ExtractionLevel       *string  `json:"extraction_level,omitempty"`
-	CacheKey              *string  `json:"cache_key,omitempty"`
+	ThreadID               string  `json:"thread_id"`
+	ThreadTitle            *string `json:"thread_title,omitempty"`
+	ThreadContent          *string `json:"thread_content,omitempty"`
+	DistillationType       *string `json:"distillation_type,omitempty"`
+	ExtractionLevel        *string `json:"extraction_level,omitempty"`
+	CacheKey               *string `json:"cache_key,omitempty"`
 	SelectedMessageIndices []int   `json:"selected_message_indices,omitempty"`
-	PreferredLanguage     *string  `json:"preferred_language,omitempty"`
-	ForceDistill          bool     `json:"force_distill,omitempty"`
-	SpaceID               *string  `json:"space_id,omitempty"`
+	PreferredLanguage      *string `json:"preferred_language,omitempty"`
+	ForceDistill           bool    `json:"force_distill,omitempty"`
+	SpaceID                *string `json:"space_id,omitempty"`
 }
 
 // DistillResponse is the response for POST /memories/distill.
@@ -146,4 +155,26 @@ type DistillScheduleRequest struct {
 type DistillScheduleResponse struct {
 	Scheduled bool   `json:"scheduled"`
 	JobID     string `json:"job_id,omitempty"`
+}
+
+// ThreadDistillationBatchPlanRequest is the request for POST /memories/distill/batch-plan.
+type ThreadDistillationBatchPlanRequest struct {
+	Selection               BulkThreadSelection `json:"selection"`
+	MaxScan                 int                 `json:"max_scan,omitempty"`
+	MaxThreadsPerRun        int                 `json:"max_threads_per_run,omitempty"`
+	MaxMessagesPerRun       int                 `json:"max_messages_per_run,omitempty"`
+	MinMessagesForCandidate int                 `json:"min_messages_for_candidate,omitempty"`
+}
+
+// ThreadDistillationBatchPlanResponse is the response for POST /memories/distill/batch-plan.
+type ThreadDistillationBatchPlanResponse struct {
+	Version        int            `json:"version,omitempty"`
+	Source         string         `json:"source,omitempty"`
+	SelectionMode  string         `json:"selection_mode"`
+	SourceSpaceID  string         `json:"source_space_id"`
+	SelectionCount int            `json:"selection_count"`
+	ScannedThreads int            `json:"scanned_threads"`
+	ScanLimited    bool           `json:"scan_limited"`
+	Plan           map[string]any `json:"plan"`
+	Message        string         `json:"message"`
 }

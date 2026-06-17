@@ -108,6 +108,29 @@ func (s *GraphService) ListJobs(ctx context.Context, limit int) ([]AugmentationJ
 	return resp, nil
 }
 
+// PlanPagerankRefresh returns a read-only PageRank refresh plan.
+//
+// GET /graph/augmentation/pagerank/plan
+func (s *GraphService) PlanPagerankRefresh(ctx context.Context, params *PagerankPlanParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.Force != nil {
+			q.Set("force", strconv.FormatBool(*params.Force))
+		}
+		if params.MinNodes > 0 {
+			q.Set("min_nodes", strconv.Itoa(params.MinNodes))
+		}
+		if params.MinEdges > 0 {
+			q.Set("min_edges", strconv.Itoa(params.MinEdges))
+		}
+	}
+	var resp map[string]any
+	if err := s.client.doQuery(ctx, "/graph/augmentation/pagerank/plan", q, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // --- Graph types ---
 
 // GraphCapabilities holds graph analysis feature flags.
@@ -156,4 +179,11 @@ type AugmentationState struct {
 	Running    bool             `json:"running"`
 	CurrentJob *AugmentationJob `json:"current_job,omitempty"`
 	LastRun    string           `json:"last_run,omitempty"`
+}
+
+// PagerankPlanParams are query parameters for PlanPagerankRefresh.
+type PagerankPlanParams struct {
+	Force    *bool `json:"force,omitempty"`
+	MinNodes int   `json:"min_nodes,omitempty"`
+	MinEdges int   `json:"min_edges,omitempty"`
 }

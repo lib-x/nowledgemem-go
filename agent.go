@@ -3,6 +3,7 @@ package nowledgemem
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -136,12 +137,351 @@ func (s *AgentService) CreateAINowSession(ctx context.Context, req *CreateAINowS
 	return &resp, nil
 }
 
+// GetTokenUsage returns token usage summary for background agents.
+//
+// GET /agent/token-usage
+func (s *AgentService) GetTokenUsage(ctx context.Context) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.do(ctx, "GET", "/agent/token-usage", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// CancelKnowledgeProcessingTask cancels a queued or running processing task.
+//
+// POST /agent/knowledge-processing/tasks/cancel
+func (s *AgentService) CancelKnowledgeProcessingTask(ctx context.Context, req *CancelKnowledgeProcessingTaskRequest) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.do(ctx, "POST", "/agent/knowledge-processing/tasks/cancel", req, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// PlanCommunityDetection returns a read-only community detection plan.
+//
+// GET /agent/trigger/community-detection/plan
+func (s *AgentService) PlanCommunityDetection(ctx context.Context, params *CommunityDetectionPlanParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.Resolution > 0 {
+			q.Set("resolution", strconv.FormatFloat(params.Resolution, 'f', -1, 64))
+		}
+		if params.GenerateAISummary != nil {
+			q.Set("generate_ai_summary", strconv.FormatBool(*params.GenerateAISummary))
+		}
+		if params.ScanLimit > 0 {
+			q.Set("scan_limit", strconv.Itoa(params.ScanLimit))
+		}
+	}
+	return s.getAgentMap(ctx, "/agent/trigger/community-detection/plan", q)
+}
+
+// PlanKGExtraction returns a read-only KG extraction backfill plan.
+//
+// GET /agent/trigger/kg-extraction/plan
+func (s *AgentService) PlanKGExtraction(ctx context.Context, params *KGExtractionPlanParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.ScanLimit > 0 {
+			q.Set("scan_limit", strconv.Itoa(params.ScanLimit))
+		}
+		if params.BatchSize > 0 {
+			q.Set("batch_size", strconv.Itoa(params.BatchSize))
+		}
+	}
+	return s.getAgentMap(ctx, "/agent/trigger/kg-extraction/plan", q)
+}
+
+// PlanMemoryCompaction returns a read-only memory compaction plan.
+//
+// GET /agent/trigger/memory-compaction/plan
+func (s *AgentService) PlanMemoryCompaction(ctx context.Context, params *MemoryCompactionPlanParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.Limit > 0 {
+			q.Set("limit", strconv.Itoa(params.Limit))
+		}
+		if params.SpaceID != "" {
+			q.Set("space_id", params.SpaceID)
+		}
+	}
+	return s.getAgentMap(ctx, "/agent/trigger/memory-compaction/plan", q)
+}
+
+// PlanMemoryCreated returns a read-only plan for memory-created events.
+//
+// GET /agent/trigger/memory-created/plan
+func (s *AgentService) PlanMemoryCreated(ctx context.Context) (map[string]any, error) {
+	return s.getAgentMap(ctx, "/agent/trigger/memory-created/plan", nil)
+}
+
+// PlanThreadSynced returns a read-only plan for thread-synced events.
+//
+// GET /agent/trigger/thread-synced/plan
+func (s *AgentService) PlanThreadSynced(ctx context.Context, maxTasks int) (map[string]any, error) {
+	q := url.Values{}
+	if maxTasks > 0 {
+		q.Set("max_tasks", strconv.Itoa(maxTasks))
+	}
+	return s.getAgentMap(ctx, "/agent/trigger/thread-synced/plan", q)
+}
+
+// PlanScheduledContext returns planned context for a scheduled task type.
+//
+// GET /agent/trigger/{task_type}/context-plan
+func (s *AgentService) PlanScheduledContext(ctx context.Context, taskType, spaceID string) (map[string]any, error) {
+	q := url.Values{}
+	if spaceID != "" {
+		q.Set("space_id", spaceID)
+	}
+	path := fmt.Sprintf("/agent/trigger/%s/context-plan", url.PathEscape(taskType))
+	return s.getAgentMap(ctx, path, q)
+}
+
+// DryRunRuleReview previews a guidance rule review without applying changes.
+//
+// GET /agent/trigger/rule-review/dry-run
+func (s *AgentService) DryRunRuleReview(ctx context.Context, params *RuleReviewDryRunParams) (map[string]any, error) {
+	q := url.Values{}
+	if params != nil {
+		for _, query := range params.Queries {
+			q.Add("queries", query)
+		}
+		if params.MemoryID != "" {
+			q.Set("memory_id", params.MemoryID)
+		}
+		for _, memoryID := range params.MemoryIDs {
+			q.Add("memory_ids", memoryID)
+		}
+		if params.SpaceID != "" {
+			q.Set("space_id", params.SpaceID)
+		}
+		if params.MaxEvidenceResults > 0 {
+			q.Set("max_evidence_results", strconv.Itoa(params.MaxEvidenceResults))
+		}
+	}
+	return s.getAgentMap(ctx, "/agent/trigger/rule-review/dry-run", q)
+}
+
+// TriggerLabelConsolidation starts label consolidation.
+//
+// POST /agent/trigger/label-consolidation
+func (s *AgentService) TriggerLabelConsolidation(ctx context.Context, dryRun *bool) (map[string]any, error) {
+	q := url.Values{}
+	if dryRun != nil {
+		q.Set("dry_run", strconv.FormatBool(*dryRun))
+	}
+	return s.postAgentMapWithQuery(ctx, "/agent/trigger/label-consolidation", q, nil)
+}
+
+// TriggerRuleReview starts guidance rule review.
+//
+// POST /agent/trigger/rule-review
+func (s *AgentService) TriggerRuleReview(ctx context.Context) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/trigger/rule-review", nil)
+}
+
+// TriggerSkillCompile starts skill compile.
+//
+// POST /agent/trigger/skill-compile
+func (s *AgentService) TriggerSkillCompile(ctx context.Context, skillID string) (map[string]any, error) {
+	q := url.Values{"skill_id": {skillID}}
+	return s.postAgentMapWithQuery(ctx, "/agent/trigger/skill-compile", q, nil)
+}
+
+// TriggerSkillReview starts skill review.
+//
+// POST /agent/trigger/skill-review
+func (s *AgentService) TriggerSkillReview(ctx context.Context) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/trigger/skill-review", nil)
+}
+
+// TriggerUnitTypeReclassification starts or previews unit type reclassification.
+//
+// POST /agent/trigger/unit-type-reclassification
+func (s *AgentService) TriggerUnitTypeReclassification(ctx context.Context, req *UnitTypeReclassificationRequest) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/trigger/unit-type-reclassification", req)
+}
+
+// SkillBuilderPropose asks the skill builder to propose a skill draft.
+//
+// POST /agent/skill-builder/propose
+func (s *AgentService) SkillBuilderPropose(ctx context.Context, req *SkillBuilderProposeRequest) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/skill-builder/propose", req)
+}
+
+// SkillBuilderChat sends a skill builder chat turn.
+//
+// POST /agent/skill-builder/chat
+func (s *AgentService) SkillBuilderChat(ctx context.Context, req *SkillBuilderChatRequest) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/skill-builder/chat", req)
+}
+
+// SkillBuilderRefine refines a compiled skill.
+//
+// POST /agent/skill-builder/refine
+func (s *AgentService) SkillBuilderRefine(ctx context.Context, req *SkillRefineRequest) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/skill-builder/refine", req)
+}
+
+// SkillBuilderRefineStream streams skill refinement output.
+//
+// POST /agent/skill-builder/refine/stream
+func (s *AgentService) SkillBuilderRefineStream(ctx context.Context, req *SkillRefineRequest) (*http.Response, error) {
+	return s.client.doStream(ctx, http.MethodPost, "/agent/skill-builder/refine/stream", nil, req)
+}
+
+// SkillBuilderEditBody updates a skill body directly.
+//
+// POST /agent/skill-builder/edit-body
+func (s *AgentService) SkillBuilderEditBody(ctx context.Context, req *SkillEditBodyRequest) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/skill-builder/edit-body", req)
+}
+
+// SkillBuilderImport imports a skill into managed scope.
+//
+// POST /agent/skill-builder/import
+func (s *AgentService) SkillBuilderImport(ctx context.Context, req *SkillImportRequest) (map[string]any, error) {
+	return s.postAgentMap(ctx, "/agent/skill-builder/import", req)
+}
+
+// SkillBuilderDiscoverImportable returns importable skill folders.
+//
+// GET /agent/skill-builder/discover-importable
+func (s *AgentService) SkillBuilderDiscoverImportable(ctx context.Context) (map[string]any, error) {
+	return s.getAgentMap(ctx, "/agent/skill-builder/discover-importable", nil)
+}
+
+// SkillBuilderPreviewImportable previews an importable skill path.
+//
+// GET /agent/skill-builder/preview-importable
+func (s *AgentService) SkillBuilderPreviewImportable(ctx context.Context, path string) (map[string]any, error) {
+	q := url.Values{"path": {path}}
+	return s.getAgentMap(ctx, "/agent/skill-builder/preview-importable", q)
+}
+
+func (s *AgentService) getAgentMap(ctx context.Context, path string, q url.Values) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.doQuery(ctx, path, q, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (s *AgentService) postAgentMap(ctx context.Context, path string, body any) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.do(ctx, http.MethodPost, path, body, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (s *AgentService) postAgentMapWithQuery(ctx context.Context, path string, q url.Values, body any) (map[string]any, error) {
+	var resp map[string]any
+	if err := s.client.doWithQuery(ctx, http.MethodPost, path, q, body, &resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // --- Agent request types ---
 
 // KGExtractionRequest is the request body for POST /agent/trigger/kg-extraction.
 type KGExtractionRequest struct {
 	MemoryIDs []string `json:"memory_ids,omitempty"`
 	Scope     string   `json:"scope,omitempty"`
+}
+
+// CancelKnowledgeProcessingTaskRequest is the request for POST /agent/knowledge-processing/tasks/cancel.
+type CancelKnowledgeProcessingTaskRequest struct {
+	TaskID   *string `json:"task_id,omitempty"`
+	TaskType *string `json:"task_type,omitempty"`
+}
+
+// CommunityDetectionPlanParams are query parameters for PlanCommunityDetection.
+type CommunityDetectionPlanParams struct {
+	Resolution        float64 `json:"resolution,omitempty"`
+	GenerateAISummary *bool   `json:"generate_ai_summary,omitempty"`
+	ScanLimit         int     `json:"scan_limit,omitempty"`
+}
+
+// KGExtractionPlanParams are query parameters for PlanKGExtraction.
+type KGExtractionPlanParams struct {
+	ScanLimit int `json:"scan_limit,omitempty"`
+	BatchSize int `json:"batch_size,omitempty"`
+}
+
+// MemoryCompactionPlanParams are query parameters for PlanMemoryCompaction.
+type MemoryCompactionPlanParams struct {
+	Limit   int    `json:"limit,omitempty"`
+	SpaceID string `json:"space_id,omitempty"`
+}
+
+// RuleReviewDryRunParams are query parameters for DryRunRuleReview.
+type RuleReviewDryRunParams struct {
+	Queries            []string `json:"queries,omitempty"`
+	MemoryID           string   `json:"memory_id,omitempty"`
+	MemoryIDs          []string `json:"memory_ids,omitempty"`
+	SpaceID            string   `json:"space_id,omitempty"`
+	MaxEvidenceResults int      `json:"max_evidence_results,omitempty"`
+}
+
+// UnitTypeReclassificationRequest is the request for TriggerUnitTypeReclassification.
+type UnitTypeReclassificationRequest struct {
+	Limit           int      `json:"limit,omitempty"`
+	ScanLimit       int      `json:"scan_limit,omitempty"`
+	MinConfidence   float64  `json:"min_confidence,omitempty"`
+	DryRun          bool     `json:"dry_run,omitempty"`
+	UnitTypes       []string `json:"unit_types,omitempty"`
+	TargetUnitTypes []string `json:"target_unit_types,omitempty"`
+	SpaceID         *string  `json:"space_id,omitempty"`
+}
+
+// SkillBuilderMessage is one prior skill-builder conversation turn.
+type SkillBuilderMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// SkillBuilderChatRequest is the request for POST /agent/skill-builder/chat.
+type SkillBuilderChatRequest struct {
+	Message string                `json:"message"`
+	History []SkillBuilderMessage `json:"history,omitempty"`
+	Context map[string]any        `json:"context,omitempty"`
+	SpaceID *string               `json:"space_id,omitempty"`
+}
+
+// SkillBuilderProposeRequest is the request for POST /agent/skill-builder/propose.
+type SkillBuilderProposeRequest struct {
+	Goal    string                `json:"goal"`
+	History []SkillBuilderMessage `json:"history,omitempty"`
+	SpaceID *string               `json:"space_id,omitempty"`
+	Deep    bool                  `json:"deep,omitempty"`
+}
+
+// SkillEditBodyRequest is the request for POST /agent/skill-builder/edit-body.
+type SkillEditBodyRequest struct {
+	SkillID   string  `json:"skill_id"`
+	Body      string  `json:"body"`
+	Rationale *string `json:"rationale,omitempty"`
+}
+
+// SkillImportRequest is the request for POST /agent/skill-builder/import.
+type SkillImportRequest struct {
+	SkillMD       *string           `json:"skill_md,omitempty"`
+	Path          *string           `json:"path,omitempty"`
+	URL           *string           `json:"url,omitempty"`
+	Files         map[string]string `json:"files,omitempty"`
+	Force         bool              `json:"force,omitempty"`
+	TakeOwnership bool              `json:"take_ownership,omitempty"`
+}
+
+// SkillRefineRequest is the request for POST /agent/skill-builder/refine.
+type SkillRefineRequest struct {
+	SkillID     string  `json:"skill_id"`
+	Instruction *string `json:"instruction,omitempty"`
 }
 
 // EvolutionEdge represents an EVOLVES relationship.
@@ -153,16 +493,16 @@ type EvolutionEdge struct {
 
 // KnowledgeProcessingStatus is the response for GET /agent/knowledge-processing/status.
 type KnowledgeProcessingStatus struct {
-	Enabled  bool   `json:"enabled"`
-	Status   string `json:"status"`
-	LastRun  string `json:"last_run,omitempty"`
-	NextRun  string `json:"next_run,omitempty"`
+	Enabled bool   `json:"enabled"`
+	Status  string `json:"status"`
+	LastRun string `json:"last_run,omitempty"`
+	NextRun string `json:"next_run,omitempty"`
 }
 
 // GraphIntelligenceStatus is the response for GET /agent/graph-intelligence/status.
 type GraphIntelligenceStatus struct {
-	Running    bool   `json:"running"`
-	SessionID  string `json:"session_id,omitempty"`
+	Running   bool   `json:"running"`
+	SessionID string `json:"session_id,omitempty"`
 }
 
 // GraphIntelligenceSession is a graph intelligence session.

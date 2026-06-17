@@ -161,10 +161,91 @@ func (s *MemoriesService) RemoveLabel(ctx context.Context, memoryID, labelID str
 	return s.client.do(ctx, "DELETE", path, nil, nil)
 }
 
+// ListRelations returns explicit relations for a memory.
+//
+// GET /memories/{id}/relations
+func (s *MemoriesService) ListRelations(ctx context.Context, memoryID string, params *ListMemoryRelationsParams) (*MemoryRelationListResponse, error) {
+	q := url.Values{}
+	if params != nil {
+		if params.Direction != "" {
+			q.Set("direction", params.Direction)
+		}
+		if params.Types != "" {
+			q.Set("types", params.Types)
+		}
+		if params.Status != "" {
+			q.Set("status", params.Status)
+		}
+		if params.Limit > 0 {
+			q.Set("limit", strconv.Itoa(params.Limit))
+		}
+		if params.Offset > 0 {
+			q.Set("offset", strconv.Itoa(params.Offset))
+		}
+		if params.SpaceID != "" {
+			q.Set("space_id", params.SpaceID)
+		}
+	}
+	var resp MemoryRelationListResponse
+	path := fmt.Sprintf("/memories/%s/relations", url.PathEscape(memoryID))
+	if err := s.client.doQuery(ctx, path, q, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// CreateRelation creates an explicit relation from a memory to another memory.
+//
+// POST /memories/{id}/relations
+func (s *MemoriesService) CreateRelation(ctx context.Context, memoryID string, req *MemoryRelationCreateRequest) (*MemoryRelation, error) {
+	var resp MemoryRelation
+	path := fmt.Sprintf("/memories/%s/relations", url.PathEscape(memoryID))
+	if err := s.client.do(ctx, "POST", path, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// SuggestRelation asks the backend to suggest whether two memories should be linked.
+//
+// POST /memories/{id}/relations/suggest
+func (s *MemoriesService) SuggestRelation(ctx context.Context, memoryID string, req *MemoryRelationSuggestRequest) (*MemoryRelationSuggestion, error) {
+	var resp MemoryRelationSuggestion
+	path := fmt.Sprintf("/memories/%s/relations/suggest", url.PathEscape(memoryID))
+	if err := s.client.do(ctx, "POST", path, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// UpdateRelation updates an explicit memory relation.
+//
+// PATCH /memories/relations/{relation_id}
+func (s *MemoriesService) UpdateRelation(ctx context.Context, relationID string, req *MemoryRelationUpdateRequest) (*MemoryRelation, error) {
+	var resp MemoryRelation
+	path := fmt.Sprintf("/memories/relations/%s", url.PathEscape(relationID))
+	if err := s.client.do(ctx, "PATCH", path, req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// DeleteRelation deletes an explicit memory relation.
+//
+// DELETE /memories/relations/{relation_id}
+func (s *MemoriesService) DeleteRelation(ctx context.Context, relationID string) (*MemoryRelation, error) {
+	var resp MemoryRelation
+	path := fmt.Sprintf("/memories/relations/%s", url.PathEscape(relationID))
+	if err := s.client.do(ctx, "DELETE", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // ExportOptions holds optional query parameters for the Export method.
 type ExportOptions struct {
-	Format         string `json:"format,omitempty"`
-	IncludeMetadata *bool `json:"include_metadata,omitempty"`
+	Format          string `json:"format,omitempty"`
+	IncludeMetadata *bool  `json:"include_metadata,omitempty"`
 }
 
 // Export exports a memory in various formats. (GET /memories/{id}/export)
@@ -186,18 +267,18 @@ func (s *MemoriesService) Export(ctx context.Context, memoryID string, opts *Exp
 
 // SearchMemoriesRequest is the request body for the memory search endpoint.
 type SearchMemoriesRequest struct {
-	Query             string   `json:"query"`
-	Mode              string   `json:"mode,omitempty"`
-	Limit             int      `json:"limit,omitempty"`
-	SpaceID           string   `json:"space_id,omitempty"`
-	FilterLabels      []string `json:"filter_labels,omitempty"`
-	UnitType          string   `json:"unit_type,omitempty"`
-	IncludeEntities   *bool    `json:"include_entities,omitempty"`
-	EventDateFrom     string   `json:"event_date_from,omitempty"`
-	EventDateTo       string   `json:"event_date_to,omitempty"`
-	TemporalContext   string   `json:"temporal_context,omitempty"`
-	RecordedDateFrom  string   `json:"recorded_date_from,omitempty"`
-	RecordedDateTo    string   `json:"recorded_date_to,omitempty"`
+	Query            string   `json:"query"`
+	Mode             string   `json:"mode,omitempty"`
+	Limit            int      `json:"limit,omitempty"`
+	SpaceID          string   `json:"space_id,omitempty"`
+	FilterLabels     []string `json:"filter_labels,omitempty"`
+	UnitType         string   `json:"unit_type,omitempty"`
+	IncludeEntities  *bool    `json:"include_entities,omitempty"`
+	EventDateFrom    string   `json:"event_date_from,omitempty"`
+	EventDateTo      string   `json:"event_date_to,omitempty"`
+	TemporalContext  string   `json:"temporal_context,omitempty"`
+	RecordedDateFrom string   `json:"recorded_date_from,omitempty"`
+	RecordedDateTo   string   `json:"recorded_date_to,omitempty"`
 }
 
 // SearchResult represents a single search result with the matched memory and relevance metadata.
@@ -227,14 +308,14 @@ type BulkMovePreviewRequest struct {
 
 // BulkMovePreviewResponse is the response for POST /memories/bulk/move/preview.
 type BulkMovePreviewResponse struct {
-	Count          int    `json:"count"`
-	MaxAllowed     int    `json:"max_allowed,omitempty"`
-	LimitExceeded  bool   `json:"limit_exceeded,omitempty"`
-	SourceSpaceID  string `json:"source_space_id,omitempty"`
-	TargetSpaceID  string `json:"target_space_id,omitempty"`
-	SelectionMode  string `json:"selection_mode,omitempty"`
-	ExcludedCount  int    `json:"excluded_count,omitempty"`
-	Message        string `json:"message,omitempty"`
+	Count         int    `json:"count"`
+	MaxAllowed    int    `json:"max_allowed,omitempty"`
+	LimitExceeded bool   `json:"limit_exceeded,omitempty"`
+	SourceSpaceID string `json:"source_space_id,omitempty"`
+	TargetSpaceID string `json:"target_space_id,omitempty"`
+	SelectionMode string `json:"selection_mode,omitempty"`
+	ExcludedCount int    `json:"excluded_count,omitempty"`
+	Message       string `json:"message,omitempty"`
 }
 
 // BulkMoveRequest is the request for POST /memories/bulk/move.
@@ -273,6 +354,100 @@ type BulkDeleteResponse struct {
 // ToggleFavoriteResponse is the response for POST /memories/{id}/favorite.
 type ToggleFavoriteResponse struct {
 	IsFavorite bool `json:"is_favorite"`
+}
+
+// ListMemoryRelationsParams are query parameters for ListRelations.
+type ListMemoryRelationsParams struct {
+	Direction string `json:"direction,omitempty"`
+	Types     string `json:"types,omitempty"`
+	Status    string `json:"status,omitempty"`
+	Limit     int    `json:"limit,omitempty"`
+	Offset    int    `json:"offset,omitempty"`
+	SpaceID   string `json:"space_id,omitempty"`
+}
+
+// MemoryRelation represents an explicit relation between two memories.
+type MemoryRelation struct {
+	ID             string         `json:"id"`
+	SourceMemoryID string         `json:"source_memory_id"`
+	SourceTitle    string         `json:"source_title,omitempty"`
+	SourceSpaceID  string         `json:"source_space_id"`
+	TargetMemoryID string         `json:"target_memory_id"`
+	TargetTitle    string         `json:"target_title,omitempty"`
+	TargetSpaceID  string         `json:"target_space_id"`
+	RelationType   string         `json:"relation_type"`
+	Strength       *float64       `json:"strength,omitempty"`
+	Confidence     *float64       `json:"confidence,omitempty"`
+	Bidirectional  bool           `json:"bidirectional,omitempty"`
+	Status         string         `json:"status,omitempty"`
+	Reviewed       bool           `json:"reviewed,omitempty"`
+	Source         *string        `json:"source,omitempty"`
+	AuthorID       *string        `json:"author_id,omitempty"`
+	AgentID        *string        `json:"agent_id,omitempty"`
+	SourceApp      *string        `json:"source_app,omitempty"`
+	Reason         *string        `json:"reason,omitempty"`
+	Properties     map[string]any `json:"properties,omitempty"`
+	CreatedAt      any            `json:"created_at,omitempty"`
+	UpdatedAt      any            `json:"updated_at,omitempty"`
+	Direction      *string        `json:"direction,omitempty"`
+}
+
+// MemoryRelationListResponse is the response for ListRelations.
+type MemoryRelationListResponse struct {
+	MemoryID  string           `json:"memory_id"`
+	Relations []MemoryRelation `json:"relations"`
+	Total     int              `json:"total"`
+}
+
+// MemoryRelationCreateRequest is the request for CreateRelation.
+type MemoryRelationCreateRequest struct {
+	TargetMemoryID string         `json:"target_memory_id"`
+	RelationType   string         `json:"relation_type"`
+	Strength       *float64       `json:"strength,omitempty"`
+	Confidence     *float64       `json:"confidence,omitempty"`
+	Bidirectional  bool           `json:"bidirectional,omitempty"`
+	Status         string         `json:"status,omitempty"`
+	Reviewed       *bool          `json:"reviewed,omitempty"`
+	Source         *string        `json:"source,omitempty"`
+	AuthorID       *string        `json:"author_id,omitempty"`
+	AgentID        *string        `json:"agent_id,omitempty"`
+	SourceApp      *string        `json:"source_app,omitempty"`
+	Reason         *string        `json:"reason,omitempty"`
+	Properties     map[string]any `json:"properties,omitempty"`
+	SpaceID        *string        `json:"space_id,omitempty"`
+}
+
+// MemoryRelationUpdateRequest is the request for UpdateRelation.
+type MemoryRelationUpdateRequest struct {
+	RelationType  *string        `json:"relation_type,omitempty"`
+	Strength      *float64       `json:"strength,omitempty"`
+	Confidence    *float64       `json:"confidence,omitempty"`
+	Bidirectional *bool          `json:"bidirectional,omitempty"`
+	Status        *string        `json:"status,omitempty"`
+	Reviewed      *bool          `json:"reviewed,omitempty"`
+	Source        *string        `json:"source,omitempty"`
+	AuthorID      *string        `json:"author_id,omitempty"`
+	AgentID       *string        `json:"agent_id,omitempty"`
+	SourceApp     *string        `json:"source_app,omitempty"`
+	Reason        *string        `json:"reason,omitempty"`
+	Properties    map[string]any `json:"properties,omitempty"`
+}
+
+// MemoryRelationSuggestRequest is the request for SuggestRelation.
+type MemoryRelationSuggestRequest struct {
+	TargetMemoryID     string   `json:"target_memory_id"`
+	PreferredLanguage  *string  `json:"preferred_language,omitempty"`
+	KnownRelationTypes []string `json:"known_relation_types,omitempty"`
+}
+
+// MemoryRelationSuggestion is the response for SuggestRelation.
+type MemoryRelationSuggestion struct {
+	ShouldLink    bool    `json:"should_link"`
+	RelationType  *string `json:"relation_type,omitempty"`
+	DisplayLabel  string  `json:"display_label,omitempty"`
+	Reason        string  `json:"reason,omitempty"`
+	Confidence    float64 `json:"confidence,omitempty"`
+	Bidirectional bool    `json:"bidirectional,omitempty"`
 }
 
 // Reindex queues multiple memories, or all that need reindexing. (POST /memories/reindex)

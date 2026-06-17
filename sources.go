@@ -202,6 +202,17 @@ func (s *SourcesService) BatchIngest(ctx context.Context, req *BatchIngestReques
 	return &resp, nil
 }
 
+// IngestContent ingests raw text content as a library source.
+//
+// POST /sources/ingest/content
+func (s *SourcesService) IngestContent(ctx context.Context, req *IngestContentRequest) (*IngestSourceResponse, error) {
+	var resp IngestSourceResponse
+	if err := s.client.do(ctx, "POST", "/sources/ingest/content", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // --- Source request types ---
 
 // UpdateSourceRequest is the request body for Update (PATCH /sources/{id}).
@@ -257,6 +268,15 @@ type BatchIngestResponse struct {
 	TotalErrors     int                    `json:"total_errors"`
 	Results         []IngestSourceResponse `json:"results,omitempty"`
 	Message         string                 `json:"message,omitempty"`
+}
+
+// IngestContentRequest is the request for IngestContent (POST /sources/ingest/content).
+type IngestContentRequest struct {
+	Name        string   `json:"name"`
+	Content     string   `json:"content"`
+	UserComment *string  `json:"user_comment,omitempty"`
+	Labels      []string `json:"labels,omitempty"`
+	SpaceID     string   `json:"space_id,omitempty"`
 }
 
 // UpdateContent updates the parsed markdown content of a source.
