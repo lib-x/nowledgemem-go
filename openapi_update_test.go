@@ -293,3 +293,97 @@ func TestSourcesIngestContentRoute(t *testing.T) {
 		t.Fatalf("source_id = %q, want src-1", resp.SourceID)
 	}
 }
+
+func TestDataExportAsyncAndStatusRoute(t *testing.T) {
+	t.Parallel()
+
+	var calls int
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		switch calls {
+		case 1:
+			if r.Method != http.MethodPost || r.URL.Path != "/data/export" {
+				t.Fatalf("first request = %s %s, want POST /data/export", r.Method, r.URL.Path)
+			}
+			var body DataExportRequest
+			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+				t.Fatalf("decode body: %v", err)
+			}
+			if body.ExportPath != "/tmp/export.zip" || !body.Async {
+				t.Fatalf("body = %#v, want async export path", body)
+			}
+			_ = json.NewEncoder(w).Encode(DataExportResponse{
+				Success: true,
+				JobID:   "job-1",
+				Status:  "queued",
+				Message: "Export job started",
+			})
+		case 2:
+			if r.Method != http.MethodGet || r.URL.Path != "/data/export/status/job-1" {
+				t.Fatalf("second request = %s %s, want GET /data/export/status/job-1", r.Method, r.URL.Path)
+			}
+			kind := "export"
+			_ = json.NewEncoder(w).Encode(DataTransferStatus{
+				JobID:  "job-1",
+				Status: "completed",
+				Kind:   &kind,
+				Result: map[string]any{"export_path": "/tmp/export.zip"},
+			})
+		default:
+			t.Fatalf("unexpected request %d: %s %s", calls, r.Method, r.URL.Path)
+		}
+	}))
+	defer srv.Close()
+
+	client := NewClient(WithBaseURL(srv.URL))
+	start, err := client.Data.Export(context.Background(), &DataExportRequest{
+		ExportPath: "/tmp/export.zip",
+		Async:      true,
+	})
+	if err != nil {
+		t.Fatalf("Data.Export returned error: %v", err)
+	}
+	if !start.Success || start.JobID != "job-1" || start.Status != "queued" {
+		t.Fatalf("start = %#v, want async job response", start)
+	}
+
+	status, err := client.Data.ExportStatus(context.Background(), start.JobID)
+	if err != nil {
+		t.Fatalf("Data.ExportStatus returned error: %v", err)
+	}
+	if status.Status != "completed" || status.Kind == nil || *status.Kind != "export" {
+		t.Fatalf("status = %#v, want completed export status", status)
+	}
+	if got := status.Result["export_path"]; got != "/tmp/export.zip" {
+		t.Fatalf("result export_path = %#v, want /tmp/export.zip", got)
+	}
+	if calls != 2 {
+		t.Fatalf("calls = %d, want 2", calls)
+	}
+}
+
+func TestDataCheckpointResultRoute(t *testing.T) {
+	t.Parallel()
+
+	detail := "ok"
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost || r.URL.Path != "/data/checkpoint" {
+			t.Fatalf("request = %s %s, want POST /data/checkpoint", r.Method, r.URL.Path)
+		}
+		_ = json.NewEncoder(w).Encode(DataTransferCheckpointResponse{
+			Success:      true,
+			Checkpointed: true,
+			Detail:       &detail,
+		})
+	}))
+	defer srv.Close()
+
+	client := NewClient(WithBaseURL(srv.URL))
+	resp, err := client.Data.CheckpointResult(context.Background())
+	if err != nil {
+		t.Fatalf("Data.CheckpointResult returned error: %v", err)
+	}
+	if !resp.Success || !resp.Checkpointed || resp.Detail == nil || *resp.Detail != "ok" {
+		t.Fatalf("checkpoint = %#v, want successful checkpoint", resp)
+	}
+}

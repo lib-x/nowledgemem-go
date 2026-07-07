@@ -37,6 +37,18 @@ func (s *DataService) DownloadExport(ctx context.Context, req *DataExportDownloa
 	return s.client.doBytes(ctx, http.MethodPost, "/data/export/download", nil, req)
 }
 
+// ExportStatus checks status of a background data export job.
+//
+// GET /data/export/status/{id}
+func (s *DataService) ExportStatus(ctx context.Context, jobID string) (*DataTransferStatus, error) {
+	var resp DataTransferStatus
+	path := fmt.Sprintf("/data/export/status/%s", url.PathEscape(jobID))
+	if err := s.client.do(ctx, "GET", path, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // Import imports data from a previous export at a server-side path.
 //
 // POST /data/import
@@ -67,68 +79,98 @@ func (s *DataService) Checkpoint(ctx context.Context) error {
 	return s.client.do(ctx, "POST", "/data/checkpoint", nil, nil)
 }
 
+// CheckpointResult forces a database checkpoint and returns the API response.
+//
+// POST /data/checkpoint
+func (s *DataService) CheckpointResult(ctx context.Context) (*DataTransferCheckpointResponse, error) {
+	var resp DataTransferCheckpointResponse
+	if err := s.client.do(ctx, "POST", "/data/checkpoint", nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // --- Data types ---
 
 // DataExportRequest is the request for Export (POST /data/export).
 type DataExportRequest struct {
-	ExportPath                   string `json:"export_path"`
-	Compress                     bool   `json:"compress,omitempty"`
-	Overwrite                    bool   `json:"overwrite,omitempty"`
-	IncludeMemories              *bool  `json:"include_memories,omitempty"`
-	IncludeThreads               *bool  `json:"include_threads,omitempty"`
-	IncludeMessages              *bool  `json:"include_messages,omitempty"`
-	IncludeEntities              *bool  `json:"include_entities,omitempty"`
-	IncludeLabels                *bool  `json:"include_labels,omitempty"`
-	IncludeSources               *bool  `json:"include_sources,omitempty"`
-	IncludeCommunities           *bool  `json:"include_communities,omitempty"`
-	IncludeSkills                *bool  `json:"include_skills,omitempty"`
-	IncludeEdges                 *bool  `json:"include_edges,omitempty"`
-	IncludeWorkingMemory         *bool  `json:"include_working_memory,omitempty"`
-	IncludeWorkingMemoryArchive  *bool  `json:"include_working_memory_archive,omitempty"`
-	IncludeSourceFiles           *bool  `json:"include_source_files,omitempty"`
+	ExportPath                  string `json:"export_path"`
+	Async                       bool   `json:"async,omitempty"`
+	Compress                    bool   `json:"compress,omitempty"`
+	Overwrite                   bool   `json:"overwrite,omitempty"`
+	IncludeMemories             *bool  `json:"include_memories,omitempty"`
+	IncludeThreads              *bool  `json:"include_threads,omitempty"`
+	IncludeMessages             *bool  `json:"include_messages,omitempty"`
+	IncludeEntities             *bool  `json:"include_entities,omitempty"`
+	IncludeLabels               *bool  `json:"include_labels,omitempty"`
+	IncludeSources              *bool  `json:"include_sources,omitempty"`
+	IncludeCommunities          *bool  `json:"include_communities,omitempty"`
+	IncludeSkills               *bool  `json:"include_skills,omitempty"`
+	IncludeEdges                *bool  `json:"include_edges,omitempty"`
+	IncludeWorkingMemory        *bool  `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive *bool  `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles          *bool  `json:"include_source_files,omitempty"`
 }
 
 // DataExportDownloadRequest is the request for DownloadExport (POST /data/export/download).
 //
 // This endpoint streams a ZIP directly to the client and does not require a server-side path.
 type DataExportDownloadRequest struct {
-	IncludeMemories              *bool `json:"include_memories,omitempty"`
-	IncludeThreads               *bool `json:"include_threads,omitempty"`
-	IncludeMessages              *bool `json:"include_messages,omitempty"`
-	IncludeEntities              *bool `json:"include_entities,omitempty"`
-	IncludeLabels                *bool `json:"include_labels,omitempty"`
-	IncludeSources               *bool `json:"include_sources,omitempty"`
-	IncludeCommunities           *bool `json:"include_communities,omitempty"`
-	IncludeSkills                *bool `json:"include_skills,omitempty"`
-	IncludeEdges                 *bool `json:"include_edges,omitempty"`
-	IncludeWorkingMemory         *bool `json:"include_working_memory,omitempty"`
-	IncludeWorkingMemoryArchive  *bool `json:"include_working_memory_archive,omitempty"`
-	IncludeSourceFiles           *bool `json:"include_source_files,omitempty"`
+	IncludeMemories             *bool `json:"include_memories,omitempty"`
+	IncludeThreads              *bool `json:"include_threads,omitempty"`
+	IncludeMessages             *bool `json:"include_messages,omitempty"`
+	IncludeEntities             *bool `json:"include_entities,omitempty"`
+	IncludeLabels               *bool `json:"include_labels,omitempty"`
+	IncludeSources              *bool `json:"include_sources,omitempty"`
+	IncludeCommunities          *bool `json:"include_communities,omitempty"`
+	IncludeSkills               *bool `json:"include_skills,omitempty"`
+	IncludeEdges                *bool `json:"include_edges,omitempty"`
+	IncludeWorkingMemory        *bool `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive *bool `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles          *bool `json:"include_source_files,omitempty"`
 }
 
 // DataExportResponse is the response from Export (POST /data/export).
+//
+// The API returns sync export result fields when async is false and job start
+// fields when async is true. Legacy path/size fields are kept for older servers.
 type DataExportResponse struct {
-	Path      string `json:"path"`
-	SizeBytes int64  `json:"size_bytes"`
-	ItemCount int    `json:"item_count"`
+	Path      string `json:"path,omitempty"`
+	SizeBytes int64  `json:"size_bytes,omitempty"`
+	ItemCount int    `json:"item_count,omitempty"`
+
+	Success      bool           `json:"success,omitempty"`
+	ExportID     string         `json:"export_id,omitempty"`
+	Format       string         `json:"format,omitempty"`
+	Version      int64          `json:"version,omitempty"`
+	CreatedAt    string         `json:"created_at,omitempty"`
+	Counts       map[string]any `json:"counts,omitempty"`
+	Warnings     []string       `json:"warnings,omitempty"`
+	ExportDir    *string        `json:"export_dir,omitempty"`
+	ExportPath   *string        `json:"export_path,omitempty"`
+	ManifestPath *string        `json:"manifest_path,omitempty"`
+
+	JobID   string `json:"job_id,omitempty"`
+	Status  string `json:"status,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 // DataImportRequest is the request for Import (POST /data/import).
 type DataImportRequest struct {
-	ImportPath                   string `json:"import_path"`
-	Mode                         string `json:"mode,omitempty"`
-	IncludeMemories              *bool  `json:"include_memories,omitempty"`
-	IncludeThreads               *bool  `json:"include_threads,omitempty"`
-	IncludeMessages              *bool  `json:"include_messages,omitempty"`
-	IncludeEntities              *bool  `json:"include_entities,omitempty"`
-	IncludeLabels                *bool  `json:"include_labels,omitempty"`
-	IncludeSources               *bool  `json:"include_sources,omitempty"`
-	IncludeCommunities           *bool  `json:"include_communities,omitempty"`
-	IncludeSkills                *bool  `json:"include_skills,omitempty"`
-	IncludeEdges                 *bool  `json:"include_edges,omitempty"`
-	IncludeWorkingMemory         *bool  `json:"include_working_memory,omitempty"`
-	IncludeWorkingMemoryArchive  *bool  `json:"include_working_memory_archive,omitempty"`
-	IncludeSourceFiles           *bool  `json:"include_source_files,omitempty"`
+	ImportPath                  string `json:"import_path"`
+	Mode                        string `json:"mode,omitempty"`
+	IncludeMemories             *bool  `json:"include_memories,omitempty"`
+	IncludeThreads              *bool  `json:"include_threads,omitempty"`
+	IncludeMessages             *bool  `json:"include_messages,omitempty"`
+	IncludeEntities             *bool  `json:"include_entities,omitempty"`
+	IncludeLabels               *bool  `json:"include_labels,omitempty"`
+	IncludeSources              *bool  `json:"include_sources,omitempty"`
+	IncludeCommunities          *bool  `json:"include_communities,omitempty"`
+	IncludeSkills               *bool  `json:"include_skills,omitempty"`
+	IncludeEdges                *bool  `json:"include_edges,omitempty"`
+	IncludeWorkingMemory        *bool  `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive *bool  `json:"include_working_memory_archive,omitempty"`
+	IncludeSourceFiles          *bool  `json:"include_source_files,omitempty"`
 }
 
 // DataImportResponse is the response from Import and UploadImport.
@@ -136,17 +178,35 @@ type DataImportResponse struct {
 	JobID   string `json:"job_id"`
 	Status  string `json:"status"`
 	Message string `json:"message,omitempty"`
+	Success bool   `json:"success,omitempty"`
 }
 
-// DataImportStatus is the response from ImportStatus (GET /data/import/status/{id}).
-type DataImportStatus struct {
-	JobID    string  `json:"job_id"`
-	Status   string  `json:"status"`
-	Progress float64 `json:"progress"`
-	Imported int     `json:"imported"`
-	Skipped  int     `json:"skipped"`
-	Failed   int     `json:"failed"`
+// DataTransferStatus is the response from import/export status endpoints.
+type DataTransferStatus struct {
+	JobID       string         `json:"job_id"`
+	Status      string         `json:"status"`
+	Kind        *string        `json:"kind,omitempty"`
+	Result      map[string]any `json:"result,omitempty"`
+	StartedAt   *string        `json:"started_at,omitempty"`
+	CompletedAt *string        `json:"completed_at,omitempty"`
+	Error       *string        `json:"error,omitempty"`
+
+	// Older servers returned progress counters at the top level.
+	Progress float64 `json:"progress,omitempty"`
+	Imported int     `json:"imported,omitempty"`
+	Skipped  int     `json:"skipped,omitempty"`
+	Failed   int     `json:"failed,omitempty"`
 	Message  string  `json:"message,omitempty"`
+}
+
+// DataImportStatus is kept as an alias for ImportStatus callers.
+type DataImportStatus = DataTransferStatus
+
+// DataTransferCheckpointResponse is the response from CheckpointResult.
+type DataTransferCheckpointResponse struct {
+	Success      bool    `json:"success"`
+	Checkpointed bool    `json:"checkpointed"`
+	Detail       *string `json:"detail,omitempty"`
 }
 
 // UploadImportRequest is the multipart request for UploadImport (POST /data/import/upload).

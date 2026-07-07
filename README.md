@@ -108,6 +108,28 @@ func strPtr(s string) *string { return &s }
 | `client.Agent` | Background Intelligence triggers |
 | `client.Events` | Server-sent events stream |
 | `client.Graph` | Graph analysis, augmentation, orphans |
+| `client.Data` | Data export/import, async transfer job status, checkpoints |
+
+## Data Export Jobs
+
+`POST /data/export` supports synchronous exports by default. Set `Async` to
+`true` to start a background export and poll its status:
+
+```go
+start, err := client.Data.Export(ctx, &mem.DataExportRequest{
+    ExportPath: "/tmp/nowledge-export.zip",
+    Async:      true,
+})
+if err != nil {
+    log.Fatal(err)
+}
+
+status, err := client.Data.ExportStatus(ctx, start.JobID)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println("Export status:", status.Status)
+```
 
 ## Configuration
 
