@@ -1,7 +1,8 @@
 # Nowledge Mem Go SDK
 
 Go client library for the [Nowledge Mem](https://mem.nowledge.co) REST API.
-and the openapi https://mem.nowledge.co/docs/refs/openapi.json
+The complete generated client tracks the official
+[OpenAPI document](https://mem.nowledge.co/docs/refs/openapi.json).
 
 ## Installation
 
@@ -109,6 +110,47 @@ func strPtr(s string) *string { return &s }
 | `client.Events` | Server-sent events stream |
 | `client.Graph` | Graph analysis, augmentation, orphans |
 | `client.Data` | Data export/import, async transfer job status, checkpoints |
+
+## Complete generated client
+
+The `openapi` subpackage contains types and methods generated for every operation
+in the upstream API. The existing service client remains available as the concise,
+backward-compatible API for common workflows.
+
+```go
+import api "github.com/lib-x/nowledgemem-go/openapi"
+
+client, err := api.NewClientWithResponses("http://127.0.0.1:14242")
+if err != nil {
+    log.Fatal(err)
+}
+
+resp, err := client.HealthCheckHealthGetWithResponse(ctx)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(resp.Status())
+```
+
+To reproduce the generated client from the checked-in specification snapshot:
+
+```bash
+go generate ./openapi
+```
+
+To explicitly refresh the snapshot from the official API and regenerate:
+
+```bash
+go run ./internal/cmd/openapi-sync -update \
+    -spec openapi/openapi.json \
+    -output openapi/client.gen.go \
+    -package openapi
+```
+
+The sync command rejects external `$ref` values and unreviewed path-parameter
+mismatches. It applies only the two documented corrections currently required by
+the upstream OpenAPI 3.1 document. The module and its pinned generator use Go
+1.27 or newer.
 
 ## Data Export Jobs
 
