@@ -1,6 +1,10 @@
 package nowledgemem
 
-import "context"
+import (
+	"context"
+
+	"github.com/lib-x/nowledgemem-go/openapi"
+)
 
 // DistillationService provides methods for creating memories from conversation threads.
 type DistillationService struct {
@@ -112,16 +116,17 @@ type DistillPreviewResponse struct {
 
 // DistillRequest is the request for POST /memories/distill.
 type DistillRequest struct {
-	ThreadID               string  `json:"thread_id"`
-	ThreadTitle            *string `json:"thread_title,omitempty"`
-	ThreadContent          *string `json:"thread_content,omitempty"`
-	DistillationType       *string `json:"distillation_type,omitempty"`
-	ExtractionLevel        *string `json:"extraction_level,omitempty"`
-	CacheKey               *string `json:"cache_key,omitempty"`
-	SelectedMessageIndices []int   `json:"selected_message_indices,omitempty"`
-	PreferredLanguage      *string `json:"preferred_language,omitempty"`
-	ForceDistill           bool    `json:"force_distill,omitempty"`
-	SpaceID                *string `json:"space_id,omitempty"`
+	ThreadID               string                         `json:"thread_id"`
+	ThreadTitle            *string                        `json:"thread_title,omitempty"`
+	ThreadContent          *string                        `json:"thread_content,omitempty"`
+	DistillationType       *string                        `json:"distillation_type,omitempty"`
+	ExtractionLevel        *string                        `json:"extraction_level,omitempty"`
+	CacheKey               *string                        `json:"cache_key,omitempty"`
+	SelectedMessageIndices []int                          `json:"selected_message_indices,omitempty"`
+	PreferredLanguage      *string                        `json:"preferred_language,omitempty"`
+	ForceDistill           bool                           `json:"force_distill,omitempty"`
+	SpaceID                *string                        `json:"space_id,omitempty"`
+	NativeSourceOperation  *openapi.NativeSourceOperation `json:"native_source_operation,omitempty"`
 }
 
 // DistillResponse is the response for POST /memories/distill.
@@ -147,14 +152,29 @@ type DistillPlanResponse struct {
 
 // DistillScheduleRequest is the request for POST /memories/distill/schedule.
 type DistillScheduleRequest struct {
-	ThreadID string  `json:"thread_id"`
-	SpaceID  *string `json:"space_id,omitempty"`
+	ThreadID              string                         `json:"thread_id"`
+	SpaceID               *string                        `json:"space_id,omitempty"`
+	NativeSourceOperation *openapi.NativeSourceOperation `json:"native_source_operation,omitempty"`
+	MemoryPolicyOverride  *openapi.MemoryPolicyPatch     `json:"memory_policy_override,omitempty"`
+	DistillAgainOfTaskID  *string                        `json:"distill_again_of_task_id,omitempty"`
 }
 
 // DistillScheduleResponse is the response for POST /memories/distill/schedule.
 type DistillScheduleResponse struct {
-	Scheduled bool   `json:"scheduled"`
-	JobID     string `json:"job_id,omitempty"`
+	Scheduled                bool   `json:"scheduled"`
+	JobID                    string `json:"job_id,omitempty"`
+	Success                  bool   `json:"success,omitzero"`
+	TaskID                   string `json:"task_id,omitempty"`
+	ScheduledAt              string `json:"scheduled_at,omitempty"`
+	DelaySeconds             int    `json:"delay_seconds,omitzero"`
+	TaskType                 string `json:"task_type,omitempty"`
+	ThreadID                 string `json:"thread_id,omitempty"`
+	RecommendedExecutionMode string `json:"recommended_execution_mode,omitempty"`
+	Message                  string `json:"message,omitempty"`
+	DistillAgain             *struct {
+		RunID  string `json:"run_id"`
+		Status string `json:"status"`
+	} `json:"distill_again,omitempty"`
 }
 
 // ThreadDistillationBatchPlanRequest is the request for POST /memories/distill/batch-plan.

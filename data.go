@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/lib-x/nowledgemem-go/openapi"
 )
 
 // DataService handles data export and import operations.
@@ -58,6 +60,15 @@ func (s *DataService) Import(ctx context.Context, req *DataImportRequest) (*Data
 		return nil, err
 	}
 	return &resp, nil
+}
+
+// PreviewImport inspects a server-side archive without importing it.
+func (s *DataService) PreviewImport(ctx context.Context, req *DataImportRequest) (*openapi.DataImportPreviewResponse, error) {
+	var response openapi.DataImportPreviewResponse
+	if err := s.client.do(ctx, http.MethodPost, "/data/import/preview", req, &response); err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
 
 // ImportStatus checks status of a data import job.
@@ -110,6 +121,7 @@ type DataExportRequest struct {
 	IncludeWorkingMemory        *bool  `json:"include_working_memory,omitempty"`
 	IncludeWorkingMemoryArchive *bool  `json:"include_working_memory_archive,omitempty"`
 	IncludeSourceFiles          *bool  `json:"include_source_files,omitempty"`
+	IncludeFeedEvents           *bool  `json:"include_feed_events,omitempty"`
 }
 
 // DataExportDownloadRequest is the request for DownloadExport (POST /data/export/download).
@@ -128,6 +140,7 @@ type DataExportDownloadRequest struct {
 	IncludeWorkingMemory        *bool `json:"include_working_memory,omitempty"`
 	IncludeWorkingMemoryArchive *bool `json:"include_working_memory_archive,omitempty"`
 	IncludeSourceFiles          *bool `json:"include_source_files,omitempty"`
+	IncludeFeedEvents           *bool `json:"include_feed_events,omitempty"`
 }
 
 // DataExportResponse is the response from Export (POST /data/export).
@@ -171,6 +184,7 @@ type DataImportRequest struct {
 	IncludeWorkingMemory        *bool  `json:"include_working_memory,omitempty"`
 	IncludeWorkingMemoryArchive *bool  `json:"include_working_memory_archive,omitempty"`
 	IncludeSourceFiles          *bool  `json:"include_source_files,omitempty"`
+	IncludeFeedEvents           *bool  `json:"include_feed_events,omitempty"`
 }
 
 // DataImportResponse is the response from Import and UploadImport.
@@ -226,17 +240,35 @@ type UploadImportRequest struct {
 	IncludeWorkingMemory        *bool     `json:"include_working_memory,omitempty"`
 	IncludeWorkingMemoryArchive *bool     `json:"include_working_memory_archive,omitempty"`
 	IncludeSourceFiles          *bool     `json:"include_source_files,omitempty"`
+	IncludeFeedEvents           *bool     `json:"include_feed_events,omitempty"`
 }
 
 // UploadImport imports data from an uploaded ZIP file.
 //
 // POST /data/import/upload
 func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest) (*DataImportResponse, error) {
+	var result DataImportResponse
+	if err := s.uploadImport(ctx, "/data/import/upload", req, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// PreviewUploadImport inspects an uploaded archive without importing it.
+func (s *DataService) PreviewUploadImport(ctx context.Context, req *UploadImportRequest) (*openapi.DataImportPreviewResponse, error) {
+	var result openapi.DataImportPreviewResponse
+	if err := s.uploadImport(ctx, "/data/import/upload/preview", req, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func (s *DataService) uploadImport(ctx context.Context, path string, req *UploadImportRequest, result any) error {
 	if req == nil {
-		return nil, fmt.Errorf("request is required")
+		return fmt.Errorf("request is required")
 	}
 	if req.File == nil {
-		return nil, fmt.Errorf("file is required")
+		return fmt.Errorf("file is required")
 	}
 
 	// Build multipart form
@@ -250,10 +282,10 @@ func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest
 	}
 	part, err := writer.CreateFormFile("file", filename)
 	if err != nil {
-		return nil, fmt.Errorf("create form file: %w", err)
+		return fmt.Errorf("create form file: %w", err)
 	}
 	if _, err := io.Copy(part, req.File); err != nil {
-		return nil, fmt.Errorf("copy file: %w", err)
+		return fmt.Errorf("copy file: %w", err)
 	}
 
 	// Add optional fields
@@ -296,19 +328,19 @@ func (s *DataService) UploadImport(ctx context.Context, req *UploadImportRequest
 	if req.IncludeSourceFiles != nil {
 		writer.WriteField("include_source_files", strconv.FormatBool(*req.IncludeSourceFiles))
 	}
+	if req.IncludeFeedEvents != nil {
+		if err := writer.WriteField("include_feed_events", strconv.FormatBool(*req.IncludeFeedEvents)); err != nil {
+			return fmt.Errorf("write include_feed_events: %w", err)
+		}
+	}
 
 	if err := writer.Close(); err != nil {
-		return nil, fmt.Errorf("close multipart writer: %w", err)
+		return fmt.Errorf("close multipart writer: %w", err)
 	}
 
-	httpReq, err := s.client.newRequest(ctx, http.MethodPost, "/data/import/upload", nil, &buf, writer.FormDataContentType())
+	httpReq, err := s.client.newRequest(ctx, http.MethodPost, path, nil, &buf, writer.FormDataContentType())
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	var result DataImportResponse
-	if err := s.client.doRequest(httpReq, &result); err != nil {
-		return nil, err
-	}
-	return &result, nil
+	return s.client.doRequest(httpReq, result)
 }

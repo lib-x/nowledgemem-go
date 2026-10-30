@@ -154,6 +154,9 @@ func (s *SourcesService) IngestFile(ctx context.Context, req *IngestFileRequest)
 	if err := writeFormFieldIfSet(writer, "space_id", req.SpaceID); err != nil {
 		return nil, err
 	}
+	if err := writeFormFieldIfSet(writer, "attachment_reference", req.AttachmentReference); err != nil {
+		return nil, err
+	}
 	if err := writer.Close(); err != nil {
 		return nil, fmt.Errorf("close multipart writer: %w", err)
 	}
@@ -222,12 +225,13 @@ type UpdateSourceRequest struct {
 
 // IngestFileRequest is the multipart request body for IngestFile (POST /sources/ingest/file).
 type IngestFileRequest struct {
-	File        io.Reader `json:"-"`
-	Filename    string    `json:"-"`
-	UserComment string    `json:"user_comment,omitempty"`
-	Labels      string    `json:"labels,omitempty"`
-	Metadata    string    `json:"metadata,omitempty"`
-	SpaceID     string    `json:"space_id,omitempty"`
+	File                io.Reader `json:"-"`
+	Filename            string    `json:"-"`
+	UserComment         string    `json:"user_comment,omitempty"`
+	Labels              string    `json:"labels,omitempty"`
+	Metadata            string    `json:"metadata,omitempty"`
+	SpaceID             string    `json:"space_id,omitempty"`
+	AttachmentReference string    `json:"attachment_reference,omitempty"`
 }
 
 // IngestURLRequest is the request body for IngestURL (POST /sources/ingest/url).

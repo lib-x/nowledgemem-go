@@ -3,6 +3,8 @@ package nowledgemem
 import (
 	"fmt"
 	"time"
+
+	"github.com/lib-x/nowledgemem-go/openapi"
 )
 
 // Memory represents a memory node in the knowledge base with content, metadata, and temporal information.
@@ -82,22 +84,25 @@ type Pagination struct {
 
 // CreateMemoryRequest is the request body for creating a new memory.
 type CreateMemoryRequest struct {
-	ID               *string        `json:"id,omitempty"`
-	Content          string         `json:"content"`
-	Title            *string        `json:"title,omitempty"`
-	SourceThreadID   *string        `json:"source_thread_id,omitempty"`
-	SourceMsgRange   map[string]int `json:"source_message_range,omitempty"`
-	Source           *string        `json:"source,omitempty"`
-	SourceMessageID  *string        `json:"source_message_id,omitempty"`
-	Importance       *float64       `json:"importance,omitempty"`
-	Confidence       *float64       `json:"confidence,omitempty"`
-	Labels           []string       `json:"labels,omitempty"`
-	SpaceID          *string        `json:"space_id,omitempty"`
-	Metadata         map[string]any `json:"metadata,omitempty"`
-	EventStart       *string        `json:"event_start,omitempty"`
-	EventEnd         *string        `json:"event_end,omitempty"`
-	TemporalContext  *string        `json:"temporal_context,omitempty"`
-	UnitType         *string        `json:"unit_type,omitempty"`
+	ID              *string                                  `json:"id,omitempty"`
+	Content         string                                   `json:"content"`
+	Title           *string                                  `json:"title,omitempty"`
+	SourceThreadID  *string                                  `json:"source_thread_id,omitempty"`
+	SourceMsgRange  map[string]int                           `json:"source_message_range,omitempty"`
+	Source          *string                                  `json:"source,omitempty"`
+	SourceMessageID *string                                  `json:"source_message_id,omitempty"`
+	Importance      *float64                                 `json:"importance,omitempty"`
+	Confidence      *float64                                 `json:"confidence,omitempty"`
+	Labels          []string                                 `json:"labels,omitempty"`
+	SpaceID         *string                                  `json:"space_id,omitempty"`
+	Metadata        map[string]any                           `json:"metadata,omitempty"`
+	EventStart      *string                                  `json:"event_start,omitempty"`
+	EventEnd        *string                                  `json:"event_end,omitempty"`
+	TemporalContext *string                                  `json:"temporal_context,omitempty"`
+	UnitType        *string                                  `json:"unit_type,omitempty"`
+	WriteIntent     *openapi.MemoryCreateRequest_WriteIntent `json:"write_intent,omitempty"`
+	ClaimStatus     *string                                  `json:"claim_status,omitempty"`
+	SourceGrounding *string                                  `json:"source_grounding,omitempty"`
 }
 
 // CreateMemoryResponse is the response body after creating a memory, including extracted entities.
@@ -185,6 +190,8 @@ type ThreadListItem struct {
 	Date       string `json:"date,omitempty"`
 	IsFavorite bool   `json:"is_favorite,omitempty"`
 	SpaceID    string `json:"space_id,omitempty"`
+	Project    string `json:"project,omitempty"`
+	Workspace  string `json:"workspace,omitempty"`
 }
 
 // MessageCreateRequest is a message in a create-thread request.
@@ -226,10 +233,11 @@ type ListThreadsResponse struct {
 
 // ListThreadsParams holds query parameters for listing threads.
 type ListThreadsParams struct {
-	Limit   int    `json:"limit,omitempty"`
-	Offset  int    `json:"offset,omitempty"`
-	Source  string `json:"source,omitempty"`
-	SpaceID string `json:"space_id,omitempty"`
+	Limit      int    `json:"limit,omitempty"`
+	Offset     int    `json:"offset,omitempty"`
+	Source     string `json:"source,omitempty"`
+	SpaceID    string `json:"space_id,omitempty"`
+	ProjectKey string `json:"project_key,omitempty"`
 }
 
 // --- Labels ---
@@ -441,7 +449,8 @@ type FSWriteRequest struct {
 
 // FSDeleteRequest is the request body for deleting a file.
 type FSDeleteRequest struct {
-	Path string `json:"path"`
+	Path    string  `json:"path"`
+	SpaceID *string `json:"space_id,omitempty"`
 }
 
 // FSSearchResponse is the response for file search and recall operations.

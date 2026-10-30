@@ -589,6 +589,14 @@
           "id": {
             "type": "string"
           },
+          "identityReference": {
+            "description": "Server-authored opaque scoped incarnation for content profile links.\nNull means this legacy identity has no issued reference. Copy the\nobserved value into IdentitySubject.reference; do not derive it from\nid or reuse it after replacement.",
+            "readOnly": true,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "instructions": {
             "type": "string"
           },
@@ -1153,6 +1161,10 @@
             "title": "Embedding Mode",
             "type": "string"
           },
+          "embedding_runtime": {
+            "$ref": "#/components/schemas/EmbeddingRuntime",
+            "description": "Runtime evidence about the configured embedding provider. Always sent by servers that support it, carrying zero counts before this process has run a search; absent entirely on older servers."
+          },
           "error": {
             "anyOf": [
               {
@@ -1709,8 +1721,7 @@
         "properties": {
           "cascade_deletion": {
             "default": false,
-            "description": "Whether memories were deleted",
-            "title": "Cascade Deletion",
+            "description": "Whether cascade deletion was requested, not proof that any Memory was deleted. Cloud currently reports zero extracted Memory deletions.",
             "type": "boolean"
           },
           "deleted_count": {
@@ -1718,30 +1729,79 @@
             "title": "Deleted Count",
             "type": "integer"
           },
+          "deletion_outcome_uncertain": {
+            "description": "At least one submitted graph outcome could not be confirmed. Counts include only confirmed commits; refresh before retrying.",
+            "type": "boolean"
+          },
           "failed_count": {
             "default": 0,
             "description": "Number of threads that failed to delete",
             "title": "Failed Count",
             "type": "integer"
           },
+          "index_repair_pending": {
+            "description": "Known search projection repair remains pending after the reported graph outcomes.",
+            "type": "boolean"
+          },
           "message": {
             "description": "Success message",
             "title": "Message",
             "type": "string"
           },
+          "partial_success": {
+            "description": "Some deletions committed while the overall operation did not fully complete. Absence is not proof of rollback.",
+            "type": "boolean"
+          },
           "results": {
             "description": "Detailed results for each thread deletion",
             "items": {
               "additionalProperties": true,
+              "properties": {
+                "cascade_deletion": {
+                  "default": false,
+                  "description": "Whether cascade deletion was requested, not proof that any Memory was deleted. Cloud currently reports zero extracted Memory deletions.",
+                  "type": "boolean"
+                },
+                "deleted": {
+                  "description": "Whether the parent Thread deletion was confirmed. False with deletion_outcome_uncertain is not proof that no write committed.",
+                  "type": "boolean"
+                },
+                "deleted_memories": {
+                  "description": "Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.",
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "deleted_messages": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "deletion_outcome_uncertain": {
+                  "description": "At least one submitted graph outcome could not be confirmed. Counts include only confirmed commits; refresh before retrying.",
+                  "type": "boolean"
+                },
+                "error": {
+                  "type": "string"
+                },
+                "index_repair_pending": {
+                  "description": "Known search projection repair remains pending after the reported graph outcomes.",
+                  "type": "boolean"
+                },
+                "partial_success": {
+                  "description": "Some deletions committed while the overall operation did not fully complete. Absence is not proof of rollback.",
+                  "type": "boolean"
+                },
+                "thread_id": {
+                  "type": "string"
+                }
+              },
               "type": "object"
             },
             "title": "Results",
             "type": "array"
           },
           "total_deleted_memories": {
-            "default": 0,
-            "description": "Total number of memories deleted",
-            "title": "Total Deleted Memories",
+            "description": "Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.",
+            "minimum": 0,
             "type": "integer"
           },
           "total_deleted_messages": {
@@ -2982,6 +3042,91 @@
         ],
         "type": "string"
       },
+      "DataImportPreview": {
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "description": "Flattened source-declared counts; not conflict predictions.",
+            "type": "object"
+          },
+          "export_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "exported_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "format": {
+            "type": "string"
+          },
+          "format_version": {
+            "format": "int64",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "included": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object"
+          },
+          "input_frozen": {
+            "type": "boolean"
+          },
+          "inspection_only": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "source_kind": {
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "format",
+          "counts",
+          "included",
+          "warnings",
+          "mode",
+          "source_kind",
+          "inspection_only",
+          "input_frozen"
+        ],
+        "type": "object"
+      },
+      "DataImportPreviewResponse": {
+        "properties": {
+          "preview": {
+            "$ref": "#/components/schemas/DataImportPreview"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "preview"
+        ],
+        "type": "object"
+      },
       "DataImportRequest": {
         "description": "POST /data/import request body.",
         "properties": {
@@ -3338,14 +3483,12 @@
         "properties": {
           "cascade_deletion": {
             "default": false,
-            "description": "Whether memories were cascade deleted",
-            "title": "Cascade Deletion",
+            "description": "Whether cascade deletion was requested, not proof that any Memory was deleted. Cloud currently reports zero extracted Memory deletions.",
             "type": "boolean"
           },
           "deleted_memories": {
-            "default": 0,
-            "description": "Number of memories deleted",
-            "title": "Deleted Memories",
+            "description": "Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.",
+            "minimum": 0,
             "type": "integer"
           },
           "deleted_messages": {
@@ -3354,10 +3497,18 @@
             "title": "Deleted Messages",
             "type": "integer"
           },
+          "index_repair_pending": {
+            "description": "Known search projection repair remains pending after the reported graph outcomes.",
+            "type": "boolean"
+          },
           "message": {
             "description": "Success message",
             "title": "Message",
             "type": "string"
+          },
+          "storage_cleanup_pending": {
+            "description": "The Thread graph deletion committed but associated content cleanup remains pending.",
+            "type": "boolean"
           }
         },
         "required": [
@@ -3726,6 +3877,9 @@
             "title": "Force Distill",
             "type": "boolean"
           },
+          "native_source_operation": {
+            "$ref": "#/components/schemas/NativeSourceOperation"
+          },
           "preferred_language": {
             "anyOf": [
               {
@@ -3824,6 +3978,18 @@
             "title": "Delay Seconds",
             "type": "integer"
           },
+          "distill_again_of_task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional Processing task ID to distill again when its recovery state offers that action. The task's conversation and Space bind the new request.",
+            "title": "Distill Again Of Task Id"
+          },
           "distillation_type": {
             "default": "simple_llm",
             "description": "Type: 'simple_llm' or 'knowledge_graph'",
@@ -3857,6 +4023,20 @@
             "description": "When true, bypass the strict worthiness gate because the user explicitly requested distillation",
             "title": "Force Distill",
             "type": "boolean"
+          },
+          "memory_policy_override": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MemoryPolicyPatch"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional one-run Memory Policy applied after global and actual source-Thread Space settings. Does not change stored policy or routing. Omitted, null, or empty objects preserve inherited behavior. Existing force_distill semantics remain separate; set it to request re-distillation of unchanged content."
+          },
+          "native_source_operation": {
+            "$ref": "#/components/schemas/NativeSourceOperation"
           },
           "preferred_language": {
             "anyOf": [
@@ -3940,6 +4120,29 @@
             "title": "Delay Seconds",
             "type": "integer"
           },
+          "distill_again": {
+            "additionalProperties": false,
+            "description": "Present only when a distill-again request is accepted; identifies the recovered run and whether this request queued it or it had already started.",
+            "properties": {
+              "run_id": {
+                "title": "Run Id",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "queued",
+                  "already_started"
+                ],
+                "title": "Status",
+                "type": "string"
+              }
+            },
+            "required": [
+              "run_id",
+              "status"
+            ],
+            "type": "object"
+          },
           "message": {
             "title": "Message",
             "type": "string"
@@ -3995,6 +4198,69 @@
           }
         ]
       },
+      "EmbeddingRuntime": {
+        "description": "What real searches got from the active embedding provider, since this window opened. Process-local and not persisted: a restart opens a fresh window, and so does a change of embedder identity or of the wait budget, because counts gathered under a configuration the user has left no longer describe the one in force. Present with zero counts before the first search rather than absent, so a client can judge a connection test against the wait before any search has run.",
+        "properties": {
+          "attempted": {
+            "description": "Query embeddings attempted in this window. Equals `succeeded + timed_out + failed`.",
+            "title": "Attempted",
+            "type": "integer"
+          },
+          "failed": {
+            "description": "Attempts that ended in an error rather than a timeout: auth, quota, network and malformed responses alike. Not separated further, because the search path cannot tell them apart.",
+            "title": "Failed",
+            "type": "integer"
+          },
+          "identity": {
+            "description": "The embedder these counts describe, as `provider/model`, or `local` for the on-device embedder.",
+            "title": "Identity",
+            "type": "string"
+          },
+          "last_success_latency_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "How long the most recent SUCCESSFUL query embedding took. Null until one succeeds in this window. Never derived from a timed-out call, whose elapsed time is the budget rather than a measurement of the provider.",
+            "title": "Last Success Latency Ms"
+          },
+          "succeeded": {
+            "title": "Succeeded",
+            "type": "integer"
+          },
+          "timed_out": {
+            "description": "Attempts abandoned at `wait_budget_seconds`. Each one answered the search with keyword-only results.",
+            "title": "Timed Out",
+            "type": "integer"
+          },
+          "wait_budget_seconds": {
+            "description": "The wait a query embedding gets before the search degrades to keyword-only, resolved as explicit setting, then environment override, then default.",
+            "title": "Wait Budget Seconds",
+            "type": "number"
+          },
+          "window_started_at_unix": {
+            "description": "Unix seconds when this window opened.",
+            "title": "Window Started At Unix",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "identity",
+          "attempted",
+          "succeeded",
+          "timed_out",
+          "failed",
+          "last_success_latency_ms",
+          "wait_budget_seconds",
+          "window_started_at_unix"
+        ],
+        "title": "EmbeddingRuntime",
+        "type": "object"
+      },
       "EmbeddingVector": {
         "oneOf": [
           {
@@ -4008,6 +4274,73 @@
             "type": "string"
           }
         ]
+      },
+      "EntityAliasChangeSchema": {
+        "properties": {
+          "add": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expected_aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expected_revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "remove": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "expected_aliases"
+        ],
+        "type": "object"
+      },
+      "EntityAliasStateSchema": {
+        "properties": {
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "entity_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rejected_aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entity_id",
+          "name",
+          "aliases",
+          "rejected_aliases",
+          "revision"
+        ],
+        "type": "object"
       },
       "EntityDeletePlanResponse": {
         "properties": {
@@ -4684,6 +5017,12 @@
           "can_apply": {
             "type": "boolean"
           },
+          "cannot_apply_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "current_edges": {
             "items": {
               "$ref": "#/components/schemas/EvolvesRevisionEdgeResponse"
@@ -4702,6 +5041,16 @@
           "memories_preserved": {
             "type": "boolean"
           },
+          "memory_contents": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Complete authorized bodies from the plan's snapshot, keyed by Memory ID.\nPreview only; omitted from apply responses and persisted receipts.",
+            "propertyNames": {
+              "type": "string"
+            },
+            "type": "object"
+          },
           "plan_id": {
             "type": "string"
           },
@@ -4716,6 +5065,7 @@
           "plan_id",
           "decision",
           "memories",
+          "memory_contents",
           "current_edges",
           "memories_preserved",
           "can_apply"
@@ -4905,14 +5255,19 @@
         "properties": {
           "path": {
             "minLength": 1,
-            "title": "Path",
             "type": "string"
+          },
+          "space_id": {
+            "description": "Optional existing Space id, name or alias. Blank/omitted values may use\nthe X-Nmem-Space-Id header (legacy X-Nowledge-Space-Id). Without either,\nthe path selects its current Space; later movement prevents deletion.",
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
           "path"
         ],
-        "title": "FSDeleteRequest",
         "type": "object"
       },
       "FSWriteRequest": {
@@ -4997,6 +5352,13 @@
           },
           "has_more": {
             "type": "boolean"
+          },
+          "journal_incomplete": {
+            "description": "Local journal maintenance is incomplete in the 365-day history window.\nCloud PostgreSQL workspaces can omit this field.",
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "limit": {
             "format": "int64",
@@ -6338,6 +6700,267 @@
         "title": "GraphStatsSummary",
         "type": "object"
       },
+      "GuardedReviewLabel": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
+      },
+      "GuardedReviewMemory": {
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "created_at": {},
+          "evidence_fields": {
+            "additionalProperties": {},
+            "propertyNames": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "is_latest": {
+            "type": "boolean"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/GuardedReviewLabel"
+            },
+            "type": "array"
+          },
+          "lifecycle_state": {
+            "type": "string"
+          },
+          "space_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "content",
+          "space_id",
+          "lifecycle_state",
+          "is_latest",
+          "created_at",
+          "evidence_fields",
+          "labels"
+        ],
+        "type": "object"
+      },
+      "GuardedReviewPhase": {
+        "enum": [
+          "preview",
+          "apply"
+        ],
+        "type": "string"
+      },
+      "GuardedReviewPlan": {
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/TimelineReviewAction"
+          },
+          "can_apply": {
+            "type": "boolean"
+          },
+          "cannot_apply_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "current_edges": {
+            "items": {},
+            "type": "array"
+          },
+          "from_memory_id": {
+            "type": "string"
+          },
+          "memories": {
+            "items": {
+              "$ref": "#/components/schemas/GuardedReviewMemory"
+            },
+            "type": "array"
+          },
+          "plan_id": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string"
+          },
+          "to_memory_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "plan_id",
+          "action",
+          "memories",
+          "current_edges",
+          "from_memory_id",
+          "to_memory_id",
+          "relation",
+          "can_apply"
+        ],
+        "type": "object"
+      },
+      "GuardedReviewResult": {
+        "properties": {
+          "action": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action_result": {
+            "description": "Original backend effect detail, never reconstructed on retry."
+          },
+          "already_resolved": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "preview": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GuardedReviewPlan"
+              }
+            ]
+          },
+          "projection_pending": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "receipt": {
+            "description": "Original semantic receipt, null for historical decisions without one."
+          },
+          "resolution": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resolution_note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "event_id"
+        ],
+        "type": "object"
+      },
+      "GuardedTimelineReviewRequest": {
+        "additionalProperties": false,
+        "description": "Documentation mirror of the protocol-only nmem-wire request. The live\nroute deserializes the shared request; contract tests compare both forms.",
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/TimelineReviewAction"
+          },
+          "memory_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "phase": {
+            "$ref": "#/components/schemas/GuardedReviewPhase"
+          },
+          "plan_id": {
+            "description": "Exact plan displayed before applying a graph-changing decision.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resolution_note": {
+            "maxLength": 1000,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "phase",
+          "action"
+        ],
+        "type": "object"
+      },
+      "GuardedTimelineReviewResponse": {
+        "properties": {
+          "action": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TimelineReviewAction",
+                "description": "Semantic action from the preview or stored decision, not the retry request."
+              }
+            ]
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "protocol_version": {
+            "example": 1,
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "result": {
+            "$ref": "#/components/schemas/GuardedReviewResult"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "protocol_version",
+          "success",
+          "event_id",
+          "result",
+          "message"
+        ],
+        "type": "object"
+      },
       "GuidanceRulePayload": {
         "properties": {
           "agentProfileId": {
@@ -6888,6 +7511,432 @@
         "title": "HostConfigDir",
         "type": "object"
       },
+      "IdentityCorrectionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_epoch": {
+            "description": "Copy epoch from the latest IdentityEvidence.",
+            "type": "string"
+          },
+          "expected_generation": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "expected_revision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "identity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required even when null: null records an explicit human-confirmed unknown decision; omission is invalid."
+          },
+          "mention_id": {
+            "description": "Occurrence to correct.",
+            "type": "string"
+          },
+          "source_revision": {
+            "description": "Copy from the latest IdentityEvidence.",
+            "type": "string"
+          },
+          "space_id": {
+            "description": "Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_id",
+          "source_revision",
+          "expected_epoch",
+          "expected_generation",
+          "mention_id",
+          "expected_revision",
+          "identity_id"
+        ],
+        "type": "object"
+      },
+      "IdentityEvidence": {
+        "properties": {
+          "epoch": {
+            "description": "Ledger incarnation; copy into expected_epoch for a correction.",
+            "type": "string"
+          },
+          "generation": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "memory_id": {
+            "type": "string"
+          },
+          "occurrences": {
+            "items": {
+              "$ref": "#/components/schemas/IdentityOccurrence"
+            },
+            "type": "array"
+          },
+          "source_revision": {
+            "description": "Source fingerprint used for optimistic concurrency; copy from the latest read.",
+            "type": "string"
+          },
+          "space_id": {
+            "description": "Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "memory_id",
+          "space_id",
+          "source_revision",
+          "epoch",
+          "generation",
+          "occurrences"
+        ],
+        "type": "object"
+      },
+      "IdentityExtractionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "mention_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 100,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omit or set null for initial extraction only, with no new_spans. An explicit array selects existing machine occurrences; an empty array can accompany new_spans. Human decisions cannot be overwritten."
+          },
+          "new_spans": {
+            "default": [],
+            "description": "Optional nonempty, non-overlapping source spans (start must be less than end). Requires an explicit mention_ids array. A span overlapping existing machine evidence must fully contain each overlapping occurrence and explicitly select its mention ID. Overlapping human evidence is rejected.",
+            "items": {
+              "$ref": "#/components/schemas/IdentityExtractionSpan"
+            },
+            "maxItems": 100,
+            "type": "array"
+          },
+          "space_id": {
+            "description": "Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "space_id"
+        ],
+        "type": "object"
+      },
+      "IdentityExtractionSpan": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "description": "Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "start": {
+            "description": "Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "type": "object"
+      },
+      "IdentityOccurrence": {
+        "properties": {
+          "end": {
+            "description": "Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "identity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Assigned profile ID, or null for unresolved/unknown."
+          },
+          "mention_id": {
+            "description": "Opaque occurrence ID from this evidence response.",
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "machine",
+              "human"
+            ],
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "start": {
+            "description": "Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "surface": {
+            "description": "The exact source text covered by this occurrence.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mention_id",
+          "start",
+          "end",
+          "surface",
+          "identity_id",
+          "origin",
+          "revision"
+        ],
+        "type": "object"
+      },
+      "IdentityOperationError": {
+        "properties": {
+          "detail": {
+            "description": "Safe message explaining this cause.",
+            "type": "string"
+          },
+          "error_code": {
+            "description": "Registered cause identifier. Do not infer the cause from status or message text.",
+            "type": "string"
+          },
+          "retryable": {
+            "description": "Whether the same operation may be retried after the transient cause clears. Evidence/profile conflicts can instead require a fresh read.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "detail",
+          "error_code",
+          "retryable"
+        ],
+        "type": "object"
+      },
+      "IdentityProfile": {
+        "properties": {
+          "context": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "description": "Opaque profile ID returned by this server. Same-name profiles have distinct IDs.",
+            "type": "string"
+          },
+          "kind": {
+            "description": "Descriptive identity kind; it grants no account membership or permissions.",
+            "enum": [
+              "human",
+              "agent",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "revision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IdentitySubject"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Linked AI Identity or member; null for people and Agents known only from content. A link whose AI Identity was deleted or whose member left is still returned."
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "kind",
+          "names",
+          "context"
+        ],
+        "type": "object"
+      },
+      "IdentityProfileWrite": {
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "properties": {
+              "expected_revision": {
+                "type": "null"
+              },
+              "id": {
+                "type": "null"
+              }
+            }
+          },
+          {
+            "properties": {
+              "expected_revision": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "expected_revision"
+            ]
+          }
+        ],
+        "properties": {
+          "aliases": {
+            "items": {
+              "description": "Nonblank alias, at most 512 UTF-8 bytes.",
+              "type": "string"
+            },
+            "maxItems": 32,
+            "type": "array"
+          },
+          "context": {
+            "description": "Disambiguating context, at most 8192 UTF-8 bytes. An empty string is allowed.",
+            "type": "string"
+          },
+          "expected_revision": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null or omitted on creation; required and equal to the current revision on update."
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required: explicit null creates a new independent profile; an existing ID updates that profile."
+          },
+          "kind": {
+            "description": "Descriptive identity kind; it grants no account membership or permissions.",
+            "enum": [
+              "human",
+              "agent",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "description": "Nonblank display name, at most 512 UTF-8 bytes.",
+            "type": "string"
+          },
+          "space_id": {
+            "description": "Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.",
+            "type": "string"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IdentitySubject"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional. Omit to keep the current link; null removes it; an object links the profile to an enrolled AI Identity (kind must be agent) or an active member (kind must be human). The subject must be available when set, and at most one profile per Space may link to it."
+          }
+        },
+        "required": [
+          "space_id",
+          "id",
+          "name",
+          "aliases",
+          "context",
+          "kind"
+        ],
+        "type": "object"
+      },
+      "IdentitySubject": {
+        "description": "An accountable identity that a content profile denotes. Linking grants no membership or permissions. AI Identity links retain their original roster incarnation even after deletion, replacement or import.",
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "kind": {
+                "const": "agent_identity",
+                "type": "string"
+              },
+              "reference": {
+                "description": "Opaque scoped incarnation from AgentProfileResponse.identityReference. Copy the observed value when linking; a stale or foreign reference is rejected. Omitted/null historical references remain unverified. Explicitly linking an uninitialized legacy roster identity with null may initialize its reference.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "kind": {
+                "const": "member",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "ImportConfigModel": {
         "description": "Model for import configuration.",
         "properties": {
@@ -7197,6 +8246,13 @@
       "IngestFileUploadRequest": {
         "description": "Typed multipart body for `POST /sources/ingest/file`.",
         "properties": {
+          "attachment_reference": {
+            "description": "JSON-encoded Thread attachment reference. When present, the server\nvalidates it against authoritative message metadata and authors capture\nprovenance; clients cannot supply provenance through `metadata`.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "file": {
             "contentMediaType": "application/octet-stream",
             "description": "File payload. The complete multipart request is limited to 32 MiB or the\noperator's lower process-wide request limit.",
@@ -7775,6 +8831,13 @@
               "null"
             ]
           },
+          "claim_status": {
+            "description": "Exact claim status for source-derived assessment; metadata remains supported.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "confidence": {
             "default": 0.5,
             "description": "Confidence score.",
@@ -7858,6 +8921,13 @@
               "null"
             ]
           },
+          "source_grounding": {
+            "description": "Exact source grounding for source-derived assessment, without display normalization.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "source_message_id": {
             "description": "Compatibility form for one source message. Preserved in metadata;\ncallers that know message order should prefer `source_message_indices`.",
             "type": [
@@ -7925,6 +8995,95 @@
               "string",
               "null"
             ]
+          },
+          "write_intent": {
+            "description": "Explicit authored or server-assessed source-derived write. source_support allows ordinary observations; human_ruling additionally requires supported human adoption. Both require authoritative selected thread/message evidence and never fall back to authored on failure. Omit for legacy authored behavior.",
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "authored"
+                    ],
+                    "type": "string"
+                  },
+                  "version": {
+                    "enum": [
+                      1
+                    ],
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "version",
+                  "kind"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "assessment": {
+                    "enum": [
+                      "source_support",
+                      "human_ruling"
+                    ],
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "source_derived"
+                    ],
+                    "type": "string"
+                  },
+                  "source": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "thread"
+                        ],
+                        "type": "string"
+                      },
+                      "message_ids": {
+                        "items": {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "maxItems": 10000,
+                        "minItems": 1,
+                        "type": "array",
+                        "uniqueItems": true
+                      },
+                      "thread_id": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "thread_id",
+                      "message_ids"
+                    ],
+                    "type": "object"
+                  },
+                  "version": {
+                    "enum": [
+                      1
+                    ],
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "version",
+                  "kind",
+                  "assessment",
+                  "source"
+                ],
+                "type": "object"
+              }
+            ]
           }
         },
         "required": [
@@ -7980,13 +9139,22 @@
         "type": "object"
       },
       "MemoryKGApplyRequest": {
-        "description": "Request to apply KG extraction results to a memory.\n\nNote: memory_id is provided in the URL path, not in the request body.",
+        "description": "Request to apply KG extraction results to a memory.\n\nNote: memory_id is provided in the URL path, not in the request body. Exact requests reject invalid batches before writing and reject ambiguous stored identities. Older backends may ignore this field; upgrade the backend before relying on exact resolution.",
         "properties": {
           "entities": {
             "description": "Extracted entities to save",
             "items": {},
             "title": "Entities",
             "type": "array"
+          },
+          "entity_resolution": {
+            "default": "automatic",
+            "description": "Use exact for controlled external writes on a backend supporting this policy. Exact matches trimmed, case-sensitive name and type only; it does not resolve through aliases or normalize punctuation. Omitted or empty aliases preserve existing aliases. Automatic retains extraction preview matching. Exact batches allow up to 50 entities and 100 relationships, require unique names and explicit type, and require relationship endpoints to exactly match submitted names.",
+            "enum": [
+              "automatic",
+              "exact"
+            ],
+            "type": "string"
           },
           "extraction_confidence": {
             "description": "Confidence of the extraction",
@@ -8016,6 +9184,13 @@
             "title": "Entities Created",
             "type": "integer"
           },
+          "entity_resolution": {
+            "description": "Present when exact resolution was applied.",
+            "enum": [
+              "exact"
+            ],
+            "type": "string"
+          },
           "error": {
             "anyOf": [
               {
@@ -8027,6 +9202,10 @@
             ],
             "description": "Error message if application failed",
             "title": "Error"
+          },
+          "index_repair_needed": {
+            "description": "Entity search projection is pending repair; graph writes may already be complete.",
+            "type": "boolean"
           },
           "memory_id": {
             "description": "ID of the updated memory",
@@ -8043,10 +9222,39 @@
             "title": "Relationships Created",
             "type": "integer"
           },
+          "resolved_entities": {
+            "description": "Graph identities successfully resolved by an exact request, including partial failure. Retain for source auditing.",
+            "items": {
+              "properties": {
+                "entity_type": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "entity_type"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "success": {
             "description": "Whether application was successful",
             "title": "Success",
             "type": "boolean"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -8686,6 +9894,76 @@
           "content"
         ],
         "title": "MemoryNode",
+        "type": "object"
+      },
+      "MemoryPolicyPatch": {
+        "additionalProperties": false,
+        "description": "Extraction-only settings. Omitted or null fields inherit the stored policy; an explicit empty list clears the inherited list. Text is trimmed before server validation. This is not an authorization policy or a Context Rule.",
+        "properties": {
+          "additionalInstructions": {
+            "description": "One-run extraction guidance; cannot override source fidelity or access boundaries.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "density": {
+            "description": "Maximum retained candidates: focused 1, balanced 3, comprehensive 5. Grounding and durability review still apply.",
+            "enum": [
+              "focused",
+              "balanced",
+              "comprehensive",
+              null
+            ],
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "enum": [
+              "concise",
+              "balanced",
+              "detailed",
+              null
+            ],
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "exclusions": {
+            "anyOf": [
+              {
+                "items": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "maxItems": 12,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "priorities": {
+            "anyOf": [
+              {
+                "items": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "maxItems": 12,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
         "type": "object"
       },
       "MemoryPublic": {
@@ -10333,6 +11611,69 @@
         "title": "ModelUnloadResponse",
         "type": "object"
       },
+      "NativeSourceOperation": {
+        "additionalProperties": false,
+        "description": "Explicit scheduled native source-derived Thread operation. Recorded roles and source references do not authenticate humans or establish adoption. The host restores the original scheduled task funding and assesses each exact candidate before publication. Authored intent, inline transcript overrides, conflicting selectors and foreign/unreadable Space are rejected. Omit the field for unchanged deterministic distillation. No caller root, grant, provider or cancellation authority is accepted.",
+        "properties": {
+          "assessment": {
+            "enum": [
+              "source_support",
+              "human_ruling"
+            ],
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "source_derived"
+            ],
+            "type": "string"
+          },
+          "source": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "thread"
+                ],
+                "type": "string"
+              },
+              "message_ids": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "maxItems": 10000,
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "thread_id": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "thread_id",
+              "message_ids"
+            ],
+            "type": "object"
+          },
+          "version": {
+            "enum": [
+              1
+            ],
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version",
+          "kind",
+          "assessment",
+          "source"
+        ],
+        "type": "object"
+      },
       "NodeType": {
         "description": "Enumeration of node types in the graph.",
         "enum": [
@@ -10608,6 +11949,37 @@
             "title": "Before Bytes",
             "type": "integer"
           },
+          "checkpoint_failed": {
+            "description": "Whether the graph database flush did not finish.",
+            "title": "Checkpoint Failed",
+            "type": "boolean"
+          },
+          "compacted_tables": {
+            "description": "Search tables whose fragments were merged in this run.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Compacted Tables",
+            "type": "array"
+          },
+          "failed_tables": {
+            "description": "Search tables that did not finish. Table names only.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Failed Tables",
+            "type": "array"
+          },
+          "fragments_after": {
+            "minimum": 0,
+            "title": "Fragments After",
+            "type": "integer"
+          },
+          "fragments_before": {
+            "minimum": 0,
+            "title": "Fragments Before",
+            "type": "integer"
+          },
           "freed_bytes": {
             "default": 0,
             "title": "Freed Bytes",
@@ -10618,13 +11990,49 @@
             "title": "Message",
             "type": "string"
           },
+          "outcome": {
+            "description": "Overall Optimize result.",
+            "enum": [
+              "completed",
+              "partial",
+              "refused"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "reclaim_pending": {
+            "description": "Whether compacted-away files are released after the next restart.",
+            "title": "Reclaim Pending",
+            "type": "boolean"
+          },
+          "refusal": {
+            "description": "Why Optimize did not start; omitted when the run started.",
+            "enum": [
+              "shutting_down",
+              "rebuild_running",
+              "already_running"
+            ],
+            "title": "Refusal",
+            "type": "string"
+          },
           "success": {
             "title": "Success",
             "type": "boolean"
           }
         },
         "required": [
-          "success"
+          "success",
+          "before_bytes",
+          "after_bytes",
+          "freed_bytes",
+          "message",
+          "outcome",
+          "compacted_tables",
+          "failed_tables",
+          "checkpoint_failed",
+          "fragments_before",
+          "fragments_after",
+          "reclaim_pending"
         ],
         "title": "OptimizeStorageResponse",
         "type": "object"
@@ -11331,6 +12739,12 @@
         "properties": {
           "detail": {
             "type": "string"
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -11340,6 +12754,12 @@
       },
       "ScheduleListResponse": {
         "properties": {
+          "knowledge_capabilities": {
+            "items": {
+              "$ref": "#/components/schemas/ToolCapability"
+            },
+            "type": "array"
+          },
           "schedules": {
             "items": {
               "$ref": "#/components/schemas/RecurringTask"
@@ -11348,7 +12768,8 @@
           }
         },
         "required": [
-          "schedules"
+          "schedules",
+          "knowledge_capabilities"
         ],
         "type": "object"
       },
@@ -13148,6 +14569,44 @@
         "title": "ThreadCreateResponse",
         "type": "object"
       },
+      "ThreadDeletionErrorResponse": {
+        "additionalProperties": true,
+        "description": "App deletion error. Optional progress fields preserve confirmed prior commits. Cloud and admission failures may return only detail. This is not an all-or-nothing rollback guarantee.",
+        "properties": {
+          "deleted": {
+            "description": "Whether the parent Thread deletion was confirmed.",
+            "type": "boolean"
+          },
+          "deleted_memories": {
+            "description": "Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "deleted_messages": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "deletion_outcome_uncertain": {
+            "description": "At least one submitted graph outcome could not be confirmed. Counts include only confirmed commits; refresh before retrying.",
+            "type": "boolean"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "index_repair_pending": {
+            "description": "Known search projection repair remains pending after the reported graph outcomes.",
+            "type": "boolean"
+          },
+          "partial_success": {
+            "description": "Some deletions committed while the overall operation did not fully complete. Absence is not proof of rollback.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "detail"
+        ],
+        "type": "object"
+      },
       "ThreadDistillationBatchPlanRequest": {
         "description": "Plan the next safe opt-in batch for thread distillation.",
         "properties": {
@@ -13964,6 +15423,54 @@
         "title": "ThreadParseResponse",
         "type": "object"
       },
+      "ThreadProjectListResponse": {
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/ThreadPaginationInfo",
+            "description": "Pagination info"
+          },
+          "projects": {
+            "items": {
+              "properties": {
+                "count": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "workspace",
+                    "project",
+                    "unknown"
+                  ],
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "key",
+                "kind",
+                "value",
+                "count"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "projects",
+          "pagination"
+        ],
+        "type": "object"
+      },
       "ThreadSearchMetadata": {
         "additionalProperties": true,
         "description": "Metadata for thread search results.",
@@ -14119,6 +15626,20 @@
               "null"
             ]
           },
+          "plan_id": {
+            "description": "Exact plan from the evidence the caller reviewed.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "preview": {
+            "description": "Return the evidence snapshot and plan without settling the event.",
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
           "resolution": {
             "description": "Legacy resolution label retained for older app clients.",
             "type": [
@@ -14190,6 +15711,13 @@
       },
       "ToolCapability": {
         "properties": {
+          "action_fingerprint": {
+            "description": "SHA-256 of the reviewed external action contract. This is required to\nactivate connector-backed capabilities, but remains optional here so\nolder paused drafts can be loaded and reviewed safely.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "allow_unknown_arguments": {
             "type": "boolean"
           },
@@ -14873,6 +16401,13 @@
             "title": "Messages",
             "type": "integer"
           },
+          "project": {
+            "description": "Source-provided project name; optional for historical conversations.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "source": {
             "description": "Thread source",
             "title": "Source",
@@ -14894,6 +16429,13 @@
             "description": "Thread title",
             "title": "Title",
             "type": "string"
+          },
+          "workspace": {
+            "description": "Exact source-provided workspace path; used before project name for grouping.",
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -15112,9 +16654,9 @@
         "operationId": "openapi_list_schedules",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "include_deleted",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "boolean"
             }
@@ -15445,9 +16987,39 @@
               }
             },
             "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleErrorResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
-        "summary": "Pause future recurring task occurrences",
+        "summary": "Pause a recurring task and request cancellation of its current run",
         "tags": [
           "ai-now"
         ]
@@ -15518,9 +17090,9 @@
             }
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "limit",
-            "required": true,
+            "required": false,
             "schema": {
               "minimum": 0,
               "type": "integer"
@@ -16885,6 +18457,70 @@
         "tags": [
           "knowledge-agent",
           "knowledge-agent",
+          "knowledge-agent"
+        ]
+      }
+    },
+    "/agent/feed/events/{event_id}/review": {
+      "post": {
+        "description": "Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.",
+        "operationId": "openapi_guarded_timeline_review",
+        "parameters": [
+          {
+            "description": "Timeline review event ID",
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuardedTimelineReviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuardedTimelineReviewResponse"
+                }
+              }
+            },
+            "description": "Evidence preview or recorded decision"
+          },
+          "400": {
+            "description": "Malformed request"
+          },
+          "403": {
+            "description": "Current authority does not permit this review"
+          },
+          "404": {
+            "description": "Review unavailable or endpoint unsupported; do not fall back"
+          },
+          "409": {
+            "description": "Evidence changed; explicitly review a fresh preview"
+          },
+          "422": {
+            "description": "Invalid phase, arguments or action for this review"
+          },
+          "428": {
+            "description": "A displayed evidence plan is required"
+          },
+          "503": {
+            "description": "Evidence or storage is unavailable"
+          }
+        },
+        "summary": "Preview or Confirm Timeline Review",
+        "tags": [
           "knowledge-agent"
         ]
       }
@@ -20224,11 +21860,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "collaboration_transfer_unsupported: retained collaboration history requires a complete authority backup; not retryable"
           },
           "500": {
             "content": {
@@ -20239,6 +21875,16 @@
               }
             },
             "description": "Export could not be completed"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "collaboration_storage_failure: collaboration history could not be checked; retryable"
           }
         },
         "summary": "Export Data",
@@ -20279,11 +21925,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "collaboration_transfer_unsupported: retained collaboration history requires a complete authority backup; not retryable"
           },
           "500": {
             "content": {
@@ -20294,6 +21940,16 @@
               }
             },
             "description": "Export could not be completed"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "collaboration_storage_failure: collaboration history could not be checked; retryable"
           }
         },
         "summary": "Export Data Download",
@@ -20413,6 +22069,78 @@
           }
         },
         "summary": "Import Data",
+        "tags": [
+          "data-transfer"
+        ]
+      }
+    },
+    "/data/import/preview": {
+      "post": {
+        "description": "Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.",
+        "operationId": "openapi_import_preview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataImportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportPreviewResponse"
+                }
+              }
+            },
+            "description": "Informational backup inventory"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Backup cannot be inspected"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Credential is no longer valid"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Human restore permission is required"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Current authorization is unavailable"
+          }
+        },
+        "summary": "Inspect backup inventory",
         "tags": [
           "data-transfer"
         ]
@@ -20601,6 +22329,145 @@
         ]
       }
     },
+    "/data/import/upload/preview": {
+      "post": {
+        "description": "Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.",
+        "operationId": "openapi_import_upload_preview",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "description": "Multipart body for POST /data/import/upload.",
+                "properties": {
+                  "file": {
+                    "contentMediaType": "application/octet-stream",
+                    "type": "string"
+                  },
+                  "include_communities": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_edges": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_entities": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_feed_events": {
+                    "default": true,
+                    "description": "Include durable Timeline history from feed_events/*.jsonl.",
+                    "type": "boolean"
+                  },
+                  "include_labels": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_memories": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_messages": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_skills": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_source_files": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_sources": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_threads": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_working_memory": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "include_working_memory_archive": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "mode": {
+                    "$ref": "#/components/schemas/DataImportMode"
+                  }
+                },
+                "required": [
+                  "file"
+                ],
+                "title": "Body_import_data_upload_data_import_upload_post",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataImportPreviewResponse"
+                }
+              }
+            },
+            "description": "Informational backup inventory"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Backup cannot be inspected"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Credential is no longer valid"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Human restore permission is required"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTransferErrorResponse"
+                }
+              }
+            },
+            "description": "Current authorization is unavailable"
+          }
+        },
+        "summary": "Inspect backup inventory",
+        "tags": [
+          "data-transfer"
+        ]
+      }
+    },
     "/entities": {
       "get": {
         "description": "List entities with optional filtering.\n\nWhen ``include_stats=true`` returns\n``[{\"entity\": EntityNode, \"mention_count\": int}, ...]`` sorted by\nmention_count DESC. Otherwise returns the legacy ``List[EntityNode]``\nsorted by created_at DESC, preserving backwards compatibility for\nolder callers (Tauri commands, MCP tools).",
@@ -20716,6 +22583,95 @@
           }
         },
         "summary": "Delete an entity",
+        "tags": [
+          "entities"
+        ]
+      }
+    },
+    "/entities/{entity_id}/aliases": {
+      "get": {
+        "operationId": "read_entity_aliases_handler",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityAliasStateSchema"
+                }
+              }
+            },
+            "description": "Current aliases, rejected aliases and revision"
+          },
+          "404": {
+            "description": "Entity missing"
+          },
+          "422": {
+            "description": "Entity metadata cannot be safely corrected"
+          }
+        },
+        "summary": "Read entity aliases",
+        "tags": [
+          "entities"
+        ]
+      },
+      "post": {
+        "description": "Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.",
+        "operationId": "change_entity_aliases_handler",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntityAliasChangeSchema"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityAliasStateSchema"
+                }
+              }
+            },
+            "description": "Updated alias state"
+          },
+          "403": {
+            "description": "Owner or admin user required"
+          },
+          "404": {
+            "description": "Entity missing"
+          },
+          "409": {
+            "description": "Alias state changed"
+          },
+          "422": {
+            "description": "Invalid alias change"
+          }
+        },
+        "summary": "Correct entity aliases",
         "tags": [
           "entities"
         ]
@@ -21267,8 +23223,34 @@
     },
     "/fs/delete": {
       "post": {
-        "description": "Delete/archive a canonical Nowledge FS file.\n\nMemory delete delegates to the existing Memories delete path, preserving\nthe object's concrete space.  Working Memory delete has no safe helper in\nthis slice and returns ``ENOTSUP``.",
+        "description": "A nonblank body Space wins over the ambient header. Explicit references\nmust resolve to a registered Space. A foreign or moved target is not found;\nan unscoped path still binds the target Space observed during preflight.\nWorking Memory deletion remains unsupported. Space selection is not a grant.",
         "operationId": "fs_delete_fs_delete_post",
+        "parameters": [
+          {
+            "description": "Ambient Space when the body omits it.",
+            "in": "header",
+            "name": "X-Nmem-Space-Id",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "description": "Legacy ambient header; the canonical header takes precedence.",
+            "in": "header",
+            "name": "X-Nowledge-Space-Id",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -21286,22 +23268,52 @@
                 "schema": {}
               }
             },
-            "description": "Successful Response"
+            "description": "Authoritative deletion succeeded; index_repair_pending reports deferred search delivery."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Malformed JSON or invalid canonical path."
+          },
+          "403": {
+            "description": "Caller authority denied (KFS EACCES) or a derived path is read-only (KFS EROFS)."
+          },
+          "404": {
+            "description": "Target missing or outside the selected/observed Space (KFS ENOENT)."
+          },
+          "409": {
+            "description": "An alias is read-only; use an exact canonical path (KFS EXDEV)."
           },
           "422": {
             "content": {
               "application/json": {
+                "schema": {}
+              },
+              "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "type": "string"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "Invalid typed request (plain text) or unknown explicit Space (KFS JSON)."
+          },
+          "500": {
+            "description": "Authority state or graph storage unavailable."
+          },
+          "501": {
+            "description": "Path type does not support deletion (KFS ENOTSUP)."
           }
         },
-        "summary": "Fs Delete",
+        "summary": "Delete a canonical Memory or Crystal path in its selected Space.",
         "tags": [
-          "files",
           "files"
         ]
       }
@@ -23271,6 +25283,224 @@
         "summary": "Force Checkpoint",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/identity/profiles": {
+      "get": {
+        "description": "Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Returns independently enrolled profiles for this Space; matching names do not imply the same person. Reading does not invoke a model.",
+        "operationId": "get_identity_profiles",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "description": "Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/IdentityProfile"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Current committed identity data."
+          },
+          "400": {
+            "description": "Malformed path or query; framework validation may return plain text."
+          },
+          "401": {
+            "description": "Authentication is required by the target server."
+          },
+          "403": {
+            "description": "Current actor, credential or Space authority denies this operation. Identity-specific denials use IdentityOperationError; earlier authentication gates may use their generic error format."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The Memory, profile or Space is unavailable to this operation."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "A current-state, capacity or concurrency condition prevents the operation. Inspect error_code; not every conflict means stale evidence."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Source, snapshot or profile payload exceeds the bounded operation limit."
+          },
+          "422": {
+            "description": "Invalid request keys, selection or profile. Identity validation uses IdentityOperationError; malformed JSON or DTO decoding may return a framework validation response."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Storage or worker failure."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Current authorization, storage or model admission is unavailable."
+          }
+        },
+        "summary": "List identity profiles",
+        "tags": [
+          "memories"
+        ]
+      },
+      "post": {
+        "description": "Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.",
+        "operationId": "save_identity_profile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "create": {
+                  "summary": "Create a distinct profile",
+                  "value": {
+                    "aliases": [],
+                    "context": "Reviews the design",
+                    "expected_revision": null,
+                    "id": null,
+                    "kind": "human",
+                    "name": "Alice",
+                    "space_id": "engineering"
+                  }
+                },
+                "update": {
+                  "summary": "Edit using the revision returned by a read",
+                  "value": {
+                    "aliases": [
+                      "A."
+                    ],
+                    "context": "Reviews the design",
+                    "expected_revision": 1,
+                    "id": "profile-id-from-this-server",
+                    "kind": "human",
+                    "name": "Alice",
+                    "space_id": "engineering"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/IdentityProfileWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityProfile"
+                }
+              }
+            },
+            "description": "Current committed identity data."
+          },
+          "400": {
+            "description": "Malformed path or query; framework validation may return plain text."
+          },
+          "401": {
+            "description": "Authentication is required by the target server."
+          },
+          "403": {
+            "description": "Current actor, credential or Space authority denies this operation. Identity-specific denials use IdentityOperationError; earlier authentication gates may use their generic error format."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The Memory, profile, Space or linked AI Identity/member is unavailable to this operation."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "A current-state, capacity or concurrency condition prevents the operation, including a subject already linked to another profile in this Space. Inspect error_code; not every conflict means stale evidence."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Source, snapshot or profile payload exceeds the bounded operation limit."
+          },
+          "422": {
+            "description": "Invalid request keys, selection or profile. Identity validation uses IdentityOperationError; malformed JSON or DTO decoding may return a framework validation response."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Storage or worker failure."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Current authorization, storage or model admission is unavailable."
+          }
+        },
+        "summary": "Create or update an identity profile",
+        "tags": [
+          "memories"
         ]
       }
     },
@@ -25901,7 +28131,7 @@
     },
     "/memories/{memory_id}/extract-kg/apply": {
       "post": {
-        "description": "Apply knowledge graph extraction results to a memory.\n\nThis endpoint saves the extracted entities and relationships to the graph database\nand updates the memory's metadata to track the extraction.",
+        "description": "Apply knowledge graph extraction results to a memory.\n\nThis endpoint saves the extracted entities and relationships to the graph database\nand updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.",
         "operationId": "apply_memory_kg_extraction_memories__memory_id__extract_kg_apply_post",
         "parameters": [
           {
@@ -25935,6 +28165,9 @@
             },
             "description": "Successful Response"
           },
+          "409": {
+            "description": "Multiple stored entities have the same exact name and type; resolve the ambiguity before applying."
+          },
           "422": {
             "content": {
               "application/json": {
@@ -25943,7 +28176,10 @@
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "Invalid request, unsupported resolution value, or invalid exact batch; no graph mutation."
+          },
+          "500": {
+            "description": "Apply could not complete. Some writes may have persisted; inspect the graph before retrying."
           }
         },
         "summary": "Apply Memory Kg Extraction",
@@ -26109,6 +28345,372 @@
           }
         },
         "summary": "Forget Memory",
+        "tags": [
+          "memories"
+        ]
+      }
+    },
+    "/memories/{memory_id}/identity": {
+      "get": {
+        "description": "Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Read this response before correcting an occurrence; retain source_revision, epoch, generation and the occurrence revision. An empty occurrences array is valid and reading does not invoke a model.",
+        "operationId": "read_memory_identity",
+        "parameters": [
+          {
+            "description": "Memory ID returned by the target server; the Memory must belong to the exact requested Space.",
+            "in": "path",
+            "name": "memory_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "space_id",
+            "required": true,
+            "schema": {
+              "description": "Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityEvidence"
+                }
+              }
+            },
+            "description": "Current committed identity data."
+          },
+          "400": {
+            "description": "Malformed path or query; framework validation may return plain text."
+          },
+          "401": {
+            "description": "Authentication is required by the target server."
+          },
+          "403": {
+            "description": "Current actor, credential or Space authority denies this operation. Identity-specific denials use IdentityOperationError; earlier authentication gates may use their generic error format."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The Memory, profile or Space is unavailable to this operation."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "A current-state, capacity or concurrency condition prevents the operation. Inspect error_code; not every conflict means stale evidence."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Source, snapshot or profile payload exceeds the bounded operation limit."
+          },
+          "422": {
+            "description": "Invalid request keys, selection or profile. Identity validation uses IdentityOperationError; malformed JSON or DTO decoding may return a framework validation response."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Storage or worker failure."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Current authorization, storage or model admission is unavailable."
+          }
+        },
+        "summary": "Read memory identity evidence",
+        "tags": [
+          "memories"
+        ]
+      }
+    },
+    "/memories/{memory_id}/identity/correction": {
+      "post": {
+        "description": "Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.",
+        "operationId": "correct_memory_identity",
+        "parameters": [
+          {
+            "description": "Memory ID returned by the target server; the Memory must belong to the exact requested Space.",
+            "in": "path",
+            "name": "memory_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "confirm_unknown": {
+                  "summary": "Record an explicit human unknown decision using current evidence",
+                  "value": {
+                    "expected_epoch": "epoch-from-read",
+                    "expected_generation": 1,
+                    "expected_revision": 1,
+                    "identity_id": null,
+                    "mention_id": "mention-id-from-read",
+                    "source_revision": "source-revision-from-read",
+                    "space_id": "engineering"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/IdentityCorrectionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityEvidence"
+                }
+              }
+            },
+            "description": "Current committed identity data."
+          },
+          "400": {
+            "description": "Malformed path or query; framework validation may return plain text."
+          },
+          "401": {
+            "description": "Authentication is required by the target server."
+          },
+          "403": {
+            "description": "Current actor, credential or Space authority denies this operation. Identity-specific denials use IdentityOperationError; earlier authentication gates may use their generic error format."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The Memory, profile or Space is unavailable to this operation."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "A current-state, capacity or concurrency condition prevents the operation. Inspect error_code; not every conflict means stale evidence."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Source, snapshot or profile payload exceeds the bounded operation limit."
+          },
+          "422": {
+            "description": "Invalid request keys, selection or profile. Identity validation uses IdentityOperationError; malformed JSON or DTO decoding may return a framework validation response."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Storage or worker failure."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Current authorization, storage or model admission is unavailable."
+          }
+        },
+        "summary": "Correct a memory identity occurrence",
+        "tags": [
+          "memories"
+        ]
+      }
+    },
+    "/memories/{memory_id}/identity/extract": {
+      "post": {
+        "description": "Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.",
+        "operationId": "extract_memory_identity",
+        "parameters": [
+          {
+            "description": "Memory ID returned by the target server; the Memory must belong to the exact requested Space.",
+            "in": "path",
+            "name": "memory_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "initial": {
+                  "summary": "Initial extraction for this Memory",
+                  "value": {
+                    "space_id": "engineering"
+                  }
+                },
+                "selected": {
+                  "summary": "Reconsider one machine occurrence",
+                  "value": {
+                    "mention_ids": [
+                      "machine-mention-id-from-read"
+                    ],
+                    "new_spans": [],
+                    "space_id": "engineering"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/IdentityExtractionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityEvidence"
+                }
+              }
+            },
+            "description": "Current committed identity data."
+          },
+          "400": {
+            "description": "Malformed path or query; framework validation may return plain text."
+          },
+          "401": {
+            "description": "Authentication is required by the target server."
+          },
+          "403": {
+            "description": "Current actor, credential or Space authority denies this operation. Identity-specific denials use IdentityOperationError; earlier authentication gates may use their generic error format."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The Memory, profile or Space is unavailable to this operation."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "A current-state, capacity or concurrency condition prevents the operation. Inspect error_code; not every conflict means stale evidence."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Source, snapshot or profile payload exceeds the bounded operation limit."
+          },
+          "422": {
+            "description": "Invalid request keys, selection or profile. Identity validation uses IdentityOperationError; malformed JSON or DTO decoding may return a framework validation response."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Storage or worker failure."
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The configured model failed to return an acceptable result."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "Current authorization, storage or model admission is unavailable."
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityOperationError"
+                }
+              }
+            },
+            "description": "The bounded model attempt exceeded its deadline."
+          }
+        },
+        "summary": "Extract or reconsider memory identities",
         "tags": [
           "memories"
         ]
@@ -31054,7 +33656,7 @@
     },
     "/storage/optimize": {
       "post": {
-        "description": "Compact search index and flush database changes.\n\nPrunes old LanceDB versions and runs a KuzuDB checkpoint.",
+        "description": "Compact every search projection table's Lance fragments, prune verified old snapshots, and checkpoint the graph database. Pre-compaction snapshots remain available to existing readers and are reclaimed after the next backend start. The response reports completed, partial, or refused outcomes and safe table-level details.",
         "operationId": "optimize_storage_storage_optimize_post",
         "responses": {
           "200": {
@@ -31134,6 +33736,15 @@
               ],
               "description": "Optional isolation space to list",
               "title": "Space Id"
+            }
+          },
+          {
+            "description": "Opaque exact project key returned by GET /threads/projects. Invalid keys return 422. Omit for all projects.",
+            "in": "query",
+            "name": "project_key",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -31962,6 +34573,97 @@
         ]
       }
     },
+    "/threads/projects": {
+      "get": {
+        "description": "Paginated directory over all readable saved conversations matching source and Space. Full workspace path is authoritative when present, otherwise project name, otherwise unknown. Keys preserve exact values and are passed unchanged to the thread list. Counts include logical conversations, not historical duplicate storage rows.",
+        "operationId": "list_thread_projects_threads_projects_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          },
+          {
+            "description": "Optional isolation space to list",
+            "in": "query",
+            "name": "space_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional isolation space to list",
+              "title": "Space Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadProjectListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Saved Conversation Projects",
+        "tags": [
+          "threads"
+        ]
+      }
+    },
     "/threads/search": {
       "get": {
         "description": "Full thread search with message matching.",
@@ -32281,7 +34983,7 @@
     },
     "/threads/{thread_id}": {
       "delete": {
-        "description": "Delete a thread and optionally its extracted memories.",
+        "description": "Delete a thread and optionally its extracted memories. App cascade commits are per Memory, not one transaction with the parent Thread. Errors may report prior committed Memory deletions and uncertain outcomes. Cloud currently reports zero extracted Memory deletions even when cascade was requested.",
         "operationId": "delete_thread_threads__thread_id__delete",
         "parameters": [
           {
@@ -32335,6 +35037,26 @@
             },
             "description": "Successful Response"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadDeletionErrorResponse"
+                }
+              }
+            },
+            "description": "Caller denied. Prior authorized Memory commits, if any, are not rolled back."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadDeletionErrorResponse"
+                }
+              }
+            },
+            "description": "App target identity, Space or source linkage changed before a graph write."
+          },
           "422": {
             "content": {
               "application/json": {
@@ -32344,6 +35066,16 @@
               }
             },
             "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadDeletionErrorResponse"
+                }
+              }
+            },
+            "description": "Deletion could not fully complete. Inspect optional progress; an error does not prove rollback."
           }
         },
         "summary": "Delete Thread",

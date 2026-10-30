@@ -31,12 +31,61 @@ func (s *ThreadsService) List(ctx context.Context, params *ListThreadsParams) (*
 		if params.SpaceID != "" {
 			q.Set("space_id", params.SpaceID)
 		}
+		if params.ProjectKey != "" {
+			q.Set("project_key", params.ProjectKey)
+		}
 	}
 	var resp ListThreadsResponse
 	if err := s.client.doQuery(ctx, "/threads", q, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
+}
+
+// Projects lists the server-issued project keys accepted by List.
+func (s *ThreadsService) Projects(ctx context.Context, params *ListThreadProjectsParams) (*ThreadProjectListResponse, error) {
+	query := url.Values{}
+	if params != nil {
+		if params.Limit > 0 {
+			query.Set("limit", strconv.Itoa(params.Limit))
+		}
+		if params.Offset > 0 {
+			query.Set("offset", strconv.Itoa(params.Offset))
+		}
+		if params.Source != "" {
+			query.Set("source", params.Source)
+		}
+		if params.SpaceID != "" {
+			query.Set("space_id", params.SpaceID)
+		}
+	}
+	var response ThreadProjectListResponse
+	if err := s.client.doQuery(ctx, "/threads/projects", query, &response); err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+// ListThreadProjectsParams filters and paginates Thread projects.
+type ListThreadProjectsParams struct {
+	Limit   int
+	Offset  int
+	Source  string
+	SpaceID string
+}
+
+// ThreadProjectListResponse contains project groups and pagination metadata.
+type ThreadProjectListResponse struct {
+	Projects   []ThreadProject `json:"projects"`
+	Pagination Pagination      `json:"pagination"`
+}
+
+// ThreadProject identifies a project group with an opaque server-issued key.
+type ThreadProject struct {
+	Key   string  `json:"key"`
+	Kind  string  `json:"kind"`
+	Value *string `json:"value"`
+	Count int     `json:"count"`
 }
 
 // Create creates a new thread with messages.
@@ -259,10 +308,12 @@ type DeleteThreadParams struct {
 
 // DeleteThreadResponse contains the result of deleting a thread.
 type DeleteThreadResponse struct {
-	Message         string `json:"message"`
-	DeletedMessages int    `json:"deleted_messages,omitempty"`
-	DeletedMemories int    `json:"deleted_memories,omitempty"`
-	CascadeDeletion bool   `json:"cascade_deletion,omitempty"`
+	Message               string `json:"message"`
+	DeletedMessages       int    `json:"deleted_messages,omitempty"`
+	DeletedMemories       int    `json:"deleted_memories,omitempty"`
+	CascadeDeletion       bool   `json:"cascade_deletion,omitempty"`
+	IndexRepairPending    *bool  `json:"index_repair_pending,omitempty"`
+	StorageCleanupPending *bool  `json:"storage_cleanup_pending,omitempty"`
 }
 
 // BulkDeleteThreadsRequest is the request body for DeleteBulk.
@@ -649,13 +700,16 @@ type ThreadBulkDeleteSelectionRequest struct {
 
 // ThreadBulkDeleteResponse contains the result of a bulk thread deletion.
 type ThreadBulkDeleteResponse struct {
-	Message              string           `json:"message"`
-	DeletedCount         int              `json:"deleted_count"`
-	FailedCount          int              `json:"failed_count"`
-	TotalDeletedMessages int              `json:"total_deleted_messages,omitempty"`
-	TotalDeletedMemories int              `json:"total_deleted_memories,omitempty"`
-	CascadeDeletion      bool             `json:"cascade_deletion,omitempty"`
-	Results              []map[string]any `json:"results,omitempty"`
+	Message                  string           `json:"message"`
+	DeletedCount             int              `json:"deleted_count"`
+	FailedCount              int              `json:"failed_count"`
+	TotalDeletedMessages     int              `json:"total_deleted_messages,omitempty"`
+	TotalDeletedMemories     int              `json:"total_deleted_memories,omitempty"`
+	CascadeDeletion          bool             `json:"cascade_deletion,omitempty"`
+	Results                  []map[string]any `json:"results,omitempty"`
+	PartialSuccess           *bool            `json:"partial_success,omitempty"`
+	IndexRepairPending       *bool            `json:"index_repair_pending,omitempty"`
+	DeletionOutcomeUncertain *bool            `json:"deletion_outcome_uncertain,omitempty"`
 }
 
 // BulkDeleteSelection deletes selected threads using a backend-resolved selector.

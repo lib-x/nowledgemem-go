@@ -234,6 +234,42 @@ func (e DataImportMode) Valid() bool {
 	}
 }
 
+// Defines values for DistillationScheduleResponseDistillAgainStatus.
+const (
+	DistillationScheduleResponseDistillAgainStatusAlreadyStarted DistillationScheduleResponseDistillAgainStatus = "already_started"
+	DistillationScheduleResponseDistillAgainStatusQueued         DistillationScheduleResponseDistillAgainStatus = "queued"
+)
+
+// Valid indicates whether the value is a known member of the DistillationScheduleResponseDistillAgainStatus enum.
+func (e DistillationScheduleResponseDistillAgainStatus) Valid() bool {
+	switch e {
+	case DistillationScheduleResponseDistillAgainStatusAlreadyStarted:
+		return true
+	case DistillationScheduleResponseDistillAgainStatusQueued:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GuardedReviewPhase.
+const (
+	Apply   GuardedReviewPhase = "apply"
+	Preview GuardedReviewPhase = "preview"
+)
+
+// Valid indicates whether the value is a known member of the GuardedReviewPhase enum.
+func (e GuardedReviewPhase) Valid() bool {
+	switch e {
+	case Apply:
+		return true
+	case Preview:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GuidanceRuleResponseScope.
 const (
 	GuidanceRuleResponseScopeAgent  GuidanceRuleResponseScope = "agent"
@@ -270,6 +306,270 @@ func (e GuidanceRuleResponseStatus) Valid() bool {
 	case GuidanceRuleResponseStatusArchived:
 		return true
 	case GuidanceRuleResponseStatusDraft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IdentityOccurrenceOrigin.
+const (
+	IdentityOccurrenceOriginHuman   IdentityOccurrenceOrigin = "human"
+	IdentityOccurrenceOriginMachine IdentityOccurrenceOrigin = "machine"
+)
+
+// Valid indicates whether the value is a known member of the IdentityOccurrenceOrigin enum.
+func (e IdentityOccurrenceOrigin) Valid() bool {
+	switch e {
+	case IdentityOccurrenceOriginHuman:
+		return true
+	case IdentityOccurrenceOriginMachine:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IdentityProfileKind.
+const (
+	IdentityProfileKindAgent   IdentityProfileKind = "agent"
+	IdentityProfileKindHuman   IdentityProfileKind = "human"
+	IdentityProfileKindUnknown IdentityProfileKind = "unknown"
+)
+
+// Valid indicates whether the value is a known member of the IdentityProfileKind enum.
+func (e IdentityProfileKind) Valid() bool {
+	switch e {
+	case IdentityProfileKindAgent:
+		return true
+	case IdentityProfileKindHuman:
+		return true
+	case IdentityProfileKindUnknown:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IdentityProfileWriteKind.
+const (
+	IdentityProfileWriteKindAgent   IdentityProfileWriteKind = "agent"
+	IdentityProfileWriteKindHuman   IdentityProfileWriteKind = "human"
+	IdentityProfileWriteKindUnknown IdentityProfileWriteKind = "unknown"
+)
+
+// Valid indicates whether the value is a known member of the IdentityProfileWriteKind enum.
+func (e IdentityProfileWriteKind) Valid() bool {
+	switch e {
+	case IdentityProfileWriteKindAgent:
+		return true
+	case IdentityProfileWriteKindHuman:
+		return true
+	case IdentityProfileWriteKindUnknown:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IdentitySubject0Kind.
+const (
+	AgentIdentity IdentitySubject0Kind = "agent_identity"
+)
+
+// Valid indicates whether the value is a known member of the IdentitySubject0Kind enum.
+func (e IdentitySubject0Kind) Valid() bool {
+	switch e {
+	case AgentIdentity:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for IdentitySubject1Kind.
+const (
+	Member IdentitySubject1Kind = "member"
+)
+
+// Valid indicates whether the value is a known member of the IdentitySubject1Kind enum.
+func (e IdentitySubject1Kind) Valid() bool {
+	switch e {
+	case Member:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryCreateRequestWriteIntent0Kind.
+const (
+	Authored MemoryCreateRequestWriteIntent0Kind = "authored"
+)
+
+// Valid indicates whether the value is a known member of the MemoryCreateRequestWriteIntent0Kind enum.
+func (e MemoryCreateRequestWriteIntent0Kind) Valid() bool {
+	switch e {
+	case Authored:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryCreateRequestWriteIntent0Version.
+const (
+	MemoryCreateRequestWriteIntent0VersionN1 MemoryCreateRequestWriteIntent0Version = 1
+)
+
+// Valid indicates whether the value is a known member of the MemoryCreateRequestWriteIntent0Version enum.
+func (e MemoryCreateRequestWriteIntent0Version) Valid() bool {
+	switch e {
+	case MemoryCreateRequestWriteIntent0VersionN1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryCreateRequestWriteIntent1Assessment.
+const (
+	MemoryCreateRequestWriteIntent1AssessmentHumanRuling   MemoryCreateRequestWriteIntent1Assessment = "human_ruling"
+	MemoryCreateRequestWriteIntent1AssessmentSourceSupport MemoryCreateRequestWriteIntent1Assessment = "source_support"
+)
+
+// Valid indicates whether the value is a known member of the MemoryCreateRequestWriteIntent1Assessment enum.
+func (e MemoryCreateRequestWriteIntent1Assessment) Valid() bool {
+	switch e {
+	case MemoryCreateRequestWriteIntent1AssessmentHumanRuling:
+		return true
+	case MemoryCreateRequestWriteIntent1AssessmentSourceSupport:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryCreateRequestWriteIntent1Kind.
+const (
+	MemoryCreateRequestWriteIntent1KindSourceDerived MemoryCreateRequestWriteIntent1Kind = "source_derived"
+)
+
+// Valid indicates whether the value is a known member of the MemoryCreateRequestWriteIntent1Kind enum.
+func (e MemoryCreateRequestWriteIntent1Kind) Valid() bool {
+	switch e {
+	case MemoryCreateRequestWriteIntent1KindSourceDerived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryCreateRequestWriteIntent1SourceKind.
+const (
+	MemoryCreateRequestWriteIntent1SourceKindThread MemoryCreateRequestWriteIntent1SourceKind = "thread"
+)
+
+// Valid indicates whether the value is a known member of the MemoryCreateRequestWriteIntent1SourceKind enum.
+func (e MemoryCreateRequestWriteIntent1SourceKind) Valid() bool {
+	switch e {
+	case MemoryCreateRequestWriteIntent1SourceKindThread:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryCreateRequestWriteIntent1Version.
+const (
+	MemoryCreateRequestWriteIntent1VersionN1 MemoryCreateRequestWriteIntent1Version = 1
+)
+
+// Valid indicates whether the value is a known member of the MemoryCreateRequestWriteIntent1Version enum.
+func (e MemoryCreateRequestWriteIntent1Version) Valid() bool {
+	switch e {
+	case MemoryCreateRequestWriteIntent1VersionN1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryKGApplyRequestEntityResolution.
+const (
+	MemoryKGApplyRequestEntityResolutionAutomatic MemoryKGApplyRequestEntityResolution = "automatic"
+	MemoryKGApplyRequestEntityResolutionExact     MemoryKGApplyRequestEntityResolution = "exact"
+)
+
+// Valid indicates whether the value is a known member of the MemoryKGApplyRequestEntityResolution enum.
+func (e MemoryKGApplyRequestEntityResolution) Valid() bool {
+	switch e {
+	case MemoryKGApplyRequestEntityResolutionAutomatic:
+		return true
+	case MemoryKGApplyRequestEntityResolutionExact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryKGApplyResponseEntityResolution.
+const (
+	MemoryKGApplyResponseEntityResolutionExact MemoryKGApplyResponseEntityResolution = "exact"
+)
+
+// Valid indicates whether the value is a known member of the MemoryKGApplyResponseEntityResolution enum.
+func (e MemoryKGApplyResponseEntityResolution) Valid() bool {
+	switch e {
+	case MemoryKGApplyResponseEntityResolutionExact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryPolicyPatchDensity.
+const (
+	MemoryPolicyPatchDensityBalanced      MemoryPolicyPatchDensity = "balanced"
+	MemoryPolicyPatchDensityComprehensive MemoryPolicyPatchDensity = "comprehensive"
+	MemoryPolicyPatchDensityFocused       MemoryPolicyPatchDensity = "focused"
+	MemoryPolicyPatchDensityLessThannil   MemoryPolicyPatchDensity = "<nil>"
+)
+
+// Valid indicates whether the value is a known member of the MemoryPolicyPatchDensity enum.
+func (e MemoryPolicyPatchDensity) Valid() bool {
+	switch e {
+	case MemoryPolicyPatchDensityBalanced:
+		return true
+	case MemoryPolicyPatchDensityComprehensive:
+		return true
+	case MemoryPolicyPatchDensityFocused:
+		return true
+	case MemoryPolicyPatchDensityLessThannil:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MemoryPolicyPatchDetail.
+const (
+	MemoryPolicyPatchDetailBalanced    MemoryPolicyPatchDetail = "balanced"
+	MemoryPolicyPatchDetailConcise     MemoryPolicyPatchDetail = "concise"
+	MemoryPolicyPatchDetailDetailed    MemoryPolicyPatchDetail = "detailed"
+	MemoryPolicyPatchDetailLessThannil MemoryPolicyPatchDetail = "<nil>"
+)
+
+// Valid indicates whether the value is a known member of the MemoryPolicyPatchDetail enum.
+func (e MemoryPolicyPatchDetail) Valid() bool {
+	switch e {
+	case MemoryPolicyPatchDetailBalanced:
+		return true
+	case MemoryPolicyPatchDetailConcise:
+		return true
+	case MemoryPolicyPatchDetailDetailed:
+		return true
+	case MemoryPolicyPatchDetailLessThannil:
 		return true
 	default:
 		return false
@@ -393,36 +693,99 @@ func (e ModelMemoryEntryBackend) Valid() bool {
 	}
 }
 
+// Defines values for NativeSourceOperationAssessment.
+const (
+	NativeSourceOperationAssessmentHumanRuling   NativeSourceOperationAssessment = "human_ruling"
+	NativeSourceOperationAssessmentSourceSupport NativeSourceOperationAssessment = "source_support"
+)
+
+// Valid indicates whether the value is a known member of the NativeSourceOperationAssessment enum.
+func (e NativeSourceOperationAssessment) Valid() bool {
+	switch e {
+	case NativeSourceOperationAssessmentHumanRuling:
+		return true
+	case NativeSourceOperationAssessmentSourceSupport:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for NativeSourceOperationKind.
+const (
+	NativeSourceOperationKindSourceDerived NativeSourceOperationKind = "source_derived"
+)
+
+// Valid indicates whether the value is a known member of the NativeSourceOperationKind enum.
+func (e NativeSourceOperationKind) Valid() bool {
+	switch e {
+	case NativeSourceOperationKindSourceDerived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for NativeSourceOperationSourceKind.
+const (
+	NativeSourceOperationSourceKindThread NativeSourceOperationSourceKind = "thread"
+)
+
+// Valid indicates whether the value is a known member of the NativeSourceOperationSourceKind enum.
+func (e NativeSourceOperationSourceKind) Valid() bool {
+	switch e {
+	case NativeSourceOperationSourceKindThread:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for NativeSourceOperationVersion.
+const (
+	NativeSourceOperationVersionN1 NativeSourceOperationVersion = 1
+)
+
+// Valid indicates whether the value is a known member of the NativeSourceOperationVersion enum.
+func (e NativeSourceOperationVersion) Valid() bool {
+	switch e {
+	case NativeSourceOperationVersionN1:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for NodeType.
 const (
-	Community NodeType = "Community"
-	Entity    NodeType = "Entity"
-	Label     NodeType = "Label"
-	Memory    NodeType = "Memory"
-	Message   NodeType = "Message"
-	Skill     NodeType = "Skill"
-	Source    NodeType = "Source"
-	Thread    NodeType = "Thread"
+	NodeTypeCommunity NodeType = "Community"
+	NodeTypeEntity    NodeType = "Entity"
+	NodeTypeLabel     NodeType = "Label"
+	NodeTypeMemory    NodeType = "Memory"
+	NodeTypeMessage   NodeType = "Message"
+	NodeTypeSkill     NodeType = "Skill"
+	NodeTypeSource    NodeType = "Source"
+	NodeTypeThread    NodeType = "Thread"
 )
 
 // Valid indicates whether the value is a known member of the NodeType enum.
 func (e NodeType) Valid() bool {
 	switch e {
-	case Community:
+	case NodeTypeCommunity:
 		return true
-	case Entity:
+	case NodeTypeEntity:
 		return true
-	case Label:
+	case NodeTypeLabel:
 		return true
-	case Memory:
+	case NodeTypeMemory:
 		return true
-	case Message:
+	case NodeTypeMessage:
 		return true
-	case Skill:
+	case NodeTypeSkill:
 		return true
-	case Source:
+	case NodeTypeSource:
 		return true
-	case Thread:
+	case NodeTypeThread:
 		return true
 	default:
 		return false
@@ -431,31 +794,73 @@ func (e NodeType) Valid() bool {
 
 // Defines values for OccurrenceStatus.
 const (
-	Cancelled OccurrenceStatus = "cancelled"
-	Failed    OccurrenceStatus = "failed"
-	Partial   OccurrenceStatus = "partial"
-	Queued    OccurrenceStatus = "queued"
-	Running   OccurrenceStatus = "running"
-	Skipped   OccurrenceStatus = "skipped"
-	Succeeded OccurrenceStatus = "succeeded"
+	OccurrenceStatusCancelled OccurrenceStatus = "cancelled"
+	OccurrenceStatusFailed    OccurrenceStatus = "failed"
+	OccurrenceStatusPartial   OccurrenceStatus = "partial"
+	OccurrenceStatusQueued    OccurrenceStatus = "queued"
+	OccurrenceStatusRunning   OccurrenceStatus = "running"
+	OccurrenceStatusSkipped   OccurrenceStatus = "skipped"
+	OccurrenceStatusSucceeded OccurrenceStatus = "succeeded"
 )
 
 // Valid indicates whether the value is a known member of the OccurrenceStatus enum.
 func (e OccurrenceStatus) Valid() bool {
 	switch e {
-	case Cancelled:
+	case OccurrenceStatusCancelled:
 		return true
-	case Failed:
+	case OccurrenceStatusFailed:
 		return true
-	case Partial:
+	case OccurrenceStatusPartial:
 		return true
-	case Queued:
+	case OccurrenceStatusQueued:
 		return true
-	case Running:
+	case OccurrenceStatusRunning:
 		return true
-	case Skipped:
+	case OccurrenceStatusSkipped:
 		return true
-	case Succeeded:
+	case OccurrenceStatusSucceeded:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OptimizeStorageResponseOutcome.
+const (
+	OptimizeStorageResponseOutcomeCompleted OptimizeStorageResponseOutcome = "completed"
+	OptimizeStorageResponseOutcomePartial   OptimizeStorageResponseOutcome = "partial"
+	OptimizeStorageResponseOutcomeRefused   OptimizeStorageResponseOutcome = "refused"
+)
+
+// Valid indicates whether the value is a known member of the OptimizeStorageResponseOutcome enum.
+func (e OptimizeStorageResponseOutcome) Valid() bool {
+	switch e {
+	case OptimizeStorageResponseOutcomeCompleted:
+		return true
+	case OptimizeStorageResponseOutcomePartial:
+		return true
+	case OptimizeStorageResponseOutcomeRefused:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OptimizeStorageResponseRefusal.
+const (
+	AlreadyRunning OptimizeStorageResponseRefusal = "already_running"
+	RebuildRunning OptimizeStorageResponseRefusal = "rebuild_running"
+	ShuttingDown   OptimizeStorageResponseRefusal = "shutting_down"
+)
+
+// Valid indicates whether the value is a known member of the OptimizeStorageResponseRefusal enum.
+func (e OptimizeStorageResponseRefusal) Valid() bool {
+	switch e {
+	case AlreadyRunning:
+		return true
+	case RebuildRunning:
+		return true
+	case ShuttingDown:
 		return true
 	default:
 		return false
@@ -567,6 +972,27 @@ const (
 func (e ThreadDistillationBatchPlanResponseSource) Valid() bool {
 	switch e {
 	case ApiThreadBatchPlan:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ThreadProjectListResponseProjectsKind.
+const (
+	ThreadProjectListResponseProjectsKindProject   ThreadProjectListResponseProjectsKind = "project"
+	ThreadProjectListResponseProjectsKindUnknown   ThreadProjectListResponseProjectsKind = "unknown"
+	ThreadProjectListResponseProjectsKindWorkspace ThreadProjectListResponseProjectsKind = "workspace"
+)
+
+// Valid indicates whether the value is a known member of the ThreadProjectListResponseProjectsKind enum.
+func (e ThreadProjectListResponseProjectsKind) Valid() bool {
+	switch e {
+	case ThreadProjectListResponseProjectsKindProject:
+		return true
+	case ThreadProjectListResponseProjectsKindUnknown:
+		return true
+	case ThreadProjectListResponseProjectsKindWorkspace:
 		return true
 	default:
 		return false
@@ -962,7 +1388,13 @@ type AgentProfileResponse struct {
 	DisplayName    string `json:"displayName"`
 	HostAgentId    string `json:"hostAgentId"`
 	Id             string `json:"id"`
-	Instructions   string `json:"instructions"`
+
+	// IdentityReference Server-authored opaque scoped incarnation for content profile links.
+	// Null means this legacy identity has no issued reference. Copy the
+	// observed value into IdentitySubject.reference; do not derive it from
+	// id or reuse it after replacement.
+	IdentityReference *string `json:"identityReference,omitempty"`
+	Instructions      string  `json:"instructions"`
 
 	// Origin How this identity was born: `minted` | `claimed` | `managed` |
 	// `imported` (#1276 S4). Server-authored; read-only to clients.
@@ -1200,29 +1632,32 @@ type BGEM3InstallResponse struct {
 
 // BGEM3StatusResponse Response model for search embedding model status.
 type BGEM3StatusResponse struct {
-	AvailableForIndexing      *bool                             `json:"available_for_indexing,omitempty"`
-	Backend                   *string                           `json:"backend,omitempty"`
-	EmbeddingMode             *BGEM3StatusResponseEmbeddingMode `json:"embedding_mode,omitempty"`
-	Error                     *string                           `json:"error,omitempty"`
-	Exists                    bool                              `json:"exists"`
-	IndexMetadataUpdateNeeded *bool                             `json:"index_metadata_update_needed,omitempty"`
-	IndexMetadataUpdateReason *string                           `json:"index_metadata_update_reason,omitempty"`
-	IntegrityOk               *bool                             `json:"integrity_ok,omitempty"`
-	LastVerifiedAt            *string                           `json:"last_verified_at,omitempty"`
-	Message                   string                            `json:"message"`
-	ModelName                 *string                           `json:"model_name,omitempty"`
-	Platform                  *string                           `json:"platform,omitempty"`
-	ProjectionRepairNeeded    *bool                             `json:"projection_repair_needed,omitempty"`
-	ProjectionRepairReason    *string                           `json:"projection_repair_reason,omitempty"`
-	ReindexNeeded             *bool                             `json:"reindex_needed,omitempty"`
-	ReindexReason             *string                           `json:"reindex_reason,omitempty"`
-	RemoteModel               *string                           `json:"remote_model,omitempty"`
-	RemoteProvider            *string                           `json:"remote_provider,omitempty"`
-	SingletonInitialized      *bool                             `json:"singleton_initialized,omitempty"`
-	SizeMb                    *int                              `json:"size_mb,omitempty"`
-	SmokeTestOk               *bool                             `json:"smoke_test_ok,omitempty"`
-	State                     *string                           `json:"state,omitempty"`
-	Verified                  *bool                             `json:"verified,omitempty"`
+	AvailableForIndexing *bool                             `json:"available_for_indexing,omitempty"`
+	Backend              *string                           `json:"backend,omitempty"`
+	EmbeddingMode        *BGEM3StatusResponseEmbeddingMode `json:"embedding_mode,omitempty"`
+
+	// EmbeddingRuntime Runtime evidence about the configured embedding provider. Always sent by servers that support it, carrying zero counts before this process has run a search; absent entirely on older servers.
+	EmbeddingRuntime          *EmbeddingRuntime `json:"embedding_runtime,omitempty"`
+	Error                     *string           `json:"error,omitempty"`
+	Exists                    bool              `json:"exists"`
+	IndexMetadataUpdateNeeded *bool             `json:"index_metadata_update_needed,omitempty"`
+	IndexMetadataUpdateReason *string           `json:"index_metadata_update_reason,omitempty"`
+	IntegrityOk               *bool             `json:"integrity_ok,omitempty"`
+	LastVerifiedAt            *string           `json:"last_verified_at,omitempty"`
+	Message                   string            `json:"message"`
+	ModelName                 *string           `json:"model_name,omitempty"`
+	Platform                  *string           `json:"platform,omitempty"`
+	ProjectionRepairNeeded    *bool             `json:"projection_repair_needed,omitempty"`
+	ProjectionRepairReason    *string           `json:"projection_repair_reason,omitempty"`
+	ReindexNeeded             *bool             `json:"reindex_needed,omitempty"`
+	ReindexReason             *string           `json:"reindex_reason,omitempty"`
+	RemoteModel               *string           `json:"remote_model,omitempty"`
+	RemoteProvider            *string           `json:"remote_provider,omitempty"`
+	SingletonInitialized      *bool             `json:"singleton_initialized,omitempty"`
+	SizeMb                    *int              `json:"size_mb,omitempty"`
+	SmokeTestOk               *bool             `json:"smoke_test_ok,omitempty"`
+	State                     *string           `json:"state,omitempty"`
+	Verified                  *bool             `json:"verified,omitempty"`
 }
 
 // BGEM3StatusResponseEmbeddingMode defines model for BGEM3StatusResponse.EmbeddingMode.
@@ -1322,26 +1757,60 @@ type BulkDeleteThreadsRequest struct {
 
 // BulkDeleteThreadsResponse Response from bulk deleting threads.
 type BulkDeleteThreadsResponse struct {
-	// CascadeDeletion Whether memories were deleted
+	// CascadeDeletion Whether cascade deletion was requested, not proof that any Memory was deleted. Cloud currently reports zero extracted Memory deletions.
 	CascadeDeletion *bool `json:"cascade_deletion,omitempty"`
 
 	// DeletedCount Number of threads successfully deleted
 	DeletedCount int `json:"deleted_count"`
 
+	// DeletionOutcomeUncertain At least one submitted graph outcome could not be confirmed. Counts include only confirmed commits; refresh before retrying.
+	DeletionOutcomeUncertain *bool `json:"deletion_outcome_uncertain,omitempty"`
+
 	// FailedCount Number of threads that failed to delete
 	FailedCount *int `json:"failed_count,omitempty"`
+
+	// IndexRepairPending Known search projection repair remains pending after the reported graph outcomes.
+	IndexRepairPending *bool `json:"index_repair_pending,omitempty"`
 
 	// Message Success message
 	Message string `json:"message"`
 
-	// Results Detailed results for each thread deletion
-	Results *[]map[string]interface{} `json:"results,omitempty"`
+	// PartialSuccess Some deletions committed while the overall operation did not fully complete. Absence is not proof of rollback.
+	PartialSuccess *bool `json:"partial_success,omitempty"`
 
-	// TotalDeletedMemories Total number of memories deleted
+	// Results Detailed results for each thread deletion
+	Results *[]BulkDeleteThreadsResponse_Results_Item `json:"results,omitempty"`
+
+	// TotalDeletedMemories Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.
 	TotalDeletedMemories *int `json:"total_deleted_memories,omitempty"`
 
 	// TotalDeletedMessages Total number of messages deleted
 	TotalDeletedMessages *int                   `json:"total_deleted_messages,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// BulkDeleteThreadsResponse_Results_Item defines model for BulkDeleteThreadsResponse.results.Item.
+type BulkDeleteThreadsResponse_Results_Item struct {
+	// CascadeDeletion Whether cascade deletion was requested, not proof that any Memory was deleted. Cloud currently reports zero extracted Memory deletions.
+	CascadeDeletion *bool `json:"cascade_deletion,omitempty"`
+
+	// Deleted Whether the parent Thread deletion was confirmed. False with deletion_outcome_uncertain is not proof that no write committed.
+	Deleted *bool `json:"deleted,omitempty"`
+
+	// DeletedMemories Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.
+	DeletedMemories *int `json:"deleted_memories,omitempty"`
+	DeletedMessages *int `json:"deleted_messages,omitempty"`
+
+	// DeletionOutcomeUncertain At least one submitted graph outcome could not be confirmed. Counts include only confirmed commits; refresh before retrying.
+	DeletionOutcomeUncertain *bool   `json:"deletion_outcome_uncertain,omitempty"`
+	Error                    *string `json:"error,omitempty"`
+
+	// IndexRepairPending Known search projection repair remains pending after the reported graph outcomes.
+	IndexRepairPending *bool `json:"index_repair_pending,omitempty"`
+
+	// PartialSuccess Some deletions committed while the overall operation did not fully complete. Absence is not proof of rollback.
+	PartialSuccess       *bool                  `json:"partial_success,omitempty"`
+	ThreadId             *string                `json:"thread_id,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -1703,6 +2172,28 @@ type DataExportSyncResponse struct {
 // DataImportMode defines model for DataImportMode.
 type DataImportMode string
 
+// DataImportPreview defines model for DataImportPreview.
+type DataImportPreview struct {
+	// Counts Flattened source-declared counts; not conflict predictions.
+	Counts         map[string]int  `json:"counts"`
+	ExportId       *string         `json:"export_id,omitempty"`
+	ExportedAt     *string         `json:"exported_at,omitempty"`
+	Format         string          `json:"format"`
+	FormatVersion  *int64          `json:"format_version,omitempty"`
+	Included       map[string]bool `json:"included"`
+	InputFrozen    bool            `json:"input_frozen"`
+	InspectionOnly bool            `json:"inspection_only"`
+	Mode           string          `json:"mode"`
+	SourceKind     string          `json:"source_kind"`
+	Warnings       []string        `json:"warnings"`
+}
+
+// DataImportPreviewResponse defines model for DataImportPreviewResponse.
+type DataImportPreviewResponse struct {
+	Preview DataImportPreview `json:"preview"`
+	Success bool              `json:"success"`
+}
+
 // DataImportRequest POST /data/import request body.
 type DataImportRequest struct {
 	// ImportPath Path to export folder or .zip.
@@ -1793,18 +2284,24 @@ type DeleteMemoryResponse struct {
 
 // DeleteThreadResponse Response from deleting a thread.
 type DeleteThreadResponse struct {
-	// CascadeDeletion Whether memories were cascade deleted
+	// CascadeDeletion Whether cascade deletion was requested, not proof that any Memory was deleted. Cloud currently reports zero extracted Memory deletions.
 	CascadeDeletion *bool `json:"cascade_deletion,omitempty"`
 
-	// DeletedMemories Number of memories deleted
+	// DeletedMemories Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.
 	DeletedMemories *int `json:"deleted_memories,omitempty"`
 
 	// DeletedMessages Number of messages deleted
 	DeletedMessages *int `json:"deleted_messages,omitempty"`
 
+	// IndexRepairPending Known search projection repair remains pending after the reported graph outcomes.
+	IndexRepairPending *bool `json:"index_repair_pending,omitempty"`
+
 	// Message Success message
-	Message              string                 `json:"message"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	Message string `json:"message"`
+
+	// StorageCleanupPending The Thread graph deletion committed but associated content cleanup remains pending.
+	StorageCleanupPending *bool                  `json:"storage_cleanup_pending,omitempty"`
+	AdditionalProperties  map[string]interface{} `json:"-"`
 }
 
 // DeprecateMemoryRequest Mark a memory as obsolete without deleting provenance.
@@ -1893,6 +2390,9 @@ type DistillationRequest struct {
 	// ForceDistill When true, bypass the strict worthiness gate because the user explicitly requested distillation
 	ForceDistill *bool `json:"force_distill,omitempty"`
 
+	// NativeSourceOperation Explicit scheduled native source-derived Thread operation. Recorded roles and source references do not authenticate humans or establish adoption. The host restores the original scheduled task funding and assesses each exact candidate before publication. Authored intent, inline transcript overrides, conflicting selectors and foreign/unreadable Space are rejected. Omit the field for unchanged deterministic distillation. No caller root, grant, provider or cancellation authority is accepted.
+	NativeSourceOperation *NativeSourceOperation `json:"native_source_operation,omitempty"`
+
 	// PreferredLanguage User preferred output language (ISO 639-1 code, e.g. 'en', 'zh', 'ja'), or None to follow input language
 	PreferredLanguage *string `json:"preferred_language,omitempty"`
 
@@ -1920,6 +2420,9 @@ type DistillationScheduleRequest struct {
 	// DelaySeconds Delay before the background Knowledge Agent starts the task.
 	DelaySeconds *int `json:"delay_seconds,omitempty"`
 
+	// DistillAgainOfTaskId Optional Processing task ID to distill again when its recovery state offers that action. The task's conversation and Space bind the new request.
+	DistillAgainOfTaskId *string `json:"distill_again_of_task_id,omitempty"`
+
 	// DistillationType Type: 'simple_llm' or 'knowledge_graph'
 	DistillationType *string `json:"distillation_type,omitempty"`
 
@@ -1931,6 +2434,12 @@ type DistillationScheduleRequest struct {
 
 	// ForceDistill When true, bypass the strict worthiness gate because the user explicitly requested distillation
 	ForceDistill *bool `json:"force_distill,omitempty"`
+
+	// MemoryPolicyOverride Optional one-run Memory Policy applied after global and actual source-Thread Space settings. Does not change stored policy or routing. Omitted, null, or empty objects preserve inherited behavior. Existing force_distill semantics remain separate; set it to request re-distillation of unchanged content.
+	MemoryPolicyOverride *MemoryPolicyPatch `json:"memory_policy_override,omitempty"`
+
+	// NativeSourceOperation Explicit scheduled native source-derived Thread operation. Recorded roles and source references do not authenticate humans or establish adoption. The host restores the original scheduled task funding and assesses each exact candidate before publication. Authored intent, inline transcript overrides, conflicting selectors and foreign/unreadable Space are rejected. Omit the field for unchanged deterministic distillation. No caller root, grant, provider or cancellation authority is accepted.
+	NativeSourceOperation *NativeSourceOperation `json:"native_source_operation,omitempty"`
 
 	// PreferredLanguage User preferred output language (ISO 639-1 code, e.g. 'en', 'zh', 'ja'), or None to follow input language
 	PreferredLanguage *string `json:"preferred_language,omitempty"`
@@ -1953,7 +2462,13 @@ type DistillationScheduleRequest struct {
 
 // DistillationScheduleResponse Response from scheduling background thread distillation.
 type DistillationScheduleResponse struct {
-	DelaySeconds             int     `json:"delay_seconds"`
+	DelaySeconds int `json:"delay_seconds"`
+
+	// DistillAgain Present only when a distill-again request is accepted; identifies the recovered run and whether this request queued it or it had already started.
+	DistillAgain *struct {
+		RunId  string                                         `json:"run_id"`
+		Status DistillationScheduleResponseDistillAgainStatus `json:"status"`
+	} `json:"distill_again,omitempty"`
 	Message                  string  `json:"message"`
 	RecommendedExecutionMode *string `json:"recommended_execution_mode,omitempty"`
 	ScheduledAt              string  `json:"scheduled_at"`
@@ -1962,6 +2477,9 @@ type DistillationScheduleResponse struct {
 	TaskType                 string  `json:"task_type"`
 	ThreadId                 string  `json:"thread_id"`
 }
+
+// DistillationScheduleResponseDistillAgainStatus defines model for DistillationScheduleResponse.DistillAgain.Status.
+type DistillationScheduleResponseDistillAgainStatus string
 
 // EmbeddingInput defines model for EmbeddingInput.
 type EmbeddingInput struct {
@@ -1974,6 +2492,31 @@ type EmbeddingInput0 = string
 // EmbeddingInput1 defines model for EmbeddingInput.1.
 type EmbeddingInput1 = []string
 
+// EmbeddingRuntime What real searches got from the active embedding provider, since this window opened. Process-local and not persisted: a restart opens a fresh window, and so does a change of embedder identity or of the wait budget, because counts gathered under a configuration the user has left no longer describe the one in force. Present with zero counts before the first search rather than absent, so a client can judge a connection test against the wait before any search has run.
+type EmbeddingRuntime struct {
+	// Attempted Query embeddings attempted in this window. Equals `succeeded + timed_out + failed`.
+	Attempted int `json:"attempted"`
+
+	// Failed Attempts that ended in an error rather than a timeout: auth, quota, network and malformed responses alike. Not separated further, because the search path cannot tell them apart.
+	Failed int `json:"failed"`
+
+	// Identity The embedder these counts describe, as `provider/model`, or `local` for the on-device embedder.
+	Identity string `json:"identity"`
+
+	// LastSuccessLatencyMs How long the most recent SUCCESSFUL query embedding took. Null until one succeeds in this window. Never derived from a timed-out call, whose elapsed time is the budget rather than a measurement of the provider.
+	LastSuccessLatencyMs *int `json:"last_success_latency_ms"`
+	Succeeded            int  `json:"succeeded"`
+
+	// TimedOut Attempts abandoned at `wait_budget_seconds`. Each one answered the search with keyword-only results.
+	TimedOut int `json:"timed_out"`
+
+	// WaitBudgetSeconds The wait a query embedding gets before the search degrades to keyword-only, resolved as explicit setting, then environment override, then default.
+	WaitBudgetSeconds float32 `json:"wait_budget_seconds"`
+
+	// WindowStartedAtUnix Unix seconds when this window opened.
+	WindowStartedAtUnix int `json:"window_started_at_unix"`
+}
+
 // EmbeddingVector defines model for EmbeddingVector.
 type EmbeddingVector struct {
 	union json.RawMessage
@@ -1984,6 +2527,23 @@ type EmbeddingVector0 = []float32
 
 // EmbeddingVector1 defines model for EmbeddingVector.1.
 type EmbeddingVector1 = string
+
+// EntityAliasChangeSchema defines model for EntityAliasChangeSchema.
+type EntityAliasChangeSchema struct {
+	Add              *[]string `json:"add,omitempty"`
+	ExpectedAliases  []string  `json:"expected_aliases"`
+	ExpectedRevision int64     `json:"expected_revision"`
+	Remove           *[]string `json:"remove,omitempty"`
+}
+
+// EntityAliasStateSchema defines model for EntityAliasStateSchema.
+type EntityAliasStateSchema struct {
+	Aliases         []string `json:"aliases"`
+	EntityId        string   `json:"entity_id"`
+	Name            string   `json:"name"`
+	RejectedAliases []string `json:"rejected_aliases"`
+	Revision        int64    `json:"revision"`
+}
 
 // EntityDeletePlanResponse defines model for EntityDeletePlanResponse.
 type EntityDeletePlanResponse struct {
@@ -2208,12 +2768,17 @@ type EvolvesRevisionMemoryResponse struct {
 type EvolvesRevisionPlanResponse struct {
 	AuthoritativeMemoryId *string                         `json:"authoritative_memory_id,omitempty"`
 	CanApply              bool                            `json:"can_apply"`
+	CannotApplyReason     *string                         `json:"cannot_apply_reason,omitempty"`
 	CurrentEdges          []EvolvesRevisionEdgeResponse   `json:"current_edges"`
 	Decision              string                          `json:"decision"`
 	Memories              []EvolvesRevisionMemoryResponse `json:"memories"`
 	MemoriesPreserved     bool                            `json:"memories_preserved"`
-	PlanId                string                          `json:"plan_id"`
-	TargetRelation        *string                         `json:"target_relation,omitempty"`
+
+	// MemoryContents Complete authorized bodies from the plan's snapshot, keyed by Memory ID.
+	// Preview only; omitted from apply responses and persisted receipts.
+	MemoryContents map[string]string `json:"memory_contents"`
+	PlanId         string            `json:"plan_id"`
+	TargetRelation *string           `json:"target_relation,omitempty"`
 }
 
 // EvolvesRevisionPreviewRequest defines model for EvolvesRevisionPreviewRequest.
@@ -2284,6 +2849,11 @@ type ExpandNeighborsResponse struct {
 // FSDeleteRequest defines model for FSDeleteRequest.
 type FSDeleteRequest struct {
 	Path string `json:"path"`
+
+	// SpaceId Optional existing Space id, name or alias. Blank/omitted values may use
+	// the X-Nmem-Space-Id header (legacy X-Nowledge-Space-Id). Without either,
+	// the path selects its current Space; later movement prevents deletion.
+	SpaceId *string `json:"space_id,omitempty"`
 }
 
 // FSWriteRequest defines model for FSWriteRequest.
@@ -2314,9 +2884,13 @@ type FeedEventsResponse struct {
 	// no-change resolution, and an absolute expiry timestamp.
 	Events  []interface{} `json:"events"`
 	HasMore bool          `json:"has_more"`
-	Limit   int64         `json:"limit"`
-	Offset  int64         `json:"offset"`
-	Total   *int64        `json:"total,omitempty"`
+
+	// JournalIncomplete Local journal maintenance is incomplete in the 365-day history window.
+	// Cloud PostgreSQL workspaces can omit this field.
+	JournalIncomplete *bool  `json:"journal_incomplete,omitempty"`
+	Limit             int64  `json:"limit"`
+	Offset            int64  `json:"offset"`
+	Total             *int64 `json:"total,omitempty"`
 }
 
 // FeedInputRequest defines model for FeedInputRequest.
@@ -2695,6 +3269,81 @@ type GraphStatsSummary struct {
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
+// GuardedReviewLabel defines model for GuardedReviewLabel.
+type GuardedReviewLabel struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// GuardedReviewMemory defines model for GuardedReviewMemory.
+type GuardedReviewMemory struct {
+	Content        string                 `json:"content"`
+	CreatedAt      interface{}            `json:"created_at"`
+	EvidenceFields map[string]interface{} `json:"evidence_fields"`
+	Id             string                 `json:"id"`
+	IsLatest       bool                   `json:"is_latest"`
+	Labels         []GuardedReviewLabel   `json:"labels"`
+	LifecycleState string                 `json:"lifecycle_state"`
+	SpaceId        string                 `json:"space_id"`
+	Title          string                 `json:"title"`
+}
+
+// GuardedReviewPhase defines model for GuardedReviewPhase.
+type GuardedReviewPhase string
+
+// GuardedReviewPlan defines model for GuardedReviewPlan.
+type GuardedReviewPlan struct {
+	Action            TimelineReviewAction  `json:"action"`
+	CanApply          bool                  `json:"can_apply"`
+	CannotApplyReason *string               `json:"cannot_apply_reason,omitempty"`
+	CurrentEdges      []interface{}         `json:"current_edges"`
+	FromMemoryId      string                `json:"from_memory_id"`
+	Memories          []GuardedReviewMemory `json:"memories"`
+	PlanId            string                `json:"plan_id"`
+	Relation          string                `json:"relation"`
+	ToMemoryId        string                `json:"to_memory_id"`
+}
+
+// GuardedReviewResult defines model for GuardedReviewResult.
+type GuardedReviewResult struct {
+	Action *string `json:"action,omitempty"`
+
+	// ActionResult Original backend effect detail, never reconstructed on retry.
+	ActionResult      interface{}        `json:"action_result,omitempty"`
+	AlreadyResolved   *bool              `json:"already_resolved,omitempty"`
+	EventId           string             `json:"event_id"`
+	Preview           *GuardedReviewPlan `json:"preview,omitempty"`
+	ProjectionPending *bool              `json:"projection_pending,omitempty"`
+
+	// Receipt Original semantic receipt, null for historical decisions without one.
+	Receipt        interface{} `json:"receipt,omitempty"`
+	Resolution     *string     `json:"resolution,omitempty"`
+	ResolutionNote *string     `json:"resolution_note,omitempty"`
+	Success        bool        `json:"success"`
+}
+
+// GuardedTimelineReviewRequest Documentation mirror of the protocol-only nmem-wire request. The live
+// route deserializes the shared request; contract tests compare both forms.
+type GuardedTimelineReviewRequest struct {
+	Action    TimelineReviewAction `json:"action"`
+	MemoryIds *[]string            `json:"memory_ids,omitempty"`
+	Phase     GuardedReviewPhase   `json:"phase"`
+
+	// PlanId Exact plan displayed before applying a graph-changing decision.
+	PlanId         *string `json:"plan_id,omitempty"`
+	ResolutionNote *string `json:"resolution_note,omitempty"`
+}
+
+// GuardedTimelineReviewResponse defines model for GuardedTimelineReviewResponse.
+type GuardedTimelineReviewResponse struct {
+	Action          *TimelineReviewAction `json:"action,omitempty"`
+	EventId         string                `json:"event_id"`
+	Message         string                `json:"message"`
+	ProtocolVersion int32                 `json:"protocol_version"`
+	Result          GuardedReviewResult   `json:"result"`
+	Success         bool                  `json:"success"`
+}
+
 // GuidanceRulePayload defines model for GuidanceRulePayload.
 type GuidanceRulePayload struct {
 	AgentProfileId               *string   `json:"agentProfileId,omitempty"`
@@ -2780,6 +3429,184 @@ type HealthResponse struct {
 type HostConfigDir struct {
 	ConfigDir *string `json:"config_dir,omitempty"`
 }
+
+// IdentityCorrectionRequest defines model for IdentityCorrectionRequest.
+type IdentityCorrectionRequest struct {
+	// ExpectedEpoch Copy epoch from the latest IdentityEvidence.
+	ExpectedEpoch      string `json:"expected_epoch"`
+	ExpectedGeneration int    `json:"expected_generation"`
+	ExpectedRevision   int    `json:"expected_revision"`
+
+	// IdentityId Required even when null: null records an explicit human-confirmed unknown decision; omission is invalid.
+	IdentityId *string `json:"identity_id"`
+
+	// MentionId Occurrence to correct.
+	MentionId string `json:"mention_id"`
+
+	// SourceRevision Copy from the latest IdentityEvidence.
+	SourceRevision string `json:"source_revision"`
+
+	// SpaceId Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.
+	SpaceId string `json:"space_id"`
+}
+
+// IdentityEvidence defines model for IdentityEvidence.
+type IdentityEvidence struct {
+	// Epoch Ledger incarnation; copy into expected_epoch for a correction.
+	Epoch       string               `json:"epoch"`
+	Generation  int                  `json:"generation"`
+	MemoryId    string               `json:"memory_id"`
+	Occurrences []IdentityOccurrence `json:"occurrences"`
+
+	// SourceRevision Source fingerprint used for optimistic concurrency; copy from the latest read.
+	SourceRevision string `json:"source_revision"`
+
+	// SpaceId Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.
+	SpaceId string `json:"space_id"`
+}
+
+// IdentityExtractionRequest defines model for IdentityExtractionRequest.
+type IdentityExtractionRequest struct {
+	// MentionIds Omit or set null for initial extraction only, with no new_spans. An explicit array selects existing machine occurrences; an empty array can accompany new_spans. Human decisions cannot be overwritten.
+	MentionIds *[]string `json:"mention_ids,omitempty"`
+
+	// NewSpans Optional nonempty, non-overlapping source spans (start must be less than end). Requires an explicit mention_ids array. A span overlapping existing machine evidence must fully contain each overlapping occurrence and explicitly select its mention ID. Overlapping human evidence is rejected.
+	NewSpans *[]IdentityExtractionSpan `json:"new_spans,omitempty"`
+
+	// SpaceId Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.
+	SpaceId string `json:"space_id"`
+}
+
+// IdentityExtractionSpan defines model for IdentityExtractionSpan.
+type IdentityExtractionSpan struct {
+	// End Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.
+	End int `json:"end"`
+
+	// Start Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.
+	Start int `json:"start"`
+}
+
+// IdentityOccurrence defines model for IdentityOccurrence.
+type IdentityOccurrence struct {
+	// End Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.
+	End int `json:"end"`
+
+	// IdentityId Assigned profile ID, or null for unresolved/unknown.
+	IdentityId *string `json:"identity_id"`
+
+	// MentionId Opaque occurrence ID from this evidence response.
+	MentionId string                   `json:"mention_id"`
+	Origin    IdentityOccurrenceOrigin `json:"origin"`
+	Revision  int                      `json:"revision"`
+
+	// Start Zero-based Unicode scalar-value offsets into the current Memory text, with an exclusive end. These are not UTF-8 byte or JavaScript UTF-16 offsets.
+	Start int `json:"start"`
+
+	// Surface The exact source text covered by this occurrence.
+	Surface string `json:"surface"`
+}
+
+// IdentityOccurrenceOrigin defines model for IdentityOccurrence.Origin.
+type IdentityOccurrenceOrigin string
+
+// IdentityOperationError defines model for IdentityOperationError.
+type IdentityOperationError struct {
+	// Detail Safe message explaining this cause.
+	Detail string `json:"detail"`
+
+	// ErrorCode Registered cause identifier. Do not infer the cause from status or message text.
+	ErrorCode string `json:"error_code"`
+
+	// Retryable Whether the same operation may be retried after the transient cause clears. Evidence/profile conflicts can instead require a fresh read.
+	Retryable bool `json:"retryable"`
+}
+
+// IdentityProfile defines model for IdentityProfile.
+type IdentityProfile struct {
+	Context []string `json:"context"`
+
+	// Id Opaque profile ID returned by this server. Same-name profiles have distinct IDs.
+	Id string `json:"id"`
+
+	// Kind Descriptive identity kind; it grants no account membership or permissions.
+	Kind     IdentityProfileKind `json:"kind"`
+	Names    []string            `json:"names"`
+	Revision int                 `json:"revision"`
+
+	// Subject Linked AI Identity or member; null for people and Agents known only from content. A link whose AI Identity was deleted or whose member left is still returned.
+	Subject *IdentitySubject `json:"subject,omitempty"`
+}
+
+// IdentityProfileKind Descriptive identity kind; it grants no account membership or permissions.
+type IdentityProfileKind string
+
+// IdentityProfileWrite defines model for IdentityProfileWrite.
+type IdentityProfileWrite struct {
+	Aliases []string `json:"aliases"`
+
+	// Context Disambiguating context, at most 8192 UTF-8 bytes. An empty string is allowed.
+	Context string `json:"context"`
+
+	// ExpectedRevision Null or omitted on creation; required and equal to the current revision on update.
+	ExpectedRevision *int `json:"expected_revision,omitempty"`
+
+	// Id Required: explicit null creates a new independent profile; an existing ID updates that profile.
+	Id *string `json:"id"`
+
+	// Kind Descriptive identity kind; it grants no account membership or permissions.
+	Kind IdentityProfileWriteKind `json:"kind"`
+
+	// Name Nonblank display name, at most 512 UTF-8 bytes.
+	Name string `json:"name"`
+
+	// SpaceId Exact Space ID. Pass explicitly; this operation does not infer the active Space or broaden to other Spaces.
+	SpaceId string `json:"space_id"`
+
+	// Subject Optional. Omit to keep the current link; null removes it; an object links the profile to an enrolled AI Identity (kind must be agent) or an active member (kind must be human). The subject must be available when set, and at most one profile per Space may link to it.
+	Subject *IdentitySubject `json:"subject,omitempty"`
+	union   json.RawMessage
+}
+
+// IdentityProfileWriteKind Descriptive identity kind; it grants no account membership or permissions.
+type IdentityProfileWriteKind string
+
+// IdentityProfileWrite0 defines model for IdentityProfileWrite.0.
+type IdentityProfileWrite0 struct {
+	ExpectedRevision any `json:"expected_revision,omitempty"`
+	Id               any `json:"id,omitempty"`
+}
+
+// IdentityProfileWrite1 defines model for IdentityProfileWrite.1.
+type IdentityProfileWrite1 struct {
+	ExpectedRevision int     `json:"expected_revision"`
+	Id               *string `json:"id,omitempty"`
+}
+
+// IdentitySubject An accountable identity that a content profile denotes. Linking grants no membership or permissions. AI Identity links retain their original roster incarnation even after deletion, replacement or import.
+type IdentitySubject struct {
+	union json.RawMessage
+}
+
+// IdentitySubject0 defines model for IdentitySubject.0.
+type IdentitySubject0 struct {
+	Id   string               `json:"id"`
+	Kind IdentitySubject0Kind `json:"kind"`
+
+	// Reference Opaque scoped incarnation from AgentProfileResponse.identityReference. Copy the observed value when linking; a stale or foreign reference is rejected. Omitted/null historical references remain unverified. Explicitly linking an uninitialized legacy roster identity with null may initialize its reference.
+	Reference *string `json:"reference,omitempty"`
+}
+
+// IdentitySubject0Kind defines model for IdentitySubject.0.Kind.
+type IdentitySubject0Kind string
+
+// IdentitySubject1 defines model for IdentitySubject.1.
+type IdentitySubject1 struct {
+	Id   string               `json:"id"`
+	Kind IdentitySubject1Kind `json:"kind"`
+}
+
+// IdentitySubject1Kind defines model for IdentitySubject.1.Kind.
+type IdentitySubject1Kind string
 
 // ImportConfigModel Model for import configuration.
 type ImportConfigModel struct {
@@ -2885,6 +3712,11 @@ type IngestFilePathRequest struct {
 
 // IngestFileUploadRequest Typed multipart body for `POST /sources/ingest/file`.
 type IngestFileUploadRequest struct {
+	// AttachmentReference JSON-encoded Thread attachment reference. When present, the server
+	// validates it against authoritative message metadata and authors capture
+	// provenance; clients cannot supply provenance through `metadata`.
+	AttachmentReference *string `json:"attachment_reference,omitempty"`
+
 	// File File payload. The complete multipart request is limited to 32 MiB or the
 	// operator's lower process-wide request limit.
 	File openapi_types.File `json:"file"`
@@ -3061,6 +3893,9 @@ type MemoryCreateRequest struct {
 	// AgentId Portable AI Identity attribution. Identity is provenance, not auth.
 	AgentId *string `json:"agent_id,omitempty"`
 
+	// ClaimStatus Exact claim status for source-derived assessment; metadata remains supported.
+	ClaimStatus *string `json:"claim_status,omitempty"`
+
 	// Confidence Confidence score.
 	Confidence *float64 `json:"confidence,omitempty"`
 
@@ -3094,6 +3929,9 @@ type MemoryCreateRequest struct {
 	// SourceApp Runtime provenance, kept separate from the display/source field.
 	SourceApp *string `json:"source_app,omitempty"`
 
+	// SourceGrounding Exact source grounding for source-derived assessment, without display normalization.
+	SourceGrounding *string `json:"source_grounding,omitempty"`
+
 	// SourceMessageId Compatibility form for one source message. Preserved in metadata;
 	// callers that know message order should prefer `source_message_indices`.
 	SourceMessageId *string `json:"source_message_id,omitempty"`
@@ -3123,6 +3961,50 @@ type MemoryCreateRequest struct {
 	// UnitType Knowledge unit type, for example `fact`, `decision`, `preference`,
 	// `procedure`, or `learning`.
 	UnitType *string `json:"unit_type,omitempty"`
+
+	// WriteIntent Explicit authored or server-assessed source-derived write. source_support allows ordinary observations; human_ruling additionally requires supported human adoption. Both require authoritative selected thread/message evidence and never fall back to authored on failure. Omit for legacy authored behavior.
+	WriteIntent *MemoryCreateRequest_WriteIntent `json:"write_intent,omitempty"`
+}
+
+// MemoryCreateRequestWriteIntent0 defines model for MemoryCreateRequest.WriteIntent.0.
+type MemoryCreateRequestWriteIntent0 struct {
+	Kind    MemoryCreateRequestWriteIntent0Kind    `json:"kind"`
+	Version MemoryCreateRequestWriteIntent0Version `json:"version"`
+}
+
+// MemoryCreateRequestWriteIntent0Kind defines model for MemoryCreateRequest.WriteIntent.0.Kind.
+type MemoryCreateRequestWriteIntent0Kind string
+
+// MemoryCreateRequestWriteIntent0Version defines model for MemoryCreateRequest.WriteIntent.0.Version.
+type MemoryCreateRequestWriteIntent0Version int
+
+// MemoryCreateRequestWriteIntent1 defines model for MemoryCreateRequest.WriteIntent.1.
+type MemoryCreateRequestWriteIntent1 struct {
+	Assessment MemoryCreateRequestWriteIntent1Assessment `json:"assessment"`
+	Kind       MemoryCreateRequestWriteIntent1Kind       `json:"kind"`
+	Source     struct {
+		Kind       MemoryCreateRequestWriteIntent1SourceKind `json:"kind"`
+		MessageIds []string                                  `json:"message_ids"`
+		ThreadId   string                                    `json:"thread_id"`
+	} `json:"source"`
+	Version MemoryCreateRequestWriteIntent1Version `json:"version"`
+}
+
+// MemoryCreateRequestWriteIntent1Assessment defines model for MemoryCreateRequest.WriteIntent.1.Assessment.
+type MemoryCreateRequestWriteIntent1Assessment string
+
+// MemoryCreateRequestWriteIntent1Kind defines model for MemoryCreateRequest.WriteIntent.1.Kind.
+type MemoryCreateRequestWriteIntent1Kind string
+
+// MemoryCreateRequestWriteIntent1SourceKind defines model for MemoryCreateRequest.WriteIntent.1.Source.Kind.
+type MemoryCreateRequestWriteIntent1SourceKind string
+
+// MemoryCreateRequestWriteIntent1Version defines model for MemoryCreateRequest.WriteIntent.1.Version.
+type MemoryCreateRequestWriteIntent1Version int
+
+// MemoryCreateRequest_WriteIntent Explicit authored or server-assessed source-derived write. source_support allows ordinary observations; human_ruling additionally requires supported human adoption. Both require authoritative selected thread/message evidence and never fall back to authored on failure. Omit for legacy authored behavior.
+type MemoryCreateRequest_WriteIntent struct {
+	union json.RawMessage
 }
 
 // MemoryCreateResponse Response from memory creation or upsert.
@@ -3144,10 +4026,13 @@ type MemoryCreateResponse struct {
 
 // MemoryKGApplyRequest Request to apply KG extraction results to a memory.
 //
-// Note: memory_id is provided in the URL path, not in the request body.
+// Note: memory_id is provided in the URL path, not in the request body. Exact requests reject invalid batches before writing and reject ambiguous stored identities. Older backends may ignore this field; upgrade the backend before relying on exact resolution.
 type MemoryKGApplyRequest struct {
 	// Entities Extracted entities to save
 	Entities []interface{} `json:"entities"`
+
+	// EntityResolution Use exact for controlled external writes on a backend supporting this policy. Exact matches trimmed, case-sensitive name and type only; it does not resolve through aliases or normalize punctuation. Omitted or empty aliases preserve existing aliases. Automatic retains extraction preview matching. Exact batches allow up to 50 entities and 100 relationships, require unique names and explicit type, and require relationship endpoints to exactly match submitted names.
+	EntityResolution *MemoryKGApplyRequestEntityResolution `json:"entity_resolution,omitempty"`
 
 	// ExtractionConfidence Confidence of the extraction
 	ExtractionConfidence float32 `json:"extraction_confidence"`
@@ -3156,13 +4041,22 @@ type MemoryKGApplyRequest struct {
 	Relationships []interface{} `json:"relationships"`
 }
 
+// MemoryKGApplyRequestEntityResolution Use exact for controlled external writes on a backend supporting this policy. Exact matches trimmed, case-sensitive name and type only; it does not resolve through aliases or normalize punctuation. Omitted or empty aliases preserve existing aliases. Automatic retains extraction preview matching. Exact batches allow up to 50 entities and 100 relationships, require unique names and explicit type, and require relationship endpoints to exactly match submitted names.
+type MemoryKGApplyRequestEntityResolution string
+
 // MemoryKGApplyResponse Response from applying KG extraction to memory.
 type MemoryKGApplyResponse struct {
 	// EntitiesCreated Number of entities created in graph
 	EntitiesCreated int `json:"entities_created"`
 
+	// EntityResolution Present when exact resolution was applied.
+	EntityResolution *MemoryKGApplyResponseEntityResolution `json:"entity_resolution,omitempty"`
+
 	// Error Error message if application failed
 	Error *string `json:"error,omitempty"`
+
+	// IndexRepairNeeded Entity search projection is pending repair; graph writes may already be complete.
+	IndexRepairNeeded *bool `json:"index_repair_needed,omitempty"`
 
 	// MemoryId ID of the updated memory
 	MemoryId string `json:"memory_id"`
@@ -3173,9 +4067,20 @@ type MemoryKGApplyResponse struct {
 	// RelationshipsCreated Number of relationships created in graph
 	RelationshipsCreated int `json:"relationships_created"`
 
+	// ResolvedEntities Graph identities successfully resolved by an exact request, including partial failure. Retain for source auditing.
+	ResolvedEntities *[]struct {
+		EntityType string `json:"entity_type"`
+		Id         string `json:"id"`
+		Name       string `json:"name"`
+	} `json:"resolved_entities,omitempty"`
+
 	// Success Whether application was successful
-	Success bool `json:"success"`
+	Success  bool      `json:"success"`
+	Warnings *[]string `json:"warnings,omitempty"`
 }
+
+// MemoryKGApplyResponseEntityResolution Present when exact resolution was applied.
+type MemoryKGApplyResponseEntityResolution string
 
 // MemoryKGContentExtractionRequest Read-only KG extraction preview from explicit memory-like content.
 type MemoryKGContentExtractionRequest struct {
@@ -3387,6 +4292,24 @@ type MemoryNode struct {
 	// Version Version counter within EVOLVES chain
 	Version *int `json:"version,omitempty"`
 }
+
+// MemoryPolicyPatch Extraction-only settings. Omitted or null fields inherit the stored policy; an explicit empty list clears the inherited list. Text is trimmed before server validation. This is not an authorization policy or a Context Rule.
+type MemoryPolicyPatch struct {
+	// AdditionalInstructions One-run extraction guidance; cannot override source fidelity or access boundaries.
+	AdditionalInstructions *string `json:"additionalInstructions,omitempty"`
+
+	// Density Maximum retained candidates: focused 1, balanced 3, comprehensive 5. Grounding and durability review still apply.
+	Density    *MemoryPolicyPatchDensity `json:"density,omitempty"`
+	Detail     *MemoryPolicyPatchDetail  `json:"detail,omitempty"`
+	Exclusions *[]string                 `json:"exclusions,omitempty"`
+	Priorities *[]string                 `json:"priorities,omitempty"`
+}
+
+// MemoryPolicyPatchDensity Maximum retained candidates: focused 1, balanced 3, comprehensive 5. Grounding and durability review still apply.
+type MemoryPolicyPatchDensity string
+
+// MemoryPolicyPatchDetail defines model for MemoryPolicyPatch.Detail.
+type MemoryPolicyPatchDetail string
 
 // MemoryPublic Frontend memory format.
 type MemoryPublic struct {
@@ -3792,6 +4715,30 @@ type ModelUnloadResponse struct {
 	Success bool    `json:"success"`
 }
 
+// NativeSourceOperation Explicit scheduled native source-derived Thread operation. Recorded roles and source references do not authenticate humans or establish adoption. The host restores the original scheduled task funding and assesses each exact candidate before publication. Authored intent, inline transcript overrides, conflicting selectors and foreign/unreadable Space are rejected. Omit the field for unchanged deterministic distillation. No caller root, grant, provider or cancellation authority is accepted.
+type NativeSourceOperation struct {
+	Assessment NativeSourceOperationAssessment `json:"assessment"`
+	Kind       NativeSourceOperationKind       `json:"kind"`
+	Source     struct {
+		Kind       NativeSourceOperationSourceKind `json:"kind"`
+		MessageIds []string                        `json:"message_ids"`
+		ThreadId   string                          `json:"thread_id"`
+	} `json:"source"`
+	Version NativeSourceOperationVersion `json:"version"`
+}
+
+// NativeSourceOperationAssessment defines model for NativeSourceOperation.Assessment.
+type NativeSourceOperationAssessment string
+
+// NativeSourceOperationKind defines model for NativeSourceOperation.Kind.
+type NativeSourceOperationKind string
+
+// NativeSourceOperationSourceKind defines model for NativeSourceOperation.Source.Kind.
+type NativeSourceOperationSourceKind string
+
+// NativeSourceOperationVersion defines model for NativeSourceOperation.Version.
+type NativeSourceOperationVersion int
+
 // NodeType Enumeration of node types in the graph.
 type NodeType string
 
@@ -3871,12 +4818,38 @@ type OpenAIModelListResponse struct {
 
 // OptimizeStorageResponse defines model for OptimizeStorageResponse.
 type OptimizeStorageResponse struct {
-	AfterBytes  *int    `json:"after_bytes,omitempty"`
-	BeforeBytes *int    `json:"before_bytes,omitempty"`
-	FreedBytes  *int    `json:"freed_bytes,omitempty"`
-	Message     *string `json:"message,omitempty"`
-	Success     bool    `json:"success"`
+	AfterBytes  int `json:"after_bytes"`
+	BeforeBytes int `json:"before_bytes"`
+
+	// CheckpointFailed Whether the graph database flush did not finish.
+	CheckpointFailed bool `json:"checkpoint_failed"`
+
+	// CompactedTables Search tables whose fragments were merged in this run.
+	CompactedTables []string `json:"compacted_tables"`
+
+	// FailedTables Search tables that did not finish. Table names only.
+	FailedTables    []string `json:"failed_tables"`
+	FragmentsAfter  int      `json:"fragments_after"`
+	FragmentsBefore int      `json:"fragments_before"`
+	FreedBytes      int      `json:"freed_bytes"`
+	Message         string   `json:"message"`
+
+	// Outcome Overall Optimize result.
+	Outcome OptimizeStorageResponseOutcome `json:"outcome"`
+
+	// ReclaimPending Whether compacted-away files are released after the next restart.
+	ReclaimPending bool `json:"reclaim_pending"`
+
+	// Refusal Why Optimize did not start; omitted when the run started.
+	Refusal *OptimizeStorageResponseRefusal `json:"refusal,omitempty"`
+	Success bool                            `json:"success"`
 }
+
+// OptimizeStorageResponseOutcome Overall Optimize result.
+type OptimizeStorageResponseOutcome string
+
+// OptimizeStorageResponseRefusal Why Optimize did not start; omitted when the run started.
+type OptimizeStorageResponseRefusal string
 
 // OrphanedEntitiesResponse Response for orphaned entities lookup.
 type OrphanedEntitiesResponse struct {
@@ -4105,12 +5078,14 @@ type ScheduleDeleteResponse struct {
 
 // ScheduleErrorResponse defines model for ScheduleErrorResponse.
 type ScheduleErrorResponse struct {
-	Detail string `json:"detail"`
+	Detail    string  `json:"detail"`
+	ErrorCode *string `json:"error_code,omitempty"`
 }
 
 // ScheduleListResponse defines model for ScheduleListResponse.
 type ScheduleListResponse struct {
-	Schedules []RecurringTask `json:"schedules"`
+	KnowledgeCapabilities []ToolCapability `json:"knowledge_capabilities"`
+	Schedules             []RecurringTask  `json:"schedules"`
 }
 
 // SchedulePreviewResponse defines model for SchedulePreviewResponse.
@@ -4677,6 +5652,27 @@ type ThreadCreateResponse struct {
 	Thread ThreadNode `json:"thread"`
 }
 
+// ThreadDeletionErrorResponse App deletion error. Optional progress fields preserve confirmed prior commits. Cloud and admission failures may return only detail. This is not an all-or-nothing rollback guarantee.
+type ThreadDeletionErrorResponse struct {
+	// Deleted Whether the parent Thread deletion was confirmed.
+	Deleted *bool `json:"deleted,omitempty"`
+
+	// DeletedMemories Confirmed Memory deletions, including commits before a later failure. Never inferred from the requested cascade flag.
+	DeletedMemories *int `json:"deleted_memories,omitempty"`
+	DeletedMessages *int `json:"deleted_messages,omitempty"`
+
+	// DeletionOutcomeUncertain At least one submitted graph outcome could not be confirmed. Counts include only confirmed commits; refresh before retrying.
+	DeletionOutcomeUncertain *bool  `json:"deletion_outcome_uncertain,omitempty"`
+	Detail                   string `json:"detail"`
+
+	// IndexRepairPending Known search projection repair remains pending after the reported graph outcomes.
+	IndexRepairPending *bool `json:"index_repair_pending,omitempty"`
+
+	// PartialSuccess Some deletions committed while the overall operation did not fully complete. Absence is not proof of rollback.
+	PartialSuccess       *bool                  `json:"partial_success,omitempty"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
 // ThreadDistillationBatchPlanRequest Plan the next safe opt-in batch for thread distillation.
 type ThreadDistillationBatchPlanRequest struct {
 	// MaxMessagesPerRun Soft total message budget for one background wave.
@@ -4920,6 +5916,21 @@ type ThreadParseResponse struct {
 	Success bool `json:"success"`
 }
 
+// ThreadProjectListResponse defines model for ThreadProjectListResponse.
+type ThreadProjectListResponse struct {
+	// Pagination Pagination info
+	Pagination ThreadPaginationInfo `json:"pagination"`
+	Projects   []struct {
+		Count int                                   `json:"count"`
+		Key   string                                `json:"key"`
+		Kind  ThreadProjectListResponseProjectsKind `json:"kind"`
+		Value *string                               `json:"value"`
+	} `json:"projects"`
+}
+
+// ThreadProjectListResponseProjectsKind defines model for ThreadProjectListResponse.Projects.Kind.
+type ThreadProjectListResponseProjectsKind string
+
 // ThreadSearchMetadata Metadata for thread search results.
 type ThreadSearchMetadata struct {
 	// Error Error message if any
@@ -4984,6 +5995,12 @@ type TimelineReviewResolveRequest struct {
 	// MemoryIds Optional evidence IDs. Every supplied ID must belong to the event.
 	MemoryIds *[]string `json:"memory_ids,omitempty"`
 
+	// PlanId Exact plan from the evidence the caller reviewed.
+	PlanId *string `json:"plan_id,omitempty"`
+
+	// Preview Return the evidence snapshot and plan without settling the event.
+	Preview *bool `json:"preview,omitempty"`
+
 	// Resolution Legacy resolution label retained for older app clients.
 	Resolution *string `json:"resolution,omitempty"`
 
@@ -5011,7 +6028,11 @@ type TimelineReviewResolveResponse struct {
 
 // ToolCapability defines model for ToolCapability.
 type ToolCapability struct {
-	AllowUnknownArguments *bool `json:"allow_unknown_arguments,omitempty"`
+	// ActionFingerprint SHA-256 of the reviewed external action contract. This is required to
+	// activate connector-backed capabilities, but remains optional here so
+	// older paused drafts can be loaded and reviewed safely.
+	ActionFingerprint     *string `json:"action_fingerprint,omitempty"`
+	AllowUnknownArguments *bool   `json:"allow_unknown_arguments,omitempty"`
 
 	// Arguments Root JSON argument name -> rule. Undeclared arguments are rejected unless
 	// `allow_unknown_arguments` is explicitly true (not recommended for writes).
@@ -5242,6 +6263,9 @@ type NowledgeGraphServerApiRoutersThreadsModuleSchemasThreadPublic struct {
 	// Messages Number of messages
 	Messages int `json:"messages"`
 
+	// Project Source-provided project name; optional for historical conversations.
+	Project *string `json:"project,omitempty"`
+
 	// Source Thread source
 	Source string `json:"source"`
 
@@ -5252,7 +6276,10 @@ type NowledgeGraphServerApiRoutersThreadsModuleSchemasThreadPublic struct {
 	Summary *string `json:"summary,omitempty"`
 
 	// Title Thread title
-	Title                string                 `json:"title"`
+	Title string `json:"title"`
+
+	// Workspace Exact source-provided workspace path; used before project name for grouping.
+	Workspace            *string                `json:"workspace,omitempty"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
@@ -5607,6 +6634,27 @@ type ImportDataUploadDataImportUploadPostMultipartBody struct {
 	Mode                        *DataImportMode `json:"mode,omitempty"`
 }
 
+// OpenapiImportUploadPreviewMultipartBody defines parameters for OpenapiImportUploadPreview.
+type OpenapiImportUploadPreviewMultipartBody struct {
+	File               openapi_types.File `json:"file"`
+	IncludeCommunities *bool              `json:"include_communities,omitempty"`
+	IncludeEdges       *bool              `json:"include_edges,omitempty"`
+	IncludeEntities    *bool              `json:"include_entities,omitempty"`
+
+	// IncludeFeedEvents Include durable Timeline history from feed_events/*.jsonl.
+	IncludeFeedEvents           *bool           `json:"include_feed_events,omitempty"`
+	IncludeLabels               *bool           `json:"include_labels,omitempty"`
+	IncludeMemories             *bool           `json:"include_memories,omitempty"`
+	IncludeMessages             *bool           `json:"include_messages,omitempty"`
+	IncludeSkills               *bool           `json:"include_skills,omitempty"`
+	IncludeSourceFiles          *bool           `json:"include_source_files,omitempty"`
+	IncludeSources              *bool           `json:"include_sources,omitempty"`
+	IncludeThreads              *bool           `json:"include_threads,omitempty"`
+	IncludeWorkingMemory        *bool           `json:"include_working_memory,omitempty"`
+	IncludeWorkingMemoryArchive *bool           `json:"include_working_memory_archive,omitempty"`
+	Mode                        *DataImportMode `json:"mode,omitempty"`
+}
+
 // ListEntitiesEntitiesGetParams defines parameters for ListEntitiesEntitiesGet.
 type ListEntitiesEntitiesGetParams struct {
 	Limit      *int    `form:"limit,omitempty" json:"limit,omitempty"`
@@ -5672,6 +6720,15 @@ type FsCatFsCatGetParams struct {
 
 	// IncludeWorkingMemory Include Working Memory preview in /context/* files
 	IncludeWorkingMemory *bool `form:"include_working_memory,omitempty" json:"include_working_memory,omitempty"`
+}
+
+// FsDeleteFsDeletePostParams defines parameters for FsDeleteFsDeletePost.
+type FsDeleteFsDeletePostParams struct {
+	// XNmemSpaceId Ambient Space when the body omits it.
+	XNmemSpaceId *string `json:"X-Nmem-Space-Id,omitempty"`
+
+	// XNowledgeSpaceId Legacy ambient header; the canonical header takes precedence.
+	XNowledgeSpaceId *string `json:"X-Nowledge-Space-Id,omitempty"`
 }
 
 // FsFindFsFindGetParams defines parameters for FsFindFsFindGet.
@@ -5913,6 +6970,11 @@ type GraphVisGraphVisGetParams struct {
 	SearchBar *bool `form:"search_bar,omitempty" json:"search_bar,omitempty"`
 }
 
+// GetIdentityProfilesParams defines parameters for GetIdentityProfiles.
+type GetIdentityProfilesParams struct {
+	SpaceId string `form:"space_id" json:"space_id"`
+}
+
 // ListLabelsLabelsGetParams defines parameters for ListLabelsLabelsGet.
 type ListLabelsLabelsGetParams struct {
 	Limit     *int    `form:"limit,omitempty" json:"limit,omitempty"`
@@ -6075,6 +7137,11 @@ type ExportMemoryMemoriesMemoryIdExportGetParams struct {
 type ToggleMemoryFavoriteMemoriesMemoryIdFavoritePostParams struct {
 	// IsFavorite Set favorite status
 	IsFavorite bool `form:"is_favorite" json:"is_favorite"`
+}
+
+// ReadMemoryIdentityParams defines parameters for ReadMemoryIdentity.
+type ReadMemoryIdentityParams struct {
+	SpaceId string `form:"space_id" json:"space_id"`
 }
 
 // ListMemoryRelationsMemoriesMemoryIdRelationsGetParams defines parameters for ListMemoryRelationsMemoriesMemoryIdRelationsGet.
@@ -6319,6 +7386,9 @@ type ListThreadsThreadsGetParams struct {
 
 	// SpaceId Optional isolation space to list
 	SpaceId *string `form:"space_id,omitempty" json:"space_id,omitempty"`
+
+	// ProjectKey Opaque exact project key returned by GET /threads/projects. Invalid keys return 422. Omit for all projects.
+	ProjectKey *string `form:"project_key,omitempty" json:"project_key,omitempty"`
 }
 
 // BulkDeleteThreadsThreadsBulkDeleteParams defines parameters for BulkDeleteThreadsThreadsBulkDelete.
@@ -6358,6 +7428,16 @@ type UnhideProjectThreadsImportConfigUnhideProjectPostParams struct {
 type UnhideSessionThreadsImportConfigUnhideSessionPostParams struct {
 	// SessionId Session ID
 	SessionId string `form:"session_id" json:"session_id"`
+}
+
+// ListThreadProjectsThreadsProjectsGetParams defines parameters for ListThreadProjectsThreadsProjectsGet.
+type ListThreadProjectsThreadsProjectsGetParams struct {
+	Limit  *int    `form:"limit,omitempty" json:"limit,omitempty"`
+	Offset *int    `form:"offset,omitempty" json:"offset,omitempty"`
+	Source *string `form:"source,omitempty" json:"source,omitempty"`
+
+	// SpaceId Optional isolation space to list
+	SpaceId *string `form:"space_id,omitempty" json:"space_id,omitempty"`
 }
 
 // SearchThreadsFullThreadsSearchGetParams defines parameters for SearchThreadsFullThreadsSearchGet.
@@ -6478,6 +7558,9 @@ type SyncAiNowSkillPromptsAgentAiNowSkillPromptsPostJSONRequestBody = AINowSkill
 // ResolveEventAgentFeedEventsEventIdResolvePostJSONRequestBody defines body for ResolveEventAgentFeedEventsEventIdResolvePost for application/json ContentType.
 type ResolveEventAgentFeedEventsEventIdResolvePostJSONRequestBody = ResolveEventAgentFeedEventsEventIdResolvePostJSONBody
 
+// OpenapiGuardedTimelineReviewJSONRequestBody defines body for OpenapiGuardedTimelineReview for application/json ContentType.
+type OpenapiGuardedTimelineReviewJSONRequestBody = GuardedTimelineReviewRequest
+
 // OpenapiSetFeedEventVisibilityJSONRequestBody defines body for OpenapiSetFeedEventVisibility for application/json ContentType.
 type OpenapiSetFeedEventVisibilityJSONRequestBody = FeedEventVisibilityRequest
 
@@ -6538,8 +7621,17 @@ type ExportDataDownloadDataExportDownloadPostJSONRequestBody = DataExportDownloa
 // ImportDataDataImportPostJSONRequestBody defines body for ImportDataDataImportPost for application/json ContentType.
 type ImportDataDataImportPostJSONRequestBody = DataImportRequest
 
+// OpenapiImportPreviewJSONRequestBody defines body for OpenapiImportPreview for application/json ContentType.
+type OpenapiImportPreviewJSONRequestBody = DataImportRequest
+
 // ImportDataUploadDataImportUploadPostMultipartRequestBody defines body for ImportDataUploadDataImportUploadPost for multipart/form-data ContentType.
 type ImportDataUploadDataImportUploadPostMultipartRequestBody ImportDataUploadDataImportUploadPostMultipartBody
+
+// OpenapiImportUploadPreviewMultipartRequestBody defines body for OpenapiImportUploadPreview for multipart/form-data ContentType.
+type OpenapiImportUploadPreviewMultipartRequestBody OpenapiImportUploadPreviewMultipartBody
+
+// ChangeEntityAliasesHandlerJSONRequestBody defines body for ChangeEntityAliasesHandler for application/json ContentType.
+type ChangeEntityAliasesHandlerJSONRequestBody = EntityAliasChangeSchema
 
 // MergeEntityHandlerJSONRequestBody defines body for MergeEntityHandler for application/json ContentType.
 type MergeEntityHandlerJSONRequestBody = EntityMergeRequest
@@ -6555,6 +7647,9 @@ type FsWriteFsWritePostJSONRequestBody = FSWriteRequest
 
 // StartAugmentationJobGraphAugmentationStartPostJSONRequestBody defines body for StartAugmentationJobGraphAugmentationStartPost for application/json ContentType.
 type StartAugmentationJobGraphAugmentationStartPostJSONRequestBody = AugmentationStartRequest
+
+// SaveIdentityProfileJSONRequestBody defines body for SaveIdentityProfile for application/json ContentType.
+type SaveIdentityProfileJSONRequestBody = IdentityProfileWrite
 
 // UpdateLabelLabelsLabelIdPutJSONRequestBody defines body for UpdateLabelLabelsLabelIdPut for application/json ContentType.
 type UpdateLabelLabelsLabelIdPutJSONRequestBody = UpdateLabelRequest
@@ -6633,6 +7728,12 @@ type PreviewMemoryKgExtractionMemoriesMemoryIdExtractKgPreviewPostJSONRequestBod
 
 // ForgetMemoryMemoriesMemoryIdForgetPostJSONRequestBody defines body for ForgetMemoryMemoriesMemoryIdForgetPost for application/json ContentType.
 type ForgetMemoryMemoriesMemoryIdForgetPostJSONRequestBody = MemoryStateRequest
+
+// CorrectMemoryIdentityJSONRequestBody defines body for CorrectMemoryIdentity for application/json ContentType.
+type CorrectMemoryIdentityJSONRequestBody = IdentityCorrectionRequest
+
+// ExtractMemoryIdentityJSONRequestBody defines body for ExtractMemoryIdentity for application/json ContentType.
+type ExtractMemoryIdentityJSONRequestBody = IdentityExtractionRequest
 
 // CreateMemoryRelationMemoriesMemoryIdRelationsPostJSONRequestBody defines body for CreateMemoryRelationMemoriesMemoryIdRelationsPost for application/json ContentType.
 type CreateMemoryRelationMemoriesMemoryIdRelationsPostJSONRequestBody = MemoryRelationCreateRequest
@@ -6933,6 +8034,14 @@ func (a *BulkDeleteThreadsResponse) UnmarshalJSON(b []byte) error {
 		delete(object, "deleted_count")
 	}
 
+	if raw, found := object["deletion_outcome_uncertain"]; found {
+		err = json.Unmarshal(raw, &a.DeletionOutcomeUncertain)
+		if err != nil {
+			return fmt.Errorf("error reading 'deletion_outcome_uncertain': %w", err)
+		}
+		delete(object, "deletion_outcome_uncertain")
+	}
+
 	if raw, found := object["failed_count"]; found {
 		err = json.Unmarshal(raw, &a.FailedCount)
 		if err != nil {
@@ -6941,12 +8050,28 @@ func (a *BulkDeleteThreadsResponse) UnmarshalJSON(b []byte) error {
 		delete(object, "failed_count")
 	}
 
+	if raw, found := object["index_repair_pending"]; found {
+		err = json.Unmarshal(raw, &a.IndexRepairPending)
+		if err != nil {
+			return fmt.Errorf("error reading 'index_repair_pending': %w", err)
+		}
+		delete(object, "index_repair_pending")
+	}
+
 	if raw, found := object["message"]; found {
 		err = json.Unmarshal(raw, &a.Message)
 		if err != nil {
 			return fmt.Errorf("error reading 'message': %w", err)
 		}
 		delete(object, "message")
+	}
+
+	if raw, found := object["partial_success"]; found {
+		err = json.Unmarshal(raw, &a.PartialSuccess)
+		if err != nil {
+			return fmt.Errorf("error reading 'partial_success': %w", err)
+		}
+		delete(object, "partial_success")
 	}
 
 	if raw, found := object["results"]; found {
@@ -7004,6 +8129,13 @@ func (a BulkDeleteThreadsResponse) MarshalJSON() ([]byte, error) {
 		return nil, fmt.Errorf("error marshaling 'deleted_count': %w", err)
 	}
 
+	if a.DeletionOutcomeUncertain != nil {
+		object["deletion_outcome_uncertain"], err = json.Marshal(a.DeletionOutcomeUncertain)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deletion_outcome_uncertain': %w", err)
+		}
+	}
+
 	if a.FailedCount != nil {
 		object["failed_count"], err = json.Marshal(a.FailedCount)
 		if err != nil {
@@ -7011,9 +8143,23 @@ func (a BulkDeleteThreadsResponse) MarshalJSON() ([]byte, error) {
 		}
 	}
 
+	if a.IndexRepairPending != nil {
+		object["index_repair_pending"], err = json.Marshal(a.IndexRepairPending)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'index_repair_pending': %w", err)
+		}
+	}
+
 	object["message"], err = json.Marshal(a.Message)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'message': %w", err)
+	}
+
+	if a.PartialSuccess != nil {
+		object["partial_success"], err = json.Marshal(a.PartialSuccess)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'partial_success': %w", err)
+		}
 	}
 
 	if a.Results != nil {
@@ -7034,6 +8180,194 @@ func (a BulkDeleteThreadsResponse) MarshalJSON() ([]byte, error) {
 		object["total_deleted_messages"], err = json.Marshal(a.TotalDeletedMessages)
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling 'total_deleted_messages': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for BulkDeleteThreadsResponse_Results_Item. Returns the specified
+// element and whether it was found
+func (a BulkDeleteThreadsResponse_Results_Item) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for BulkDeleteThreadsResponse_Results_Item
+func (a *BulkDeleteThreadsResponse_Results_Item) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for BulkDeleteThreadsResponse_Results_Item to handle AdditionalProperties
+func (a *BulkDeleteThreadsResponse_Results_Item) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["cascade_deletion"]; found {
+		err = json.Unmarshal(raw, &a.CascadeDeletion)
+		if err != nil {
+			return fmt.Errorf("error reading 'cascade_deletion': %w", err)
+		}
+		delete(object, "cascade_deletion")
+	}
+
+	if raw, found := object["deleted"]; found {
+		err = json.Unmarshal(raw, &a.Deleted)
+		if err != nil {
+			return fmt.Errorf("error reading 'deleted': %w", err)
+		}
+		delete(object, "deleted")
+	}
+
+	if raw, found := object["deleted_memories"]; found {
+		err = json.Unmarshal(raw, &a.DeletedMemories)
+		if err != nil {
+			return fmt.Errorf("error reading 'deleted_memories': %w", err)
+		}
+		delete(object, "deleted_memories")
+	}
+
+	if raw, found := object["deleted_messages"]; found {
+		err = json.Unmarshal(raw, &a.DeletedMessages)
+		if err != nil {
+			return fmt.Errorf("error reading 'deleted_messages': %w", err)
+		}
+		delete(object, "deleted_messages")
+	}
+
+	if raw, found := object["deletion_outcome_uncertain"]; found {
+		err = json.Unmarshal(raw, &a.DeletionOutcomeUncertain)
+		if err != nil {
+			return fmt.Errorf("error reading 'deletion_outcome_uncertain': %w", err)
+		}
+		delete(object, "deletion_outcome_uncertain")
+	}
+
+	if raw, found := object["error"]; found {
+		err = json.Unmarshal(raw, &a.Error)
+		if err != nil {
+			return fmt.Errorf("error reading 'error': %w", err)
+		}
+		delete(object, "error")
+	}
+
+	if raw, found := object["index_repair_pending"]; found {
+		err = json.Unmarshal(raw, &a.IndexRepairPending)
+		if err != nil {
+			return fmt.Errorf("error reading 'index_repair_pending': %w", err)
+		}
+		delete(object, "index_repair_pending")
+	}
+
+	if raw, found := object["partial_success"]; found {
+		err = json.Unmarshal(raw, &a.PartialSuccess)
+		if err != nil {
+			return fmt.Errorf("error reading 'partial_success': %w", err)
+		}
+		delete(object, "partial_success")
+	}
+
+	if raw, found := object["thread_id"]; found {
+		err = json.Unmarshal(raw, &a.ThreadId)
+		if err != nil {
+			return fmt.Errorf("error reading 'thread_id': %w", err)
+		}
+		delete(object, "thread_id")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for BulkDeleteThreadsResponse_Results_Item to handle AdditionalProperties
+func (a BulkDeleteThreadsResponse_Results_Item) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.CascadeDeletion != nil {
+		object["cascade_deletion"], err = json.Marshal(a.CascadeDeletion)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'cascade_deletion': %w", err)
+		}
+	}
+
+	if a.Deleted != nil {
+		object["deleted"], err = json.Marshal(a.Deleted)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deleted': %w", err)
+		}
+	}
+
+	if a.DeletedMemories != nil {
+		object["deleted_memories"], err = json.Marshal(a.DeletedMemories)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deleted_memories': %w", err)
+		}
+	}
+
+	if a.DeletedMessages != nil {
+		object["deleted_messages"], err = json.Marshal(a.DeletedMessages)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deleted_messages': %w", err)
+		}
+	}
+
+	if a.DeletionOutcomeUncertain != nil {
+		object["deletion_outcome_uncertain"], err = json.Marshal(a.DeletionOutcomeUncertain)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deletion_outcome_uncertain': %w", err)
+		}
+	}
+
+	if a.Error != nil {
+		object["error"], err = json.Marshal(a.Error)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'error': %w", err)
+		}
+	}
+
+	if a.IndexRepairPending != nil {
+		object["index_repair_pending"], err = json.Marshal(a.IndexRepairPending)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'index_repair_pending': %w", err)
+		}
+	}
+
+	if a.PartialSuccess != nil {
+		object["partial_success"], err = json.Marshal(a.PartialSuccess)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'partial_success': %w", err)
+		}
+	}
+
+	if a.ThreadId != nil {
+		object["thread_id"], err = json.Marshal(a.ThreadId)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'thread_id': %w", err)
 		}
 	}
 
@@ -7187,12 +8521,28 @@ func (a *DeleteThreadResponse) UnmarshalJSON(b []byte) error {
 		delete(object, "deleted_messages")
 	}
 
+	if raw, found := object["index_repair_pending"]; found {
+		err = json.Unmarshal(raw, &a.IndexRepairPending)
+		if err != nil {
+			return fmt.Errorf("error reading 'index_repair_pending': %w", err)
+		}
+		delete(object, "index_repair_pending")
+	}
+
 	if raw, found := object["message"]; found {
 		err = json.Unmarshal(raw, &a.Message)
 		if err != nil {
 			return fmt.Errorf("error reading 'message': %w", err)
 		}
 		delete(object, "message")
+	}
+
+	if raw, found := object["storage_cleanup_pending"]; found {
+		err = json.Unmarshal(raw, &a.StorageCleanupPending)
+		if err != nil {
+			return fmt.Errorf("error reading 'storage_cleanup_pending': %w", err)
+		}
+		delete(object, "storage_cleanup_pending")
 	}
 
 	if len(object) != 0 {
@@ -7235,9 +8585,23 @@ func (a DeleteThreadResponse) MarshalJSON() ([]byte, error) {
 		}
 	}
 
+	if a.IndexRepairPending != nil {
+		object["index_repair_pending"], err = json.Marshal(a.IndexRepairPending)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'index_repair_pending': %w", err)
+		}
+	}
+
 	object["message"], err = json.Marshal(a.Message)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'message': %w", err)
+	}
+
+	if a.StorageCleanupPending != nil {
+		object["storage_cleanup_pending"], err = json.Marshal(a.StorageCleanupPending)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'storage_cleanup_pending': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
@@ -10652,6 +12016,162 @@ func (a ThreadCoverageResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
+// Getter for additional properties for ThreadDeletionErrorResponse. Returns the specified
+// element and whether it was found
+func (a ThreadDeletionErrorResponse) Get(fieldName string) (value interface{}, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ThreadDeletionErrorResponse
+func (a *ThreadDeletionErrorResponse) Set(fieldName string, value interface{}) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]interface{})
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ThreadDeletionErrorResponse to handle AdditionalProperties
+func (a *ThreadDeletionErrorResponse) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["deleted"]; found {
+		err = json.Unmarshal(raw, &a.Deleted)
+		if err != nil {
+			return fmt.Errorf("error reading 'deleted': %w", err)
+		}
+		delete(object, "deleted")
+	}
+
+	if raw, found := object["deleted_memories"]; found {
+		err = json.Unmarshal(raw, &a.DeletedMemories)
+		if err != nil {
+			return fmt.Errorf("error reading 'deleted_memories': %w", err)
+		}
+		delete(object, "deleted_memories")
+	}
+
+	if raw, found := object["deleted_messages"]; found {
+		err = json.Unmarshal(raw, &a.DeletedMessages)
+		if err != nil {
+			return fmt.Errorf("error reading 'deleted_messages': %w", err)
+		}
+		delete(object, "deleted_messages")
+	}
+
+	if raw, found := object["deletion_outcome_uncertain"]; found {
+		err = json.Unmarshal(raw, &a.DeletionOutcomeUncertain)
+		if err != nil {
+			return fmt.Errorf("error reading 'deletion_outcome_uncertain': %w", err)
+		}
+		delete(object, "deletion_outcome_uncertain")
+	}
+
+	if raw, found := object["detail"]; found {
+		err = json.Unmarshal(raw, &a.Detail)
+		if err != nil {
+			return fmt.Errorf("error reading 'detail': %w", err)
+		}
+		delete(object, "detail")
+	}
+
+	if raw, found := object["index_repair_pending"]; found {
+		err = json.Unmarshal(raw, &a.IndexRepairPending)
+		if err != nil {
+			return fmt.Errorf("error reading 'index_repair_pending': %w", err)
+		}
+		delete(object, "index_repair_pending")
+	}
+
+	if raw, found := object["partial_success"]; found {
+		err = json.Unmarshal(raw, &a.PartialSuccess)
+		if err != nil {
+			return fmt.Errorf("error reading 'partial_success': %w", err)
+		}
+		delete(object, "partial_success")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]interface{})
+		for fieldName, fieldBuf := range object {
+			var fieldVal interface{}
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return fmt.Errorf("error unmarshaling field %s: %w", fieldName, err)
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ThreadDeletionErrorResponse to handle AdditionalProperties
+func (a ThreadDeletionErrorResponse) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	if a.Deleted != nil {
+		object["deleted"], err = json.Marshal(a.Deleted)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deleted': %w", err)
+		}
+	}
+
+	if a.DeletedMemories != nil {
+		object["deleted_memories"], err = json.Marshal(a.DeletedMemories)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deleted_memories': %w", err)
+		}
+	}
+
+	if a.DeletedMessages != nil {
+		object["deleted_messages"], err = json.Marshal(a.DeletedMessages)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deleted_messages': %w", err)
+		}
+	}
+
+	if a.DeletionOutcomeUncertain != nil {
+		object["deletion_outcome_uncertain"], err = json.Marshal(a.DeletionOutcomeUncertain)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'deletion_outcome_uncertain': %w", err)
+		}
+	}
+
+	object["detail"], err = json.Marshal(a.Detail)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'detail': %w", err)
+	}
+
+	if a.IndexRepairPending != nil {
+		object["index_repair_pending"], err = json.Marshal(a.IndexRepairPending)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'index_repair_pending': %w", err)
+		}
+	}
+
+	if a.PartialSuccess != nil {
+		object["partial_success"], err = json.Marshal(a.PartialSuccess)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'partial_success': %w", err)
+		}
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling '%s': %w", fieldName, err)
+		}
+	}
+	return json.Marshal(object)
+}
+
 // Getter for additional properties for ThreadListResponse. Returns the specified
 // element and whether it was found
 func (a ThreadListResponse) Get(fieldName string) (value interface{}, found bool) {
@@ -11411,6 +12931,14 @@ func (a *NowledgeGraphServerApiRoutersThreadsModuleSchemasThreadPublic) Unmarsha
 		delete(object, "messages")
 	}
 
+	if raw, found := object["project"]; found {
+		err = json.Unmarshal(raw, &a.Project)
+		if err != nil {
+			return fmt.Errorf("error reading 'project': %w", err)
+		}
+		delete(object, "project")
+	}
+
 	if raw, found := object["source"]; found {
 		err = json.Unmarshal(raw, &a.Source)
 		if err != nil {
@@ -11441,6 +12969,14 @@ func (a *NowledgeGraphServerApiRoutersThreadsModuleSchemasThreadPublic) Unmarsha
 			return fmt.Errorf("error reading 'title': %w", err)
 		}
 		delete(object, "title")
+	}
+
+	if raw, found := object["workspace"]; found {
+		err = json.Unmarshal(raw, &a.Workspace)
+		if err != nil {
+			return fmt.Errorf("error reading 'workspace': %w", err)
+		}
+		delete(object, "workspace")
 	}
 
 	if len(object) != 0 {
@@ -11484,6 +13020,13 @@ func (a NowledgeGraphServerApiRoutersThreadsModuleSchemasThreadPublic) MarshalJS
 		return nil, fmt.Errorf("error marshaling 'messages': %w", err)
 	}
 
+	if a.Project != nil {
+		object["project"], err = json.Marshal(a.Project)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'project': %w", err)
+		}
+	}
+
 	object["source"], err = json.Marshal(a.Source)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'source': %w", err)
@@ -11506,6 +13049,13 @@ func (a NowledgeGraphServerApiRoutersThreadsModuleSchemasThreadPublic) MarshalJS
 	object["title"], err = json.Marshal(a.Title)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling 'title': %w", err)
+	}
+
+	if a.Workspace != nil {
+		object["workspace"], err = json.Marshal(a.Workspace)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'workspace': %w", err)
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
@@ -12128,6 +13678,314 @@ func (t *EmbeddingVector) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+// AsIdentityProfileWrite0 returns the union data inside the IdentityProfileWrite as a IdentityProfileWrite0
+func (t IdentityProfileWrite) AsIdentityProfileWrite0() (IdentityProfileWrite0, error) {
+	var body IdentityProfileWrite0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIdentityProfileWrite0 overwrites any union data inside the IdentityProfileWrite as the provided IdentityProfileWrite0
+func (t *IdentityProfileWrite) FromIdentityProfileWrite0(v IdentityProfileWrite0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIdentityProfileWrite0 performs a merge with any union data inside the IdentityProfileWrite, using the provided IdentityProfileWrite0
+func (t *IdentityProfileWrite) MergeIdentityProfileWrite0(v IdentityProfileWrite0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsIdentityProfileWrite1 returns the union data inside the IdentityProfileWrite as a IdentityProfileWrite1
+func (t IdentityProfileWrite) AsIdentityProfileWrite1() (IdentityProfileWrite1, error) {
+	var body IdentityProfileWrite1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIdentityProfileWrite1 overwrites any union data inside the IdentityProfileWrite as the provided IdentityProfileWrite1
+func (t *IdentityProfileWrite) FromIdentityProfileWrite1(v IdentityProfileWrite1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIdentityProfileWrite1 performs a merge with any union data inside the IdentityProfileWrite, using the provided IdentityProfileWrite1
+func (t *IdentityProfileWrite) MergeIdentityProfileWrite1(v IdentityProfileWrite1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t IdentityProfileWrite) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	object := make(map[string]json.RawMessage)
+	if t.union != nil {
+		err = json.Unmarshal(b, &object)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if t.Aliases != nil {
+		object["aliases"], err = json.Marshal(t.Aliases)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'aliases': %w", err)
+		}
+	}
+
+	object["context"], err = json.Marshal(t.Context)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'context': %w", err)
+	}
+
+	if t.ExpectedRevision != nil {
+		object["expected_revision"], err = json.Marshal(t.ExpectedRevision)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'expected_revision': %w", err)
+		}
+	}
+
+	object["id"], err = json.Marshal(t.Id)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'id': %w", err)
+	}
+
+	object["kind"], err = json.Marshal(t.Kind)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'kind': %w", err)
+	}
+
+	object["name"], err = json.Marshal(t.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'name': %w", err)
+	}
+
+	object["space_id"], err = json.Marshal(t.SpaceId)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'space_id': %w", err)
+	}
+
+	if t.Subject != nil {
+		object["subject"], err = json.Marshal(t.Subject)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'subject': %w", err)
+		}
+	}
+	b, err = json.Marshal(object)
+	return b, err
+}
+
+func (t *IdentityProfileWrite) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	if err != nil {
+		return err
+	}
+	object := make(map[string]json.RawMessage)
+	err = json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["aliases"]; found {
+		err = json.Unmarshal(raw, &t.Aliases)
+		if err != nil {
+			return fmt.Errorf("error reading 'aliases': %w", err)
+		}
+	}
+
+	if raw, found := object["context"]; found {
+		err = json.Unmarshal(raw, &t.Context)
+		if err != nil {
+			return fmt.Errorf("error reading 'context': %w", err)
+		}
+	}
+
+	if raw, found := object["expected_revision"]; found {
+		err = json.Unmarshal(raw, &t.ExpectedRevision)
+		if err != nil {
+			return fmt.Errorf("error reading 'expected_revision': %w", err)
+		}
+	}
+
+	if raw, found := object["id"]; found {
+		err = json.Unmarshal(raw, &t.Id)
+		if err != nil {
+			return fmt.Errorf("error reading 'id': %w", err)
+		}
+	}
+
+	if raw, found := object["kind"]; found {
+		err = json.Unmarshal(raw, &t.Kind)
+		if err != nil {
+			return fmt.Errorf("error reading 'kind': %w", err)
+		}
+	}
+
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &t.Name)
+		if err != nil {
+			return fmt.Errorf("error reading 'name': %w", err)
+		}
+	}
+
+	if raw, found := object["space_id"]; found {
+		err = json.Unmarshal(raw, &t.SpaceId)
+		if err != nil {
+			return fmt.Errorf("error reading 'space_id': %w", err)
+		}
+	}
+
+	if raw, found := object["subject"]; found {
+		err = json.Unmarshal(raw, &t.Subject)
+		if err != nil {
+			return fmt.Errorf("error reading 'subject': %w", err)
+		}
+	}
+
+	return err
+}
+
+// AsIdentitySubject0 returns the union data inside the IdentitySubject as a IdentitySubject0
+func (t IdentitySubject) AsIdentitySubject0() (IdentitySubject0, error) {
+	var body IdentitySubject0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIdentitySubject0 overwrites any union data inside the IdentitySubject as the provided IdentitySubject0
+func (t *IdentitySubject) FromIdentitySubject0(v IdentitySubject0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIdentitySubject0 performs a merge with any union data inside the IdentitySubject, using the provided IdentitySubject0
+func (t *IdentitySubject) MergeIdentitySubject0(v IdentitySubject0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsIdentitySubject1 returns the union data inside the IdentitySubject as a IdentitySubject1
+func (t IdentitySubject) AsIdentitySubject1() (IdentitySubject1, error) {
+	var body IdentitySubject1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromIdentitySubject1 overwrites any union data inside the IdentitySubject as the provided IdentitySubject1
+func (t *IdentitySubject) FromIdentitySubject1(v IdentitySubject1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeIdentitySubject1 performs a merge with any union data inside the IdentitySubject, using the provided IdentitySubject1
+func (t *IdentitySubject) MergeIdentitySubject1(v IdentitySubject1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t IdentitySubject) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *IdentitySubject) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsMemoryCreateRequestWriteIntent0 returns the union data inside the MemoryCreateRequest_WriteIntent as a MemoryCreateRequestWriteIntent0
+func (t MemoryCreateRequest_WriteIntent) AsMemoryCreateRequestWriteIntent0() (MemoryCreateRequestWriteIntent0, error) {
+	var body MemoryCreateRequestWriteIntent0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMemoryCreateRequestWriteIntent0 overwrites any union data inside the MemoryCreateRequest_WriteIntent as the provided MemoryCreateRequestWriteIntent0
+func (t *MemoryCreateRequest_WriteIntent) FromMemoryCreateRequestWriteIntent0(v MemoryCreateRequestWriteIntent0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMemoryCreateRequestWriteIntent0 performs a merge with any union data inside the MemoryCreateRequest_WriteIntent, using the provided MemoryCreateRequestWriteIntent0
+func (t *MemoryCreateRequest_WriteIntent) MergeMemoryCreateRequestWriteIntent0(v MemoryCreateRequestWriteIntent0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsMemoryCreateRequestWriteIntent1 returns the union data inside the MemoryCreateRequest_WriteIntent as a MemoryCreateRequestWriteIntent1
+func (t MemoryCreateRequest_WriteIntent) AsMemoryCreateRequestWriteIntent1() (MemoryCreateRequestWriteIntent1, error) {
+	var body MemoryCreateRequestWriteIntent1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromMemoryCreateRequestWriteIntent1 overwrites any union data inside the MemoryCreateRequest_WriteIntent as the provided MemoryCreateRequestWriteIntent1
+func (t *MemoryCreateRequest_WriteIntent) FromMemoryCreateRequestWriteIntent1(v MemoryCreateRequestWriteIntent1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeMemoryCreateRequestWriteIntent1 performs a merge with any union data inside the MemoryCreateRequest_WriteIntent, using the provided MemoryCreateRequestWriteIntent1
+func (t *MemoryCreateRequest_WriteIntent) MergeMemoryCreateRequestWriteIntent1(v MemoryCreateRequestWriteIntent1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t MemoryCreateRequest_WriteIntent) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *MemoryCreateRequest_WriteIntent) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // AsValidationErrorLoc0 returns the union data inside the ValidationError_Loc_Item as a ValidationErrorLoc0
 func (t ValidationError_Loc_Item) AsValidationErrorLoc0() (ValidationErrorLoc0, error) {
 	var body ValidationErrorLoc0
@@ -12418,7 +14276,7 @@ type ClientInterface interface {
 	// Corresponds with POST /agent/ai-now/schedules/{schedule_id}/confirm (the `OpenapiConfirmSchedule` operationId).
 	OpenapiConfirmSchedule(ctx context.Context, scheduleId string, body OpenapiConfirmScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// OpenapiPauseSchedule Pause future recurring task occurrences
+	// OpenapiPauseSchedule Pause a recurring task and request cancellation of its current run
 	//
 	// Corresponds with POST /agent/ai-now/schedules/{schedule_id}/pause (the `OpenapiPauseSchedule` operationId).
 	OpenapiPauseSchedule(ctx context.Context, scheduleId string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -12683,6 +14541,24 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /agent/feed/events/{event_id}/retry (the `RetryEventAgentFeedEventsEventIdRetryPost` operationId).
 	RetryEventAgentFeedEventsEventIdRetryPost(ctx context.Context, eventId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OpenapiGuardedTimelineReviewWithBody Preview or Confirm Timeline Review
+	//
+	// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+	OpenapiGuardedTimelineReviewWithBody(ctx context.Context, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OpenapiGuardedTimelineReview Preview or Confirm Timeline Review
+	//
+	// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+	OpenapiGuardedTimelineReview(ctx context.Context, eventId string, body OpenapiGuardedTimelineReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// OpenapiSetFeedEventVisibilityWithBody Set Feed Event Visibility
 	//
@@ -13553,6 +15429,24 @@ type ClientInterface interface {
 	// Corresponds with POST /data/import (the `ImportDataDataImportPost` operationId).
 	ImportDataDataImportPost(ctx context.Context, body ImportDataDataImportPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// OpenapiImportPreviewWithBody Inspect backup inventory
+	//
+	// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+	OpenapiImportPreviewWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OpenapiImportPreview Inspect backup inventory
+	//
+	// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+	OpenapiImportPreview(ctx context.Context, body OpenapiImportPreviewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetImportStatusDataImportStatusJobIdGet Get Import Status
 	//
 	// Check the progress of a data import job.
@@ -13570,6 +15464,15 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /data/import/upload (the `ImportDataUploadDataImportUploadPost` operationId).
 	ImportDataUploadDataImportUploadPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// OpenapiImportUploadPreviewWithBody Inspect backup inventory
+	//
+	// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /data/import/upload/preview (the `OpenapiImportUploadPreview` operationId).
+	OpenapiImportUploadPreviewWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListEntitiesEntitiesGet List Entities
 	//
@@ -13590,6 +15493,29 @@ type ClientInterface interface {
 	//
 	// Corresponds with DELETE /entities/{entity_id} (the `DeleteEntityHandler` operationId).
 	DeleteEntityHandler(ctx context.Context, entityId string, params *DeleteEntityHandlerParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReadEntityAliasesHandler Read entity aliases
+	//
+	// Corresponds with GET /entities/{entity_id}/aliases (the `ReadEntityAliasesHandler` operationId).
+	ReadEntityAliasesHandler(ctx context.Context, entityId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ChangeEntityAliasesHandlerWithBody Correct entity aliases
+	//
+	// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+	ChangeEntityAliasesHandlerWithBody(ctx context.Context, entityId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ChangeEntityAliasesHandler Correct entity aliases
+	//
+	// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+	ChangeEntityAliasesHandler(ctx context.Context, entityId string, body ChangeEntityAliasesHandlerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PreviewEntityDeleteHandler Preview entity deletion
 	//
@@ -13689,31 +15615,29 @@ type ClientInterface interface {
 	// Corresponds with GET /fs/cat (the `FsCatFsCatGet` operationId).
 	FsCatFsCatGet(ctx context.Context, params *FsCatFsCatGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// FsDeleteFsDeletePostWithBody Fs Delete
+	// FsDeleteFsDeletePostWithBody Delete a canonical Memory or Crystal path in its selected Space.
 	//
-	// Delete/archive a canonical Nowledge FS file.
-	//
-	// Memory delete delegates to the existing Memories delete path, preserving
-	// the object's concrete space.  Working Memory delete has no safe helper in
-	// this slice and returns ``ENOTSUP``.
+	// A nonblank body Space wins over the ambient header. Explicit references
+	// must resolve to a registered Space. A foreign or moved target is not found;
+	// an unscoped path still binds the target Space observed during preflight.
+	// Working Memory deletion remains unsupported. Space selection is not a grant.
 	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-	FsDeleteFsDeletePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	FsDeleteFsDeletePostWithBody(ctx context.Context, params *FsDeleteFsDeletePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// FsDeleteFsDeletePost Fs Delete
+	// FsDeleteFsDeletePost Delete a canonical Memory or Crystal path in its selected Space.
 	//
-	// Delete/archive a canonical Nowledge FS file.
-	//
-	// Memory delete delegates to the existing Memories delete path, preserving
-	// the object's concrete space.  Working Memory delete has no safe helper in
-	// this slice and returns ``ENOTSUP``.
+	// A nonblank body Space wins over the ambient header. Explicit references
+	// must resolve to a registered Space. A foreign or moved target is not found;
+	// an unscoped path still binds the target Space observed during preflight.
+	// Working Memory deletion remains unsupported. Space selection is not a grant.
 	//
 	// Takes a body of the `application/json` content type.
 	//
 	// Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-	FsDeleteFsDeletePost(ctx context.Context, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	FsDeleteFsDeletePost(ctx context.Context, params *FsDeleteFsDeletePostParams, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// FsFindFsFindGet Fs Find
 	//
@@ -14036,6 +15960,31 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /health/checkpoint (the `ForceCheckpointHealthCheckpointPost` operationId).
 	ForceCheckpointHealthCheckpointPost(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIdentityProfiles List identity profiles
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Returns independently enrolled profiles for this Space; matching names do not imply the same person. Reading does not invoke a model.
+	//
+	// Corresponds with GET /identity/profiles (the `GetIdentityProfiles` operationId).
+	GetIdentityProfiles(ctx context.Context, params *GetIdentityProfilesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SaveIdentityProfileWithBody Create or update an identity profile
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+	SaveIdentityProfileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SaveIdentityProfile Create or update an identity profile
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+	SaveIdentityProfile(ctx context.Context, body SaveIdentityProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListLabelsLabelsGet List Labels
 	//
@@ -14737,7 +16686,7 @@ type ClientInterface interface {
 	// Apply knowledge graph extraction results to a memory.
 	//
 	// This endpoint saves the extracted entities and relationships to the graph database
-	// and updates the memory's metadata to track the extraction.
+	// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -14749,7 +16698,7 @@ type ClientInterface interface {
 	// Apply knowledge graph extraction results to a memory.
 	//
 	// This endpoint saves the extracted entities and relationships to the graph database
-	// and updates the memory's metadata to track the extraction.
+	// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -14804,6 +16753,49 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /memories/{memory_id}/forget (the `ForgetMemoryMemoriesMemoryIdForgetPost` operationId).
 	ForgetMemoryMemoriesMemoryIdForgetPost(ctx context.Context, memoryId string, body ForgetMemoryMemoriesMemoryIdForgetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReadMemoryIdentity Read memory identity evidence
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Read this response before correcting an occurrence; retain source_revision, epoch, generation and the occurrence revision. An empty occurrences array is valid and reading does not invoke a model.
+	//
+	// Corresponds with GET /memories/{memory_id}/identity (the `ReadMemoryIdentity` operationId).
+	ReadMemoryIdentity(ctx context.Context, memoryId string, params *ReadMemoryIdentityParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CorrectMemoryIdentityWithBody Correct a memory identity occurrence
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+	CorrectMemoryIdentityWithBody(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CorrectMemoryIdentity Correct a memory identity occurrence
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+	CorrectMemoryIdentity(ctx context.Context, memoryId string, body CorrectMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ExtractMemoryIdentityWithBody Extract or reconsider memory identities
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+	ExtractMemoryIdentityWithBody(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ExtractMemoryIdentity Extract or reconsider memory identities
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+	ExtractMemoryIdentity(ctx context.Context, memoryId string, body ExtractMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetMemoryLabelsMemoriesMemoryIdLabelsGet Get Memory Labels
 	//
@@ -16051,9 +18043,7 @@ type ClientInterface interface {
 
 	// OptimizeStorageStorageOptimizePost Optimize Storage
 	//
-	// Compact search index and flush database changes.
-	//
-	// Prunes old LanceDB versions and runs a KuzuDB checkpoint.
+	// Compact every search projection table's Lance fragments, prune verified old snapshots, and checkpoint the graph database. Pre-compaction snapshots remain available to existing readers and are reclaimed after the next backend start. The response reports completed, partial, or refused outcomes and safe table-level details.
 	//
 	// Corresponds with POST /storage/optimize (the `OptimizeStorageStorageOptimizePost` operationId).
 	OptimizeStorageStorageOptimizePost(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -16335,6 +18325,13 @@ type ClientInterface interface {
 	// Corresponds with POST /threads/parse (the `ParseThreadContentThreadsParsePost` operationId).
 	ParseThreadContentThreadsParsePost(ctx context.Context, body ParseThreadContentThreadsParsePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListThreadProjectsThreadsProjectsGet List Saved Conversation Projects
+	//
+	// Paginated directory over all readable saved conversations matching source and Space. Full workspace path is authoritative when present, otherwise project name, otherwise unknown. Keys preserve exact values and are passed unchanged to the thread list. Counts include logical conversations, not historical duplicate storage rows.
+	//
+	// Corresponds with GET /threads/projects (the `ListThreadProjectsThreadsProjectsGet` operationId).
+	ListThreadProjectsThreadsProjectsGet(ctx context.Context, params *ListThreadProjectsThreadsProjectsGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// SearchThreadsFullThreadsSearchGet Search Threads Full
 	//
 	// Full thread search with message matching.
@@ -16423,7 +18420,7 @@ type ClientInterface interface {
 
 	// DeleteThreadThreadsThreadIdDelete Delete Thread
 	//
-	// Delete a thread and optionally its extracted memories.
+	// Delete a thread and optionally its extracted memories. App cascade commits are per Memory, not one transaction with the parent Thread. Errors may report prior committed Memory deletions and uncertain outcomes. Cloud currently reports zero extracted Memory deletions even when cascade was requested.
 	//
 	// Corresponds with DELETE /threads/{thread_id} (the `DeleteThreadThreadsThreadIdDelete` operationId).
 	DeleteThreadThreadsThreadIdDelete(ctx context.Context, threadId string, params *DeleteThreadThreadsThreadIdDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -16860,7 +18857,7 @@ func (c *Client) OpenapiConfirmSchedule(ctx context.Context, scheduleId string, 
 	return c.Client.Do(req)
 }
 
-// OpenapiPauseSchedule Pause future recurring task occurrences
+// OpenapiPauseSchedule Pause a recurring task and request cancellation of its current run
 //
 // Corresponds with POST /agent/ai-now/schedules/{schedule_id}/pause (the `OpenapiPauseSchedule` operationId).
 func (c *Client) OpenapiPauseSchedule(ctx context.Context, scheduleId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -17446,6 +19443,44 @@ func (c *Client) ResolveEventAgentFeedEventsEventIdResolvePost(ctx context.Conte
 // Corresponds with POST /agent/feed/events/{event_id}/retry (the `RetryEventAgentFeedEventsEventIdRetryPost` operationId).
 func (c *Client) RetryEventAgentFeedEventsEventIdRetryPost(ctx context.Context, eventId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRetryEventAgentFeedEventsEventIdRetryPostRequest(c.Server, eventId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OpenapiGuardedTimelineReviewWithBody Preview or Confirm Timeline Review
+//
+// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+func (c *Client) OpenapiGuardedTimelineReviewWithBody(ctx context.Context, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOpenapiGuardedTimelineReviewRequestWithBody(c.Server, eventId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OpenapiGuardedTimelineReview Preview or Confirm Timeline Review
+//
+// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+func (c *Client) OpenapiGuardedTimelineReview(ctx context.Context, eventId string, body OpenapiGuardedTimelineReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOpenapiGuardedTimelineReviewRequest(c.Server, eventId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19165,6 +21200,44 @@ func (c *Client) ImportDataDataImportPost(ctx context.Context, body ImportDataDa
 	return c.Client.Do(req)
 }
 
+// OpenapiImportPreviewWithBody Inspect backup inventory
+//
+// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+func (c *Client) OpenapiImportPreviewWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOpenapiImportPreviewRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OpenapiImportPreview Inspect backup inventory
+//
+// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+func (c *Client) OpenapiImportPreview(ctx context.Context, body OpenapiImportPreviewJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOpenapiImportPreviewRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetImportStatusDataImportStatusJobIdGet Get Import Status
 //
 // Check the progress of a data import job.
@@ -19193,6 +21266,25 @@ func (c *Client) GetImportStatusDataImportStatusJobIdGet(ctx context.Context, jo
 // Corresponds with POST /data/import/upload (the `ImportDataUploadDataImportUploadPost` operationId).
 func (c *Client) ImportDataUploadDataImportUploadPostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewImportDataUploadDataImportUploadPostRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// OpenapiImportUploadPreviewWithBody Inspect backup inventory
+//
+// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /data/import/upload/preview (the `OpenapiImportUploadPreview` operationId).
+func (c *Client) OpenapiImportUploadPreviewWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewOpenapiImportUploadPreviewRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19233,6 +21325,59 @@ func (c *Client) ListEntitiesEntitiesGet(ctx context.Context, params *ListEntiti
 // Corresponds with DELETE /entities/{entity_id} (the `DeleteEntityHandler` operationId).
 func (c *Client) DeleteEntityHandler(ctx context.Context, entityId string, params *DeleteEntityHandlerParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteEntityHandlerRequest(c.Server, entityId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReadEntityAliasesHandler Read entity aliases
+//
+// Corresponds with GET /entities/{entity_id}/aliases (the `ReadEntityAliasesHandler` operationId).
+func (c *Client) ReadEntityAliasesHandler(ctx context.Context, entityId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadEntityAliasesHandlerRequest(c.Server, entityId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ChangeEntityAliasesHandlerWithBody Correct entity aliases
+//
+// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+func (c *Client) ChangeEntityAliasesHandlerWithBody(ctx context.Context, entityId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewChangeEntityAliasesHandlerRequestWithBody(c.Server, entityId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ChangeEntityAliasesHandler Correct entity aliases
+//
+// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+func (c *Client) ChangeEntityAliasesHandler(ctx context.Context, entityId string, body ChangeEntityAliasesHandlerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewChangeEntityAliasesHandlerRequest(c.Server, entityId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19451,19 +21596,18 @@ func (c *Client) FsCatFsCatGet(ctx context.Context, params *FsCatFsCatGetParams,
 	return c.Client.Do(req)
 }
 
-// FsDeleteFsDeletePostWithBody Fs Delete
+// FsDeleteFsDeletePostWithBody Delete a canonical Memory or Crystal path in its selected Space.
 //
-// Delete/archive a canonical Nowledge FS file.
-//
-// Memory delete delegates to the existing Memories delete path, preserving
-// the object's concrete space.  Working Memory delete has no safe helper in
-// this slice and returns “ENOTSUP“.
+// A nonblank body Space wins over the ambient header. Explicit references
+// must resolve to a registered Space. A foreign or moved target is not found;
+// an unscoped path still binds the target Space observed during preflight.
+// Working Memory deletion remains unsupported. Space selection is not a grant.
 //
 // Takes any type of body and a specified content type.
 //
 // Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-func (c *Client) FsDeleteFsDeletePostWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFsDeleteFsDeletePostRequestWithBody(c.Server, contentType, body)
+func (c *Client) FsDeleteFsDeletePostWithBody(ctx context.Context, params *FsDeleteFsDeletePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFsDeleteFsDeletePostRequestWithBody(c.Server, params, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -19474,19 +21618,18 @@ func (c *Client) FsDeleteFsDeletePostWithBody(ctx context.Context, contentType s
 	return c.Client.Do(req)
 }
 
-// FsDeleteFsDeletePost Fs Delete
+// FsDeleteFsDeletePost Delete a canonical Memory or Crystal path in its selected Space.
 //
-// Delete/archive a canonical Nowledge FS file.
-//
-// Memory delete delegates to the existing Memories delete path, preserving
-// the object's concrete space.  Working Memory delete has no safe helper in
-// this slice and returns “ENOTSUP“.
+// A nonblank body Space wins over the ambient header. Explicit references
+// must resolve to a registered Space. A foreign or moved target is not found;
+// an unscoped path still binds the target Space observed during preflight.
+// Working Memory deletion remains unsupported. Space selection is not a grant.
 //
 // Takes a body of the `application/json` content type.
 //
 // Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-func (c *Client) FsDeleteFsDeletePost(ctx context.Context, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFsDeleteFsDeletePostRequest(c.Server, body)
+func (c *Client) FsDeleteFsDeletePost(ctx context.Context, params *FsDeleteFsDeletePostParams, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFsDeleteFsDeletePostRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -20109,6 +22252,61 @@ func (c *Client) HealthCheckHealthGet(ctx context.Context, reqEditors ...Request
 // Corresponds with POST /health/checkpoint (the `ForceCheckpointHealthCheckpointPost` operationId).
 func (c *Client) ForceCheckpointHealthCheckpointPost(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewForceCheckpointHealthCheckpointPostRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetIdentityProfiles List identity profiles
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Returns independently enrolled profiles for this Space; matching names do not imply the same person. Reading does not invoke a model.
+//
+// Corresponds with GET /identity/profiles (the `GetIdentityProfiles` operationId).
+func (c *Client) GetIdentityProfiles(ctx context.Context, params *GetIdentityProfilesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIdentityProfilesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SaveIdentityProfileWithBody Create or update an identity profile
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+func (c *Client) SaveIdentityProfileWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSaveIdentityProfileRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SaveIdentityProfile Create or update an identity profile
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+func (c *Client) SaveIdentityProfile(ctx context.Context, body SaveIdentityProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSaveIdentityProfileRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -21549,7 +23747,7 @@ func (c *Client) ExportMemoryMemoriesMemoryIdExportGet(ctx context.Context, memo
 // Apply knowledge graph extraction results to a memory.
 //
 // This endpoint saves the extracted entities and relationships to the graph database
-// and updates the memory's metadata to track the extraction.
+// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 //
 // Takes any type of body and a specified content type.
 //
@@ -21571,7 +23769,7 @@ func (c *Client) ApplyMemoryKgExtractionMemoriesMemoryIdExtractKgApplyPostWithBo
 // Apply knowledge graph extraction results to a memory.
 //
 // This endpoint saves the extracted entities and relationships to the graph database
-// and updates the memory's metadata to track the extraction.
+// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 //
 // Takes a body of the `application/json` content type.
 //
@@ -21677,6 +23875,99 @@ func (c *Client) ForgetMemoryMemoriesMemoryIdForgetPostWithBody(ctx context.Cont
 // Corresponds with POST /memories/{memory_id}/forget (the `ForgetMemoryMemoriesMemoryIdForgetPost` operationId).
 func (c *Client) ForgetMemoryMemoriesMemoryIdForgetPost(ctx context.Context, memoryId string, body ForgetMemoryMemoriesMemoryIdForgetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewForgetMemoryMemoriesMemoryIdForgetPostRequest(c.Server, memoryId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReadMemoryIdentity Read memory identity evidence
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Read this response before correcting an occurrence; retain source_revision, epoch, generation and the occurrence revision. An empty occurrences array is valid and reading does not invoke a model.
+//
+// Corresponds with GET /memories/{memory_id}/identity (the `ReadMemoryIdentity` operationId).
+func (c *Client) ReadMemoryIdentity(ctx context.Context, memoryId string, params *ReadMemoryIdentityParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadMemoryIdentityRequest(c.Server, memoryId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CorrectMemoryIdentityWithBody Correct a memory identity occurrence
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+func (c *Client) CorrectMemoryIdentityWithBody(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCorrectMemoryIdentityRequestWithBody(c.Server, memoryId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CorrectMemoryIdentity Correct a memory identity occurrence
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+func (c *Client) CorrectMemoryIdentity(ctx context.Context, memoryId string, body CorrectMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCorrectMemoryIdentityRequest(c.Server, memoryId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ExtractMemoryIdentityWithBody Extract or reconsider memory identities
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+func (c *Client) ExtractMemoryIdentityWithBody(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewExtractMemoryIdentityRequestWithBody(c.Server, memoryId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ExtractMemoryIdentity Extract or reconsider memory identities
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+func (c *Client) ExtractMemoryIdentity(ctx context.Context, memoryId string, body ExtractMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewExtractMemoryIdentityRequest(c.Server, memoryId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -24223,9 +26514,7 @@ func (c *Client) GetStorageInfoStorageInfoGet(ctx context.Context, reqEditors ..
 
 // OptimizeStorageStorageOptimizePost Optimize Storage
 //
-// Compact search index and flush database changes.
-//
-// Prunes old LanceDB versions and runs a KuzuDB checkpoint.
+// Compact every search projection table's Lance fragments, prune verified old snapshots, and checkpoint the graph database. Pre-compaction snapshots remain available to existing readers and are reclaimed after the next backend start. The response reports completed, partial, or refused outcomes and safe table-level details.
 //
 // Corresponds with POST /storage/optimize (the `OptimizeStorageStorageOptimizePost` operationId).
 func (c *Client) OptimizeStorageStorageOptimizePost(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -24827,6 +27116,23 @@ func (c *Client) ParseThreadContentThreadsParsePost(ctx context.Context, body Pa
 	return c.Client.Do(req)
 }
 
+// ListThreadProjectsThreadsProjectsGet List Saved Conversation Projects
+//
+// Paginated directory over all readable saved conversations matching source and Space. Full workspace path is authoritative when present, otherwise project name, otherwise unknown. Keys preserve exact values and are passed unchanged to the thread list. Counts include logical conversations, not historical duplicate storage rows.
+//
+// Corresponds with GET /threads/projects (the `ListThreadProjectsThreadsProjectsGet` operationId).
+func (c *Client) ListThreadProjectsThreadsProjectsGet(ctx context.Context, params *ListThreadProjectsThreadsProjectsGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListThreadProjectsThreadsProjectsGetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // SearchThreadsFullThreadsSearchGet Search Threads Full
 //
 // Full thread search with message matching.
@@ -24999,7 +27305,7 @@ func (c *Client) StopWatcherThreadsWatcherStopPost(ctx context.Context, reqEdito
 
 // DeleteThreadThreadsThreadIdDelete Delete Thread
 //
-// Delete a thread and optionally its extracted memories.
+// Delete a thread and optionally its extracted memories. App cascade commits are per Memory, not one transaction with the parent Thread. Errors may report prior committed Memory deletions and uncertain outcomes. Cloud currently reports zero extracted Memory deletions even when cascade was requested.
 //
 // Corresponds with DELETE /threads/{thread_id} (the `DeleteThreadThreadsThreadIdDelete` operationId).
 func (c *Client) DeleteThreadThreadsThreadIdDelete(ctx context.Context, threadId string, params *DeleteThreadThreadsThreadIdDeleteParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -26893,6 +29199,53 @@ func NewRetryEventAgentFeedEventsEventIdRetryPostRequest(server string, eventId 
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewOpenapiGuardedTimelineReviewRequest calls the generic OpenapiGuardedTimelineReview builder with application/json body
+func NewOpenapiGuardedTimelineReviewRequest(server string, eventId string, body OpenapiGuardedTimelineReviewJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewOpenapiGuardedTimelineReviewRequestWithBody(server, eventId, "application/json", bodyReader)
+}
+
+// NewOpenapiGuardedTimelineReviewRequestWithBody constructs an http.Request for the OpenapiGuardedTimelineReview method, with any body, and a specified content type
+func NewOpenapiGuardedTimelineReviewRequestWithBody(server string, eventId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "event_id", eventId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/agent/feed/events/%s/review", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -30039,6 +32392,46 @@ func NewImportDataDataImportPostRequestWithBody(server string, contentType strin
 	return req, nil
 }
 
+// NewOpenapiImportPreviewRequest calls the generic OpenapiImportPreview builder with application/json body
+func NewOpenapiImportPreviewRequest(server string, body OpenapiImportPreviewJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewOpenapiImportPreviewRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewOpenapiImportPreviewRequestWithBody constructs an http.Request for the OpenapiImportPreview method, with any body, and a specified content type
+func NewOpenapiImportPreviewRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/data/import/preview")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetImportStatusDataImportStatusJobIdGetRequest constructs an http.Request for the GetImportStatusDataImportStatusJobIdGet method
 func NewGetImportStatusDataImportStatusJobIdGetRequest(server string, jobId string) (*http.Request, error) {
 	var err error
@@ -30083,6 +32476,35 @@ func NewImportDataUploadDataImportUploadPostRequestWithBody(server string, conte
 	}
 
 	operationPath := fmt.Sprintf("/data/import/upload")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewOpenapiImportUploadPreviewRequestWithBody constructs an http.Request for the OpenapiImportUploadPreview method, with any body, and a specified content type
+func NewOpenapiImportUploadPreviewRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/data/import/upload/preview")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -30233,6 +32655,87 @@ func NewDeleteEntityHandlerRequest(server string, entityId string, params *Delet
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewReadEntityAliasesHandlerRequest constructs an http.Request for the ReadEntityAliasesHandler method
+func NewReadEntityAliasesHandlerRequest(server string, entityId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "entity_id", entityId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/entities/%s/aliases", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewChangeEntityAliasesHandlerRequest calls the generic ChangeEntityAliasesHandler builder with application/json body
+func NewChangeEntityAliasesHandlerRequest(server string, entityId string, body ChangeEntityAliasesHandlerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewChangeEntityAliasesHandlerRequestWithBody(server, entityId, "application/json", bodyReader)
+}
+
+// NewChangeEntityAliasesHandlerRequestWithBody constructs an http.Request for the ChangeEntityAliasesHandler method, with any body, and a specified content type
+func NewChangeEntityAliasesHandlerRequestWithBody(server string, entityId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "entity_id", entityId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/entities/%s/aliases", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -30759,18 +33262,18 @@ func NewFsCatFsCatGetRequest(server string, params *FsCatFsCatGetParams) (*http.
 }
 
 // NewFsDeleteFsDeletePostRequest calls the generic FsDeleteFsDeletePost builder with application/json body
-func NewFsDeleteFsDeletePostRequest(server string, body FsDeleteFsDeletePostJSONRequestBody) (*http.Request, error) {
+func NewFsDeleteFsDeletePostRequest(server string, params *FsDeleteFsDeletePostParams, body FsDeleteFsDeletePostJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewFsDeleteFsDeletePostRequestWithBody(server, "application/json", bodyReader)
+	return NewFsDeleteFsDeletePostRequestWithBody(server, params, "application/json", bodyReader)
 }
 
 // NewFsDeleteFsDeletePostRequestWithBody constructs an http.Request for the FsDeleteFsDeletePost method, with any body, and a specified content type
-func NewFsDeleteFsDeletePostRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+func NewFsDeleteFsDeletePostRequestWithBody(server string, params *FsDeleteFsDeletePostParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -30794,6 +33297,32 @@ func NewFsDeleteFsDeletePostRequestWithBody(server string, contentType string, b
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.XNmemSpaceId != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Nmem-Space-Id", *params.XNmemSpaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Nmem-Space-Id", headerParam0)
+		}
+
+		if params.XNowledgeSpaceId != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "X-Nowledge-Space-Id", *params.XNowledgeSpaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Nowledge-Space-Id", headerParam1)
+		}
+
+	}
 
 	return req, nil
 }
@@ -32671,6 +35200,96 @@ func NewForceCheckpointHealthCheckpointPostRequest(server string) (*http.Request
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewGetIdentityProfilesRequest constructs an http.Request for the GetIdentityProfiles method
+func NewGetIdentityProfilesRequest(server string, params *GetIdentityProfilesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/identity/profiles")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "space_id", params.SpaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSaveIdentityProfileRequest calls the generic SaveIdentityProfile builder with application/json body
+func NewSaveIdentityProfileRequest(server string, body SaveIdentityProfileJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSaveIdentityProfileRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewSaveIdentityProfileRequestWithBody constructs an http.Request for the SaveIdentityProfile method, with any body, and a specified content type
+func NewSaveIdentityProfileRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/identity/profiles")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -35524,6 +38143,157 @@ func NewForgetMemoryMemoriesMemoryIdForgetPostRequestWithBody(server string, mem
 	}
 
 	operationPath := fmt.Sprintf("/memories/%s/forget", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReadMemoryIdentityRequest constructs an http.Request for the ReadMemoryIdentity method
+func NewReadMemoryIdentityRequest(server string, memoryId string, params *ReadMemoryIdentityParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memory_id", memoryId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/memories/%s/identity", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "space_id", params.SpaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCorrectMemoryIdentityRequest calls the generic CorrectMemoryIdentity builder with application/json body
+func NewCorrectMemoryIdentityRequest(server string, memoryId string, body CorrectMemoryIdentityJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCorrectMemoryIdentityRequestWithBody(server, memoryId, "application/json", bodyReader)
+}
+
+// NewCorrectMemoryIdentityRequestWithBody constructs an http.Request for the CorrectMemoryIdentity method, with any body, and a specified content type
+func NewCorrectMemoryIdentityRequestWithBody(server string, memoryId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memory_id", memoryId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/memories/%s/identity/correction", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewExtractMemoryIdentityRequest calls the generic ExtractMemoryIdentity builder with application/json body
+func NewExtractMemoryIdentityRequest(server string, memoryId string, body ExtractMemoryIdentityJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewExtractMemoryIdentityRequestWithBody(server, memoryId, "application/json", bodyReader)
+}
+
+// NewExtractMemoryIdentityRequestWithBody constructs an http.Request for the ExtractMemoryIdentity method, with any body, and a specified content type
+func NewExtractMemoryIdentityRequestWithBody(server string, memoryId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "memory_id", memoryId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/memories/%s/identity/extract", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -40185,6 +42955,18 @@ func NewListThreadsThreadsGetRequest(server string, params *ListThreadsThreadsGe
 
 		}
 
+		if params.ProjectKey != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "project_key", *params.ProjectKey, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if encoded := queryValues.Encode(); encoded != "" {
 			rawQueryFragments = append(rawQueryFragments, encoded)
 		}
@@ -40995,6 +43777,96 @@ func NewParseThreadContentThreadsParsePostRequestWithBody(server string, content
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListThreadProjectsThreadsProjectsGetRequest constructs an http.Request for the ListThreadProjectsThreadsProjectsGet method
+func NewListThreadProjectsThreadsProjectsGetRequest(server string, params *ListThreadProjectsThreadsProjectsGetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/threads/projects")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Offset != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "offset", *params.Offset, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.SpaceId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "space_id", *params.SpaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -42027,7 +44899,7 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /agent/ai-now/schedules/{schedule_id}/confirm (the `OpenapiConfirmSchedule` operationId).
 	OpenapiConfirmScheduleWithResponse(ctx context.Context, scheduleId string, body OpenapiConfirmScheduleJSONRequestBody, reqEditors ...RequestEditorFn) (*OpenapiConfirmScheduleResponse, error)
 
-	// OpenapiPauseScheduleWithResponse Pause future recurring task occurrences
+	// OpenapiPauseScheduleWithResponse Pause a recurring task and request cancellation of its current run
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -42322,6 +45194,24 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /agent/feed/events/{event_id}/retry (the `RetryEventAgentFeedEventsEventIdRetryPost` operationId).
 	RetryEventAgentFeedEventsEventIdRetryPostWithResponse(ctx context.Context, eventId string, reqEditors ...RequestEditorFn) (*RetryEventAgentFeedEventsEventIdRetryPostResponse, error)
+
+	// OpenapiGuardedTimelineReviewWithBodyWithResponse Preview or Confirm Timeline Review
+	//
+	// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+	OpenapiGuardedTimelineReviewWithBodyWithResponse(ctx context.Context, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OpenapiGuardedTimelineReviewResponse, error)
+
+	// OpenapiGuardedTimelineReviewWithResponse Preview or Confirm Timeline Review
+	//
+	// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+	OpenapiGuardedTimelineReviewWithResponse(ctx context.Context, eventId string, body OpenapiGuardedTimelineReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*OpenapiGuardedTimelineReviewResponse, error)
 
 	// OpenapiSetFeedEventVisibilityWithBodyWithResponse Set Feed Event Visibility
 	//
@@ -43280,6 +46170,24 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /data/import (the `ImportDataDataImportPost` operationId).
 	ImportDataDataImportPostWithResponse(ctx context.Context, body ImportDataDataImportPostJSONRequestBody, reqEditors ...RequestEditorFn) (*ImportDataDataImportPostResponse, error)
 
+	// OpenapiImportPreviewWithBodyWithResponse Inspect backup inventory
+	//
+	// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+	OpenapiImportPreviewWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OpenapiImportPreviewResponse, error)
+
+	// OpenapiImportPreviewWithResponse Inspect backup inventory
+	//
+	// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+	OpenapiImportPreviewWithResponse(ctx context.Context, body OpenapiImportPreviewJSONRequestBody, reqEditors ...RequestEditorFn) (*OpenapiImportPreviewResponse, error)
+
 	// GetImportStatusDataImportStatusJobIdGetWithResponse Get Import Status
 	//
 	// Check the progress of a data import job.
@@ -43299,6 +46207,15 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /data/import/upload (the `ImportDataUploadDataImportUploadPost` operationId).
 	ImportDataUploadDataImportUploadPostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ImportDataUploadDataImportUploadPostResponse, error)
+
+	// OpenapiImportUploadPreviewWithBodyWithResponse Inspect backup inventory
+	//
+	// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /data/import/upload/preview (the `OpenapiImportUploadPreview` operationId).
+	OpenapiImportUploadPreviewWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OpenapiImportUploadPreviewResponse, error)
 
 	// ListEntitiesEntitiesGetWithResponse List Entities
 	//
@@ -43323,6 +46240,31 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with DELETE /entities/{entity_id} (the `DeleteEntityHandler` operationId).
 	DeleteEntityHandlerWithResponse(ctx context.Context, entityId string, params *DeleteEntityHandlerParams, reqEditors ...RequestEditorFn) (*DeleteEntityHandlerResponse, error)
+
+	// ReadEntityAliasesHandlerWithResponse Read entity aliases
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /entities/{entity_id}/aliases (the `ReadEntityAliasesHandler` operationId).
+	ReadEntityAliasesHandlerWithResponse(ctx context.Context, entityId string, reqEditors ...RequestEditorFn) (*ReadEntityAliasesHandlerResponse, error)
+
+	// ChangeEntityAliasesHandlerWithBodyWithResponse Correct entity aliases
+	//
+	// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+	ChangeEntityAliasesHandlerWithBodyWithResponse(ctx context.Context, entityId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ChangeEntityAliasesHandlerResponse, error)
+
+	// ChangeEntityAliasesHandlerWithResponse Correct entity aliases
+	//
+	// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+	ChangeEntityAliasesHandlerWithResponse(ctx context.Context, entityId string, body ChangeEntityAliasesHandlerJSONRequestBody, reqEditors ...RequestEditorFn) (*ChangeEntityAliasesHandlerResponse, error)
 
 	// PreviewEntityDeleteHandlerWithResponse Preview entity deletion
 	//
@@ -43436,31 +46378,29 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /fs/cat (the `FsCatFsCatGet` operationId).
 	FsCatFsCatGetWithResponse(ctx context.Context, params *FsCatFsCatGetParams, reqEditors ...RequestEditorFn) (*FsCatFsCatGetResponse, error)
 
-	// FsDeleteFsDeletePostWithBodyWithResponse Fs Delete
+	// FsDeleteFsDeletePostWithBodyWithResponse Delete a canonical Memory or Crystal path in its selected Space.
 	//
-	// Delete/archive a canonical Nowledge FS file.
-	//
-	// Memory delete delegates to the existing Memories delete path, preserving
-	// the object's concrete space.  Working Memory delete has no safe helper in
-	// this slice and returns ``ENOTSUP``.
+	// A nonblank body Space wins over the ambient header. Explicit references
+	// must resolve to a registered Space. A foreign or moved target is not found;
+	// an unscoped path still binds the target Space observed during preflight.
+	// Working Memory deletion remains unsupported. Space selection is not a grant.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-	FsDeleteFsDeletePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error)
+	FsDeleteFsDeletePostWithBodyWithResponse(ctx context.Context, params *FsDeleteFsDeletePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error)
 
-	// FsDeleteFsDeletePostWithResponse Fs Delete
+	// FsDeleteFsDeletePostWithResponse Delete a canonical Memory or Crystal path in its selected Space.
 	//
-	// Delete/archive a canonical Nowledge FS file.
-	//
-	// Memory delete delegates to the existing Memories delete path, preserving
-	// the object's concrete space.  Working Memory delete has no safe helper in
-	// this slice and returns ``ENOTSUP``.
+	// A nonblank body Space wins over the ambient header. Explicit references
+	// must resolve to a registered Space. A foreign or moved target is not found;
+	// an unscoped path still binds the target Space observed during preflight.
+	// Working Memory deletion remains unsupported. Space selection is not a grant.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-	FsDeleteFsDeletePostWithResponse(ctx context.Context, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error)
+	FsDeleteFsDeletePostWithResponse(ctx context.Context, params *FsDeleteFsDeletePostParams, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error)
 
 	// FsFindFsFindGetWithResponse Fs Find
 	//
@@ -43835,6 +46775,33 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /health/checkpoint (the `ForceCheckpointHealthCheckpointPost` operationId).
 	ForceCheckpointHealthCheckpointPostWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ForceCheckpointHealthCheckpointPostResponse, error)
+
+	// GetIdentityProfilesWithResponse List identity profiles
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Returns independently enrolled profiles for this Space; matching names do not imply the same person. Reading does not invoke a model.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /identity/profiles (the `GetIdentityProfiles` operationId).
+	GetIdentityProfilesWithResponse(ctx context.Context, params *GetIdentityProfilesParams, reqEditors ...RequestEditorFn) (*GetIdentityProfilesResponse, error)
+
+	// SaveIdentityProfileWithBodyWithResponse Create or update an identity profile
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+	SaveIdentityProfileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SaveIdentityProfileResponse, error)
+
+	// SaveIdentityProfileWithResponse Create or update an identity profile
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+	SaveIdentityProfileWithResponse(ctx context.Context, body SaveIdentityProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*SaveIdentityProfileResponse, error)
 
 	// ListLabelsLabelsGetWithResponse List Labels
 	//
@@ -44590,7 +47557,7 @@ type ClientWithResponsesInterface interface {
 	// Apply knowledge graph extraction results to a memory.
 	//
 	// This endpoint saves the extracted entities and relationships to the graph database
-	// and updates the memory's metadata to track the extraction.
+	// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -44602,7 +47569,7 @@ type ClientWithResponsesInterface interface {
 	// Apply knowledge graph extraction results to a memory.
 	//
 	// This endpoint saves the extracted entities and relationships to the graph database
-	// and updates the memory's metadata to track the extraction.
+	// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -44659,6 +47626,51 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /memories/{memory_id}/forget (the `ForgetMemoryMemoriesMemoryIdForgetPost` operationId).
 	ForgetMemoryMemoriesMemoryIdForgetPostWithResponse(ctx context.Context, memoryId string, body ForgetMemoryMemoriesMemoryIdForgetPostJSONRequestBody, reqEditors ...RequestEditorFn) (*ForgetMemoryMemoriesMemoryIdForgetPostResponse, error)
+
+	// ReadMemoryIdentityWithResponse Read memory identity evidence
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Read this response before correcting an occurrence; retain source_revision, epoch, generation and the occurrence revision. An empty occurrences array is valid and reading does not invoke a model.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /memories/{memory_id}/identity (the `ReadMemoryIdentity` operationId).
+	ReadMemoryIdentityWithResponse(ctx context.Context, memoryId string, params *ReadMemoryIdentityParams, reqEditors ...RequestEditorFn) (*ReadMemoryIdentityResponse, error)
+
+	// CorrectMemoryIdentityWithBodyWithResponse Correct a memory identity occurrence
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+	CorrectMemoryIdentityWithBodyWithResponse(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CorrectMemoryIdentityResponse, error)
+
+	// CorrectMemoryIdentityWithResponse Correct a memory identity occurrence
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+	CorrectMemoryIdentityWithResponse(ctx context.Context, memoryId string, body CorrectMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*CorrectMemoryIdentityResponse, error)
+
+	// ExtractMemoryIdentityWithBodyWithResponse Extract or reconsider memory identities
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+	ExtractMemoryIdentityWithBodyWithResponse(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ExtractMemoryIdentityResponse, error)
+
+	// ExtractMemoryIdentityWithResponse Extract or reconsider memory identities
+	//
+	// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+	ExtractMemoryIdentityWithResponse(ctx context.Context, memoryId string, body ExtractMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*ExtractMemoryIdentityResponse, error)
 
 	// GetMemoryLabelsMemoriesMemoryIdLabelsGetWithResponse Get Memory Labels
 	//
@@ -46028,9 +49040,7 @@ type ClientWithResponsesInterface interface {
 
 	// OptimizeStorageStorageOptimizePostWithResponse Optimize Storage
 	//
-	// Compact search index and flush database changes.
-	//
-	// Prunes old LanceDB versions and runs a KuzuDB checkpoint.
+	// Compact every search projection table's Lance fragments, prune verified old snapshots, and checkpoint the graph database. Pre-compaction snapshots remain available to existing readers and are reclaimed after the next backend start. The response reports completed, partial, or refused outcomes and safe table-level details.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -46328,6 +49338,15 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /threads/parse (the `ParseThreadContentThreadsParsePost` operationId).
 	ParseThreadContentThreadsParsePostWithResponse(ctx context.Context, body ParseThreadContentThreadsParsePostJSONRequestBody, reqEditors ...RequestEditorFn) (*ParseThreadContentThreadsParsePostResponse, error)
 
+	// ListThreadProjectsThreadsProjectsGetWithResponse List Saved Conversation Projects
+	//
+	// Paginated directory over all readable saved conversations matching source and Space. Full workspace path is authoritative when present, otherwise project name, otherwise unknown. Keys preserve exact values and are passed unchanged to the thread list. Counts include logical conversations, not historical duplicate storage rows.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /threads/projects (the `ListThreadProjectsThreadsProjectsGet` operationId).
+	ListThreadProjectsThreadsProjectsGetWithResponse(ctx context.Context, params *ListThreadProjectsThreadsProjectsGetParams, reqEditors ...RequestEditorFn) (*ListThreadProjectsThreadsProjectsGetResponse, error)
+
 	// SearchThreadsFullThreadsSearchGetWithResponse Search Threads Full
 	//
 	// Full thread search with message matching.
@@ -46428,7 +49447,7 @@ type ClientWithResponsesInterface interface {
 
 	// DeleteThreadThreadsThreadIdDeleteWithResponse Delete Thread
 	//
-	// Delete a thread and optionally its extracted memories.
+	// Delete a thread and optionally its extracted memories. App cascade commits are per Memory, not one transaction with the parent Thread. Errors may report prior committed Memory deletions and uncertain outcomes. Cloud currently reports zero extracted Memory deletions even when cascade was requested.
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -47048,11 +50067,32 @@ type OpenapiPauseScheduleResponse struct {
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *ScheduleResponse
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *ScheduleErrorResponse
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *ScheduleErrorResponse
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *ScheduleErrorResponse
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
 func (r OpenapiPauseScheduleResponse) GetJSON200() *ScheduleResponse {
 	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r OpenapiPauseScheduleResponse) GetJSON400() *ScheduleErrorResponse {
+	return r.JSON400
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r OpenapiPauseScheduleResponse) GetJSON404() *ScheduleErrorResponse {
+	return r.JSON404
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r OpenapiPauseScheduleResponse) GetJSON500() *ScheduleErrorResponse {
+	return r.JSON500
 }
 
 // GetBody returns the raw response body bytes
@@ -48175,6 +51215,47 @@ func (r RetryEventAgentFeedEventsEventIdRetryPostResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r RetryEventAgentFeedEventsEventIdRetryPostResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type OpenapiGuardedTimelineReviewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GuardedTimelineReviewResponse
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r OpenapiGuardedTimelineReviewResponse) GetJSON200() *GuardedTimelineReviewResponse {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r OpenapiGuardedTimelineReviewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r OpenapiGuardedTimelineReviewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r OpenapiGuardedTimelineReviewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r OpenapiGuardedTimelineReviewResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -51214,9 +54295,11 @@ type ExportDataDataExportPostResponse struct {
 	// JSON409 the response for an HTTP 409 `application/json` response
 	JSON409 *DataTransferErrorResponse
 	// JSON422 the response for an HTTP 422 `application/json` response
-	JSON422 *HTTPValidationError
+	JSON422 *DataTransferErrorResponse
 	// JSON500 the response for an HTTP 500 `application/json` response
 	JSON500 *DataTransferErrorResponse
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *DataTransferErrorResponse
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -51230,13 +54313,18 @@ func (r ExportDataDataExportPostResponse) GetJSON409() *DataTransferErrorRespons
 }
 
 // GetJSON422 returns the response for an HTTP 422 `application/json` response
-func (r ExportDataDataExportPostResponse) GetJSON422() *HTTPValidationError {
+func (r ExportDataDataExportPostResponse) GetJSON422() *DataTransferErrorResponse {
 	return r.JSON422
 }
 
 // GetJSON500 returns the response for an HTTP 500 `application/json` response
 func (r ExportDataDataExportPostResponse) GetJSON500() *DataTransferErrorResponse {
 	return r.JSON500
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r ExportDataDataExportPostResponse) GetJSON503() *DataTransferErrorResponse {
+	return r.JSON503
 }
 
 // GetBody returns the raw response body bytes
@@ -51274,9 +54362,11 @@ type ExportDataDownloadDataExportDownloadPostResponse struct {
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *interface{}
 	// JSON422 the response for an HTTP 422 `application/json` response
-	JSON422 *HTTPValidationError
+	JSON422 *DataTransferErrorResponse
 	// JSON500 the response for an HTTP 500 `application/json` response
 	JSON500 *DataTransferErrorResponse
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *DataTransferErrorResponse
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -51285,13 +54375,18 @@ func (r ExportDataDownloadDataExportDownloadPostResponse) GetJSON200() *interfac
 }
 
 // GetJSON422 returns the response for an HTTP 422 `application/json` response
-func (r ExportDataDownloadDataExportDownloadPostResponse) GetJSON422() *HTTPValidationError {
+func (r ExportDataDownloadDataExportDownloadPostResponse) GetJSON422() *DataTransferErrorResponse {
 	return r.JSON422
 }
 
 // GetJSON500 returns the response for an HTTP 500 `application/json` response
 func (r ExportDataDownloadDataExportDownloadPostResponse) GetJSON500() *DataTransferErrorResponse {
 	return r.JSON500
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r ExportDataDownloadDataExportDownloadPostResponse) GetJSON503() *DataTransferErrorResponse {
+	return r.JSON503
 }
 
 // GetBody returns the raw response body bytes
@@ -51440,6 +54535,75 @@ func (r ImportDataDataImportPostResponse) ContentType() string {
 	return ""
 }
 
+type OpenapiImportPreviewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DataImportPreviewResponse
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *DataTransferErrorResponse
+	// JSON401 the response for an HTTP 401 `application/json` response
+	JSON401 *DataTransferErrorResponse
+	// JSON403 the response for an HTTP 403 `application/json` response
+	JSON403 *DataTransferErrorResponse
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *DataTransferErrorResponse
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r OpenapiImportPreviewResponse) GetJSON200() *DataImportPreviewResponse {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r OpenapiImportPreviewResponse) GetJSON400() *DataTransferErrorResponse {
+	return r.JSON400
+}
+
+// GetJSON401 returns the response for an HTTP 401 `application/json` response
+func (r OpenapiImportPreviewResponse) GetJSON401() *DataTransferErrorResponse {
+	return r.JSON401
+}
+
+// GetJSON403 returns the response for an HTTP 403 `application/json` response
+func (r OpenapiImportPreviewResponse) GetJSON403() *DataTransferErrorResponse {
+	return r.JSON403
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r OpenapiImportPreviewResponse) GetJSON503() *DataTransferErrorResponse {
+	return r.JSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r OpenapiImportPreviewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r OpenapiImportPreviewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r OpenapiImportPreviewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r OpenapiImportPreviewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetImportStatusDataImportStatusJobIdGetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -51557,6 +54721,75 @@ func (r ImportDataUploadDataImportUploadPostResponse) ContentType() string {
 	return ""
 }
 
+type OpenapiImportUploadPreviewResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DataImportPreviewResponse
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *DataTransferErrorResponse
+	// JSON401 the response for an HTTP 401 `application/json` response
+	JSON401 *DataTransferErrorResponse
+	// JSON403 the response for an HTTP 403 `application/json` response
+	JSON403 *DataTransferErrorResponse
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *DataTransferErrorResponse
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r OpenapiImportUploadPreviewResponse) GetJSON200() *DataImportPreviewResponse {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r OpenapiImportUploadPreviewResponse) GetJSON400() *DataTransferErrorResponse {
+	return r.JSON400
+}
+
+// GetJSON401 returns the response for an HTTP 401 `application/json` response
+func (r OpenapiImportUploadPreviewResponse) GetJSON401() *DataTransferErrorResponse {
+	return r.JSON401
+}
+
+// GetJSON403 returns the response for an HTTP 403 `application/json` response
+func (r OpenapiImportUploadPreviewResponse) GetJSON403() *DataTransferErrorResponse {
+	return r.JSON403
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r OpenapiImportUploadPreviewResponse) GetJSON503() *DataTransferErrorResponse {
+	return r.JSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r OpenapiImportUploadPreviewResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r OpenapiImportUploadPreviewResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r OpenapiImportUploadPreviewResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r OpenapiImportUploadPreviewResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListEntitiesEntitiesGetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -51640,6 +54873,88 @@ func (r DeleteEntityHandlerResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r DeleteEntityHandlerResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ReadEntityAliasesHandlerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *EntityAliasStateSchema
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ReadEntityAliasesHandlerResponse) GetJSON200() *EntityAliasStateSchema {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r ReadEntityAliasesHandlerResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadEntityAliasesHandlerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadEntityAliasesHandlerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ReadEntityAliasesHandlerResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ChangeEntityAliasesHandlerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *EntityAliasStateSchema
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ChangeEntityAliasesHandlerResponse) GetJSON200() *EntityAliasStateSchema {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r ChangeEntityAliasesHandlerResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ChangeEntityAliasesHandlerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ChangeEntityAliasesHandlerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ChangeEntityAliasesHandlerResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -52048,8 +55363,10 @@ type FsDeleteFsDeletePostResponse struct {
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *interface{}
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *interface{}
 	// JSON422 the response for an HTTP 422 `application/json` response
-	JSON422 *HTTPValidationError
+	JSON422 *interface{}
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -52057,8 +55374,13 @@ func (r FsDeleteFsDeletePostResponse) GetJSON200() *interface{} {
 	return r.JSON200
 }
 
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r FsDeleteFsDeletePostResponse) GetJSON400() *interface{} {
+	return r.JSON400
+}
+
 // GetJSON422 returns the response for an HTTP 422 `application/json` response
-func (r FsDeleteFsDeletePostResponse) GetJSON422() *HTTPValidationError {
+func (r FsDeleteFsDeletePostResponse) GetJSON422() *interface{} {
 	return r.JSON422
 }
 
@@ -53380,6 +56702,158 @@ func (r ForceCheckpointHealthCheckpointPostResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ForceCheckpointHealthCheckpointPostResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetIdentityProfilesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *[]IdentityProfile
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *IdentityOperationError
+	// JSON409 the response for an HTTP 409 `application/json` response
+	JSON409 *IdentityOperationError
+	// JSON413 the response for an HTTP 413 `application/json` response
+	JSON413 *IdentityOperationError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *IdentityOperationError
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *IdentityOperationError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetIdentityProfilesResponse) GetJSON200() *[]IdentityProfile {
+	return r.JSON200
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r GetIdentityProfilesResponse) GetJSON404() *IdentityOperationError {
+	return r.JSON404
+}
+
+// GetJSON409 returns the response for an HTTP 409 `application/json` response
+func (r GetIdentityProfilesResponse) GetJSON409() *IdentityOperationError {
+	return r.JSON409
+}
+
+// GetJSON413 returns the response for an HTTP 413 `application/json` response
+func (r GetIdentityProfilesResponse) GetJSON413() *IdentityOperationError {
+	return r.JSON413
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r GetIdentityProfilesResponse) GetJSON500() *IdentityOperationError {
+	return r.JSON500
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r GetIdentityProfilesResponse) GetJSON503() *IdentityOperationError {
+	return r.JSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r GetIdentityProfilesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIdentityProfilesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIdentityProfilesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetIdentityProfilesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SaveIdentityProfileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IdentityProfile
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *IdentityOperationError
+	// JSON409 the response for an HTTP 409 `application/json` response
+	JSON409 *IdentityOperationError
+	// JSON413 the response for an HTTP 413 `application/json` response
+	JSON413 *IdentityOperationError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *IdentityOperationError
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *IdentityOperationError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SaveIdentityProfileResponse) GetJSON200() *IdentityProfile {
+	return r.JSON200
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r SaveIdentityProfileResponse) GetJSON404() *IdentityOperationError {
+	return r.JSON404
+}
+
+// GetJSON409 returns the response for an HTTP 409 `application/json` response
+func (r SaveIdentityProfileResponse) GetJSON409() *IdentityOperationError {
+	return r.JSON409
+}
+
+// GetJSON413 returns the response for an HTTP 413 `application/json` response
+func (r SaveIdentityProfileResponse) GetJSON413() *IdentityOperationError {
+	return r.JSON413
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r SaveIdentityProfileResponse) GetJSON500() *IdentityOperationError {
+	return r.JSON500
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r SaveIdentityProfileResponse) GetJSON503() *IdentityOperationError {
+	return r.JSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r SaveIdentityProfileResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SaveIdentityProfileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SaveIdentityProfileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SaveIdentityProfileResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -55916,6 +59390,248 @@ func (r ForgetMemoryMemoriesMemoryIdForgetPostResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r ForgetMemoryMemoriesMemoryIdForgetPostResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ReadMemoryIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IdentityEvidence
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *IdentityOperationError
+	// JSON409 the response for an HTTP 409 `application/json` response
+	JSON409 *IdentityOperationError
+	// JSON413 the response for an HTTP 413 `application/json` response
+	JSON413 *IdentityOperationError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *IdentityOperationError
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *IdentityOperationError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ReadMemoryIdentityResponse) GetJSON200() *IdentityEvidence {
+	return r.JSON200
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r ReadMemoryIdentityResponse) GetJSON404() *IdentityOperationError {
+	return r.JSON404
+}
+
+// GetJSON409 returns the response for an HTTP 409 `application/json` response
+func (r ReadMemoryIdentityResponse) GetJSON409() *IdentityOperationError {
+	return r.JSON409
+}
+
+// GetJSON413 returns the response for an HTTP 413 `application/json` response
+func (r ReadMemoryIdentityResponse) GetJSON413() *IdentityOperationError {
+	return r.JSON413
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r ReadMemoryIdentityResponse) GetJSON500() *IdentityOperationError {
+	return r.JSON500
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r ReadMemoryIdentityResponse) GetJSON503() *IdentityOperationError {
+	return r.JSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r ReadMemoryIdentityResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadMemoryIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadMemoryIdentityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ReadMemoryIdentityResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CorrectMemoryIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IdentityEvidence
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *IdentityOperationError
+	// JSON409 the response for an HTTP 409 `application/json` response
+	JSON409 *IdentityOperationError
+	// JSON413 the response for an HTTP 413 `application/json` response
+	JSON413 *IdentityOperationError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *IdentityOperationError
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *IdentityOperationError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CorrectMemoryIdentityResponse) GetJSON200() *IdentityEvidence {
+	return r.JSON200
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r CorrectMemoryIdentityResponse) GetJSON404() *IdentityOperationError {
+	return r.JSON404
+}
+
+// GetJSON409 returns the response for an HTTP 409 `application/json` response
+func (r CorrectMemoryIdentityResponse) GetJSON409() *IdentityOperationError {
+	return r.JSON409
+}
+
+// GetJSON413 returns the response for an HTTP 413 `application/json` response
+func (r CorrectMemoryIdentityResponse) GetJSON413() *IdentityOperationError {
+	return r.JSON413
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r CorrectMemoryIdentityResponse) GetJSON500() *IdentityOperationError {
+	return r.JSON500
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r CorrectMemoryIdentityResponse) GetJSON503() *IdentityOperationError {
+	return r.JSON503
+}
+
+// GetBody returns the raw response body bytes
+func (r CorrectMemoryIdentityResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CorrectMemoryIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CorrectMemoryIdentityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CorrectMemoryIdentityResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ExtractMemoryIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *IdentityEvidence
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *IdentityOperationError
+	// JSON409 the response for an HTTP 409 `application/json` response
+	JSON409 *IdentityOperationError
+	// JSON413 the response for an HTTP 413 `application/json` response
+	JSON413 *IdentityOperationError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *IdentityOperationError
+	// JSON502 the response for an HTTP 502 `application/json` response
+	JSON502 *IdentityOperationError
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *IdentityOperationError
+	// JSON504 the response for an HTTP 504 `application/json` response
+	JSON504 *IdentityOperationError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON200() *IdentityEvidence {
+	return r.JSON200
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON404() *IdentityOperationError {
+	return r.JSON404
+}
+
+// GetJSON409 returns the response for an HTTP 409 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON409() *IdentityOperationError {
+	return r.JSON409
+}
+
+// GetJSON413 returns the response for an HTTP 413 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON413() *IdentityOperationError {
+	return r.JSON413
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON500() *IdentityOperationError {
+	return r.JSON500
+}
+
+// GetJSON502 returns the response for an HTTP 502 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON502() *IdentityOperationError {
+	return r.JSON502
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON503() *IdentityOperationError {
+	return r.JSON503
+}
+
+// GetJSON504 returns the response for an HTTP 504 `application/json` response
+func (r ExtractMemoryIdentityResponse) GetJSON504() *IdentityOperationError {
+	return r.JSON504
+}
+
+// GetBody returns the raw response body bytes
+func (r ExtractMemoryIdentityResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ExtractMemoryIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ExtractMemoryIdentityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ExtractMemoryIdentityResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -61350,6 +65066,54 @@ func (r ParseThreadContentThreadsParsePostResponse) ContentType() string {
 	return ""
 }
 
+type ListThreadProjectsThreadsProjectsGetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ThreadProjectListResponse
+	// JSON422 the response for an HTTP 422 `application/json` response
+	JSON422 *HTTPValidationError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListThreadProjectsThreadsProjectsGetResponse) GetJSON200() *ThreadProjectListResponse {
+	return r.JSON200
+}
+
+// GetJSON422 returns the response for an HTTP 422 `application/json` response
+func (r ListThreadProjectsThreadsProjectsGetResponse) GetJSON422() *HTTPValidationError {
+	return r.JSON422
+}
+
+// GetBody returns the raw response body bytes
+func (r ListThreadProjectsThreadsProjectsGetResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListThreadProjectsThreadsProjectsGetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListThreadProjectsThreadsProjectsGetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListThreadProjectsThreadsProjectsGetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type SearchThreadsFullThreadsSearchGetResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -61670,8 +65434,14 @@ type DeleteThreadThreadsThreadIdDeleteResponse struct {
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
 	JSON200 *DeleteThreadResponse
+	// JSON403 the response for an HTTP 403 `application/json` response
+	JSON403 *ThreadDeletionErrorResponse
+	// JSON409 the response for an HTTP 409 `application/json` response
+	JSON409 *ThreadDeletionErrorResponse
 	// JSON422 the response for an HTTP 422 `application/json` response
 	JSON422 *HTTPValidationError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *ThreadDeletionErrorResponse
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
@@ -61679,9 +65449,24 @@ func (r DeleteThreadThreadsThreadIdDeleteResponse) GetJSON200() *DeleteThreadRes
 	return r.JSON200
 }
 
+// GetJSON403 returns the response for an HTTP 403 `application/json` response
+func (r DeleteThreadThreadsThreadIdDeleteResponse) GetJSON403() *ThreadDeletionErrorResponse {
+	return r.JSON403
+}
+
+// GetJSON409 returns the response for an HTTP 409 `application/json` response
+func (r DeleteThreadThreadsThreadIdDeleteResponse) GetJSON409() *ThreadDeletionErrorResponse {
+	return r.JSON409
+}
+
 // GetJSON422 returns the response for an HTTP 422 `application/json` response
 func (r DeleteThreadThreadsThreadIdDeleteResponse) GetJSON422() *HTTPValidationError {
 	return r.JSON422
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r DeleteThreadThreadsThreadIdDeleteResponse) GetJSON500() *ThreadDeletionErrorResponse {
+	return r.JSON500
 }
 
 // GetBody returns the raw response body bytes
@@ -62348,7 +66133,7 @@ func (c *ClientWithResponses) OpenapiConfirmScheduleWithResponse(ctx context.Con
 	return ParseOpenapiConfirmScheduleResponse(rsp)
 }
 
-// OpenapiPauseScheduleWithResponse Pause future recurring task occurrences
+// OpenapiPauseScheduleWithResponse Pause a recurring task and request cancellation of its current run
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -62840,6 +66625,36 @@ func (c *ClientWithResponses) RetryEventAgentFeedEventsEventIdRetryPostWithRespo
 		return nil, err
 	}
 	return ParseRetryEventAgentFeedEventsEventIdRetryPostResponse(rsp)
+}
+
+// OpenapiGuardedTimelineReviewWithBodyWithResponse Preview or Confirm Timeline Review
+//
+// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+func (c *ClientWithResponses) OpenapiGuardedTimelineReviewWithBodyWithResponse(ctx context.Context, eventId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OpenapiGuardedTimelineReviewResponse, error) {
+	rsp, err := c.OpenapiGuardedTimelineReviewWithBody(ctx, eventId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOpenapiGuardedTimelineReviewResponse(rsp)
+}
+
+// OpenapiGuardedTimelineReviewWithResponse Preview or Confirm Timeline Review
+//
+// Choose phase=preview to read the full authorized evidence and proposed graph effects. Show that snapshot to the person making the decision, then send phase=apply with the exact plan_id and unchanged command. A conflict requires an explicit new preview, never an invisible refresh and retry. Graph changes and their authoritative receipt commit together. An authorized retry returns the original decision, including when it differs from the requested action. Dismiss and note-only actions may use phase=apply without a plan. Older servers do not serve this endpoint; never fall back to the legacy resolve endpoint for a preview or graph confirmation.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /agent/feed/events/{event_id}/review (the `OpenapiGuardedTimelineReview` operationId).
+func (c *ClientWithResponses) OpenapiGuardedTimelineReviewWithResponse(ctx context.Context, eventId string, body OpenapiGuardedTimelineReviewJSONRequestBody, reqEditors ...RequestEditorFn) (*OpenapiGuardedTimelineReviewResponse, error) {
+	rsp, err := c.OpenapiGuardedTimelineReview(ctx, eventId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOpenapiGuardedTimelineReviewResponse(rsp)
 }
 
 // OpenapiSetFeedEventVisibilityWithBodyWithResponse Set Feed Event Visibility
@@ -64303,6 +68118,36 @@ func (c *ClientWithResponses) ImportDataDataImportPostWithResponse(ctx context.C
 	return ParseImportDataDataImportPostResponse(rsp)
 }
 
+// OpenapiImportPreviewWithBodyWithResponse Inspect backup inventory
+//
+// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+func (c *ClientWithResponses) OpenapiImportPreviewWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OpenapiImportPreviewResponse, error) {
+	rsp, err := c.OpenapiImportPreviewWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOpenapiImportPreviewResponse(rsp)
+}
+
+// OpenapiImportPreviewWithResponse Inspect backup inventory
+//
+// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /data/import/preview (the `OpenapiImportPreview` operationId).
+func (c *ClientWithResponses) OpenapiImportPreviewWithResponse(ctx context.Context, body OpenapiImportPreviewJSONRequestBody, reqEditors ...RequestEditorFn) (*OpenapiImportPreviewResponse, error) {
+	rsp, err := c.OpenapiImportPreview(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOpenapiImportPreviewResponse(rsp)
+}
+
 // GetImportStatusDataImportStatusJobIdGetWithResponse Get Import Status
 //
 // Check the progress of a data import job.
@@ -64333,6 +68178,21 @@ func (c *ClientWithResponses) ImportDataUploadDataImportUploadPostWithBodyWithRe
 		return nil, err
 	}
 	return ParseImportDataUploadDataImportUploadPostResponse(rsp)
+}
+
+// OpenapiImportUploadPreviewWithBodyWithResponse Inspect backup inventory
+//
+// Read the backup manifest without creating a restore job or changing destination data. Counts are source declarations, not conflict predictions. Input is not frozen; explicit restore validates it again.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /data/import/upload/preview (the `OpenapiImportUploadPreview` operationId).
+func (c *ClientWithResponses) OpenapiImportUploadPreviewWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*OpenapiImportUploadPreviewResponse, error) {
+	rsp, err := c.OpenapiImportUploadPreviewWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseOpenapiImportUploadPreviewResponse(rsp)
 }
 
 // ListEntitiesEntitiesGetWithResponse List Entities
@@ -64369,6 +68229,49 @@ func (c *ClientWithResponses) DeleteEntityHandlerWithResponse(ctx context.Contex
 		return nil, err
 	}
 	return ParseDeleteEntityHandlerResponse(rsp)
+}
+
+// ReadEntityAliasesHandlerWithResponse Read entity aliases
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /entities/{entity_id}/aliases (the `ReadEntityAliasesHandler` operationId).
+func (c *ClientWithResponses) ReadEntityAliasesHandlerWithResponse(ctx context.Context, entityId string, reqEditors ...RequestEditorFn) (*ReadEntityAliasesHandlerResponse, error) {
+	rsp, err := c.ReadEntityAliasesHandler(ctx, entityId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadEntityAliasesHandlerResponse(rsp)
+}
+
+// ChangeEntityAliasesHandlerWithBodyWithResponse Correct entity aliases
+//
+// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+func (c *ClientWithResponses) ChangeEntityAliasesHandlerWithBodyWithResponse(ctx context.Context, entityId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ChangeEntityAliasesHandlerResponse, error) {
+	rsp, err := c.ChangeEntityAliasesHandlerWithBody(ctx, entityId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseChangeEntityAliasesHandlerResponse(rsp)
+}
+
+// ChangeEntityAliasesHandlerWithResponse Correct entity aliases
+//
+// Correct aliases with expected_revision and expected_aliases from GET. add explicitly restores rejected aliases; remove persistently rejects them. Neither operation changes entity identity or links.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /entities/{entity_id}/aliases (the `ChangeEntityAliasesHandler` operationId).
+func (c *ClientWithResponses) ChangeEntityAliasesHandlerWithResponse(ctx context.Context, entityId string, body ChangeEntityAliasesHandlerJSONRequestBody, reqEditors ...RequestEditorFn) (*ChangeEntityAliasesHandlerResponse, error) {
+	rsp, err := c.ChangeEntityAliasesHandler(ctx, entityId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseChangeEntityAliasesHandlerResponse(rsp)
 }
 
 // PreviewEntityDeleteHandlerWithResponse Preview entity deletion
@@ -64549,38 +68452,36 @@ func (c *ClientWithResponses) FsCatFsCatGetWithResponse(ctx context.Context, par
 	return ParseFsCatFsCatGetResponse(rsp)
 }
 
-// FsDeleteFsDeletePostWithBodyWithResponse Fs Delete
+// FsDeleteFsDeletePostWithBodyWithResponse Delete a canonical Memory or Crystal path in its selected Space.
 //
-// Delete/archive a canonical Nowledge FS file.
-//
-// Memory delete delegates to the existing Memories delete path, preserving
-// the object's concrete space.  Working Memory delete has no safe helper in
-// this slice and returns “ENOTSUP“.
+// A nonblank body Space wins over the ambient header. Explicit references
+// must resolve to a registered Space. A foreign or moved target is not found;
+// an unscoped path still binds the target Space observed during preflight.
+// Working Memory deletion remains unsupported. Space selection is not a grant.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-func (c *ClientWithResponses) FsDeleteFsDeletePostWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error) {
-	rsp, err := c.FsDeleteFsDeletePostWithBody(ctx, contentType, body, reqEditors...)
+func (c *ClientWithResponses) FsDeleteFsDeletePostWithBodyWithResponse(ctx context.Context, params *FsDeleteFsDeletePostParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error) {
+	rsp, err := c.FsDeleteFsDeletePostWithBody(ctx, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseFsDeleteFsDeletePostResponse(rsp)
 }
 
-// FsDeleteFsDeletePostWithResponse Fs Delete
+// FsDeleteFsDeletePostWithResponse Delete a canonical Memory or Crystal path in its selected Space.
 //
-// Delete/archive a canonical Nowledge FS file.
-//
-// Memory delete delegates to the existing Memories delete path, preserving
-// the object's concrete space.  Working Memory delete has no safe helper in
-// this slice and returns “ENOTSUP“.
+// A nonblank body Space wins over the ambient header. Explicit references
+// must resolve to a registered Space. A foreign or moved target is not found;
+// an unscoped path still binds the target Space observed during preflight.
+// Working Memory deletion remains unsupported. Space selection is not a grant.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
 // Corresponds with POST /fs/delete (the `FsDeleteFsDeletePost` operationId).
-func (c *ClientWithResponses) FsDeleteFsDeletePostWithResponse(ctx context.Context, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error) {
-	rsp, err := c.FsDeleteFsDeletePost(ctx, body, reqEditors...)
+func (c *ClientWithResponses) FsDeleteFsDeletePostWithResponse(ctx context.Context, params *FsDeleteFsDeletePostParams, body FsDeleteFsDeletePostJSONRequestBody, reqEditors ...RequestEditorFn) (*FsDeleteFsDeletePostResponse, error) {
+	rsp, err := c.FsDeleteFsDeletePost(ctx, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -65139,6 +69040,51 @@ func (c *ClientWithResponses) ForceCheckpointHealthCheckpointPostWithResponse(ct
 		return nil, err
 	}
 	return ParseForceCheckpointHealthCheckpointPostResponse(rsp)
+}
+
+// GetIdentityProfilesWithResponse List identity profiles
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Returns independently enrolled profiles for this Space; matching names do not imply the same person. Reading does not invoke a model.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /identity/profiles (the `GetIdentityProfiles` operationId).
+func (c *ClientWithResponses) GetIdentityProfilesWithResponse(ctx context.Context, params *GetIdentityProfilesParams, reqEditors ...RequestEditorFn) (*GetIdentityProfilesResponse, error) {
+	rsp, err := c.GetIdentityProfiles(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIdentityProfilesResponse(rsp)
+}
+
+// SaveIdentityProfileWithBodyWithResponse Create or update an identity profile
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+func (c *ClientWithResponses) SaveIdentityProfileWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SaveIdentityProfileResponse, error) {
+	rsp, err := c.SaveIdentityProfileWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSaveIdentityProfileResponse(rsp)
+}
+
+// SaveIdentityProfileWithResponse Create or update an identity profile
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority. To create, send id: null and expected_revision: null (or omit expected_revision). To update, send both the existing ID and its current revision. Creation never coalesces profiles by name. The Space supports at most 100 profiles; bounded pending changes can reject further edits. Linking a subject is optional; omitting subject keeps any existing link. Saving queues selective background replay and may lead to later model use, but this request does not make an inline model call.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /identity/profiles (the `SaveIdentityProfile` operationId).
+func (c *ClientWithResponses) SaveIdentityProfileWithResponse(ctx context.Context, body SaveIdentityProfileJSONRequestBody, reqEditors ...RequestEditorFn) (*SaveIdentityProfileResponse, error) {
+	rsp, err := c.SaveIdentityProfile(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSaveIdentityProfileResponse(rsp)
 }
 
 // ListLabelsLabelsGetWithResponse List Labels
@@ -66333,7 +70279,7 @@ func (c *ClientWithResponses) ExportMemoryMemoriesMemoryIdExportGetWithResponse(
 // Apply knowledge graph extraction results to a memory.
 //
 // This endpoint saves the extracted entities and relationships to the graph database
-// and updates the memory's metadata to track the extraction.
+// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -66351,7 +70297,7 @@ func (c *ClientWithResponses) ApplyMemoryKgExtractionMemoriesMemoryIdExtractKgAp
 // Apply knowledge graph extraction results to a memory.
 //
 // This endpoint saves the extracted entities and relationships to the graph database
-// and updates the memory's metadata to track the extraction.
+// and updates the memory's metadata to track the extraction. Exact mode isolates caller-owned entity identities from automatic alias and punctuation matching. Identity lookup/update is transactional per entity, but the batch is not atomic. On storage failure, success is false and some writes may have persisted; inspect resolved_entities before retrying. Entity replay reuses IDs; relationships retain append semantics. Existing aliases and historical graph contamination are not repaired automatically.
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -66443,6 +70389,81 @@ func (c *ClientWithResponses) ForgetMemoryMemoriesMemoryIdForgetPostWithResponse
 		return nil, err
 	}
 	return ParseForgetMemoryMemoriesMemoryIdForgetPostResponse(rsp)
+}
+
+// ReadMemoryIdentityWithResponse Read memory identity evidence
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current read authority. Read this response before correcting an occurrence; retain source_revision, epoch, generation and the occurrence revision. An empty occurrences array is valid and reading does not invoke a model.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /memories/{memory_id}/identity (the `ReadMemoryIdentity` operationId).
+func (c *ClientWithResponses) ReadMemoryIdentityWithResponse(ctx context.Context, memoryId string, params *ReadMemoryIdentityParams, reqEditors ...RequestEditorFn) (*ReadMemoryIdentityResponse, error) {
+	rsp, err := c.ReadMemoryIdentity(ctx, memoryId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadMemoryIdentityResponse(rsp)
+}
+
+// CorrectMemoryIdentityWithBodyWithResponse Correct a memory identity occurrence
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+func (c *ClientWithResponses) CorrectMemoryIdentityWithBodyWithResponse(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CorrectMemoryIdentityResponse, error) {
+	rsp, err := c.CorrectMemoryIdentityWithBody(ctx, memoryId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCorrectMemoryIdentityResponse(rsp)
+}
+
+// CorrectMemoryIdentityWithResponse Correct a memory identity occurrence
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires a human actor with current write authority; an agent cannot mark a decision as human. Copy all concurrency fields from a fresh evidence read. Send identity_id: null to explicitly confirm unknown, or a profile ID in this Space. Omission is invalid. No model is called. If source or evidence changed, read again before choosing a correction; capacity and other conflicts require the recovery identified by error_code.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /memories/{memory_id}/identity/correction (the `CorrectMemoryIdentity` operationId).
+func (c *ClientWithResponses) CorrectMemoryIdentityWithResponse(ctx context.Context, memoryId string, body CorrectMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*CorrectMemoryIdentityResponse, error) {
+	rsp, err := c.CorrectMemoryIdentity(ctx, memoryId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCorrectMemoryIdentityResponse(rsp)
+}
+
+// ExtractMemoryIdentityWithBodyWithResponse Extract or reconsider memory identities
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+func (c *ClientWithResponses) ExtractMemoryIdentityWithBodyWithResponse(ctx context.Context, memoryId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ExtractMemoryIdentityResponse, error) {
+	rsp, err := c.ExtractMemoryIdentityWithBody(ctx, memoryId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseExtractMemoryIdentityResponse(rsp)
+}
+
+// ExtractMemoryIdentityWithResponse Extract or reconsider memory identities
+//
+// Use the target server's normal authentication and an explicit exact Space ID. No cross-Space fallback is performed. Requires current write and model authority; permitted agents may request machine extraction. Uses the configured model and applicable model billing/admission. Omit mention_ids (or use null) with no new_spans for initial extraction only when there are no existing occurrences. An eligible interactive request invokes the model, including a repeated request after an empty result; background initial-pass deduplication is separate. When occurrences already exist, use selected mode. An explicit mention_ids array selects machine occurrences, optionally with new_spans. Human-confirmed choices are preserved. This is a bounded request for one Memory, not whole-Space replay or automatic profile creation.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /memories/{memory_id}/identity/extract (the `ExtractMemoryIdentity` operationId).
+func (c *ClientWithResponses) ExtractMemoryIdentityWithResponse(ctx context.Context, memoryId string, body ExtractMemoryIdentityJSONRequestBody, reqEditors ...RequestEditorFn) (*ExtractMemoryIdentityResponse, error) {
+	rsp, err := c.ExtractMemoryIdentity(ctx, memoryId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseExtractMemoryIdentityResponse(rsp)
 }
 
 // GetMemoryLabelsMemoriesMemoryIdLabelsGetWithResponse Get Memory Labels
@@ -68587,9 +72608,7 @@ func (c *ClientWithResponses) GetStorageInfoStorageInfoGetWithResponse(ctx conte
 
 // OptimizeStorageStorageOptimizePostWithResponse Optimize Storage
 //
-// Compact search index and flush database changes.
-//
-// Prunes old LanceDB versions and runs a KuzuDB checkpoint.
+// Compact every search projection table's Lance fragments, prune verified old snapshots, and checkpoint the graph database. Pre-compaction snapshots remain available to existing readers and are reclaimed after the next backend start. The response reports completed, partial, or refused outcomes and safe table-level details.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -69079,6 +73098,21 @@ func (c *ClientWithResponses) ParseThreadContentThreadsParsePostWithResponse(ctx
 	return ParseParseThreadContentThreadsParsePostResponse(rsp)
 }
 
+// ListThreadProjectsThreadsProjectsGetWithResponse List Saved Conversation Projects
+//
+// Paginated directory over all readable saved conversations matching source and Space. Full workspace path is authoritative when present, otherwise project name, otherwise unknown. Keys preserve exact values and are passed unchanged to the thread list. Counts include logical conversations, not historical duplicate storage rows.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /threads/projects (the `ListThreadProjectsThreadsProjectsGet` operationId).
+func (c *ClientWithResponses) ListThreadProjectsThreadsProjectsGetWithResponse(ctx context.Context, params *ListThreadProjectsThreadsProjectsGetParams, reqEditors ...RequestEditorFn) (*ListThreadProjectsThreadsProjectsGetResponse, error) {
+	rsp, err := c.ListThreadProjectsThreadsProjectsGet(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListThreadProjectsThreadsProjectsGetResponse(rsp)
+}
+
 // SearchThreadsFullThreadsSearchGetWithResponse Search Threads Full
 //
 // Full thread search with message matching.
@@ -69231,7 +73265,7 @@ func (c *ClientWithResponses) StopWatcherThreadsWatcherStopPostWithResponse(ctx 
 
 // DeleteThreadThreadsThreadIdDeleteWithResponse Delete Thread
 //
-// Delete a thread and optionally its extracted memories.
+// Delete a thread and optionally its extracted memories. App cascade commits are per Memory, not one transaction with the parent Thread. Errors may report prior committed Memory deletions and uncertain outcomes. Cloud currently reports zero extracted Memory deletions even when cascade was requested.
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -69787,6 +73821,27 @@ func ParseOpenapiPauseScheduleResponse(rsp *http.Response) (*OpenapiPauseSchedul
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ScheduleErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest ScheduleErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ScheduleErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 
@@ -70545,6 +74600,53 @@ func ParseRetryEventAgentFeedEventsEventIdRetryPostResponse(rsp *http.Response) 
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseOpenapiGuardedTimelineReviewResponse parses an HTTP response from a OpenapiGuardedTimelineReviewWithResponse call
+func ParseOpenapiGuardedTimelineReviewResponse(rsp *http.Response) (*OpenapiGuardedTimelineReviewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &OpenapiGuardedTimelineReviewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GuardedTimelineReviewResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case rsp.StatusCode == 404:
+		break // No content-type
+
+	case rsp.StatusCode == 409:
+		break // No content-type
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	case rsp.StatusCode == 428:
+		break // No content-type
+
+	case rsp.StatusCode == 503:
+		break // No content-type
 
 	}
 
@@ -72573,7 +76675,7 @@ func ParseExportDataDataExportPostResponse(rsp *http.Response) (*ExportDataDataE
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest DataTransferErrorResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -72585,6 +76687,13 @@ func ParseExportDataDataExportPostResponse(rsp *http.Response) (*ExportDataDataE
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
 
 	}
 
@@ -72613,7 +76722,7 @@ func ParseExportDataDownloadDataExportDownloadPostResponse(rsp *http.Response) (
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest DataTransferErrorResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -72625,6 +76734,13 @@ func ParseExportDataDownloadDataExportDownloadPostResponse(rsp *http.Response) (
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
 
 	case rsp.StatusCode == 200:
 		// Content-type (application/zip) unsupported
@@ -72721,6 +76837,60 @@ func ParseImportDataDataImportPostResponse(rsp *http.Response) (*ImportDataDataI
 	return response, nil
 }
 
+// ParseOpenapiImportPreviewResponse parses an HTTP response from a OpenapiImportPreviewWithResponse call
+func ParseOpenapiImportPreviewResponse(rsp *http.Response) (*OpenapiImportPreviewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &OpenapiImportPreviewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DataImportPreviewResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetImportStatusDataImportStatusJobIdGetResponse parses an HTTP response from a GetImportStatusDataImportStatusJobIdGetWithResponse call
 func ParseGetImportStatusDataImportStatusJobIdGetResponse(rsp *http.Response) (*GetImportStatusDataImportStatusJobIdGetResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -72808,6 +76978,60 @@ func ParseImportDataUploadDataImportUploadPostResponse(rsp *http.Response) (*Imp
 	return response, nil
 }
 
+// ParseOpenapiImportUploadPreviewResponse parses an HTTP response from a OpenapiImportUploadPreviewWithResponse call
+func ParseOpenapiImportUploadPreviewResponse(rsp *http.Response) (*OpenapiImportUploadPreviewResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &OpenapiImportUploadPreviewResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DataImportPreviewResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest DataTransferErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListEntitiesEntitiesGetResponse parses an HTTP response from a ListEntitiesEntitiesGetWithResponse call
 func ParseListEntitiesEntitiesGetResponse(rsp *http.Response) (*ListEntitiesEntitiesGetResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -72863,6 +77087,76 @@ func ParseDeleteEntityHandlerResponse(rsp *http.Response) (*DeleteEntityHandlerR
 		response.JSON200 = &dest
 
 	case rsp.StatusCode == 404:
+		break // No content-type
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParseReadEntityAliasesHandlerResponse parses an HTTP response from a ReadEntityAliasesHandlerWithResponse call
+func ParseReadEntityAliasesHandlerResponse(rsp *http.Response) (*ReadEntityAliasesHandlerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadEntityAliasesHandlerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EntityAliasStateSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 404:
+		break // No content-type
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParseChangeEntityAliasesHandlerResponse parses an HTTP response from a ChangeEntityAliasesHandlerWithResponse call
+func ParseChangeEntityAliasesHandlerResponse(rsp *http.Response) (*ChangeEntityAliasesHandlerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ChangeEntityAliasesHandlerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EntityAliasStateSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case rsp.StatusCode == 404:
+		break // No content-type
+
+	case rsp.StatusCode == 409:
 		break // No content-type
 
 	case rsp.StatusCode == 422:
@@ -73171,12 +77465,40 @@ func ParseFsDeleteFsDeletePostResponse(rsp *http.Response) (*FsDeleteFsDeletePos
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case rsp.StatusCode == 404:
+		break // No content-type
+
+	case rsp.StatusCode == 409:
+		break // No content-type
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest interface{}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case rsp.StatusCode == 500:
+		break // No content-type
+
+	case rsp.StatusCode == 501:
+		break // No content-type
+
+	case rsp.StatusCode == 400:
+	// Content-type (text/plain) unsupported
+
+	case rsp.StatusCode == 422:
+		// Content-type (text/plain) unsupported
 
 	}
 
@@ -74052,6 +78374,152 @@ func ParseForceCheckpointHealthCheckpointPostResponse(rsp *http.Response) (*Forc
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIdentityProfilesResponse parses an HTTP response from a GetIdentityProfilesWithResponse call
+func ParseGetIdentityProfilesResponse(rsp *http.Response) (*GetIdentityProfilesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIdentityProfilesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []IdentityProfile
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON413 = &dest
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSaveIdentityProfileResponse parses an HTTP response from a SaveIdentityProfileWithResponse call
+func ParseSaveIdentityProfileResponse(rsp *http.Response) (*SaveIdentityProfileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SaveIdentityProfileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IdentityProfile
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON413 = &dest
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
 
 	}
 
@@ -75709,12 +80177,18 @@ func ParseApplyMemoryKgExtractionMemoriesMemoryIdExtractKgApplyPostResponse(rsp 
 		}
 		response.JSON200 = &dest
 
+	case rsp.StatusCode == 409:
+		break // No content-type
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case rsp.StatusCode == 500:
+		break // No content-type
 
 	}
 
@@ -75814,6 +80288,239 @@ func ParseForgetMemoryMemoriesMemoryIdForgetPostResponse(rsp *http.Response) (*F
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReadMemoryIdentityResponse parses an HTTP response from a ReadMemoryIdentityWithResponse call
+func ParseReadMemoryIdentityResponse(rsp *http.Response) (*ReadMemoryIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadMemoryIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IdentityEvidence
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON413 = &dest
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCorrectMemoryIdentityResponse parses an HTTP response from a CorrectMemoryIdentityWithResponse call
+func ParseCorrectMemoryIdentityResponse(rsp *http.Response) (*CorrectMemoryIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CorrectMemoryIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IdentityEvidence
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON413 = &dest
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseExtractMemoryIdentityResponse parses an HTTP response from a ExtractMemoryIdentityWithResponse call
+func ParseExtractMemoryIdentityResponse(rsp *http.Response) (*ExtractMemoryIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ExtractMemoryIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest IdentityEvidence
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 413:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON413 = &dest
+
+	case rsp.StatusCode == 422:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 504:
+		var dest IdentityOperationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON504 = &dest
 
 	}
 
@@ -79565,6 +84272,39 @@ func ParseParseThreadContentThreadsParsePostResponse(rsp *http.Response) (*Parse
 	return response, nil
 }
 
+// ParseListThreadProjectsThreadsProjectsGetResponse parses an HTTP response from a ListThreadProjectsThreadsProjectsGetWithResponse call
+func ParseListThreadProjectsThreadsProjectsGetResponse(rsp *http.Response) (*ListThreadProjectsThreadsProjectsGetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListThreadProjectsThreadsProjectsGetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ThreadProjectListResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseSearchThreadsFullThreadsSearchGetResponse parses an HTTP response from a SearchThreadsFullThreadsSearchGetWithResponse call
 func ParseSearchThreadsFullThreadsSearchGetResponse(rsp *http.Response) (*SearchThreadsFullThreadsSearchGetResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -79796,12 +84536,33 @@ func ParseDeleteThreadThreadsThreadIdDeleteResponse(rsp *http.Response) (*Delete
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest ThreadDeletionErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest ThreadDeletionErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest ThreadDeletionErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
 
 	}
 

@@ -65,17 +65,29 @@ type KGRelation struct {
 
 // KGApplyRequest is the request for POST /memories/{id}/extract-kg/apply.
 type KGApplyRequest struct {
-	Entities              []Entity     `json:"entities,omitempty"`
-	Relationships         []KGRelation `json:"relationships,omitempty"`
-	ExtractionConfidence  *float64     `json:"extraction_confidence,omitempty"`
+	Entities             []Entity     `json:"entities,omitempty"`
+	Relationships        []KGRelation `json:"relationships,omitempty"`
+	ExtractionConfidence *float64     `json:"extraction_confidence,omitempty"`
+	EntityResolution     string       `json:"entity_resolution,omitempty"`
 }
 
 // KGApplyResponse is the response for POST /memories/{id}/extract-kg/apply.
 type KGApplyResponse struct {
-	Success             bool   `json:"success"`
-	MemoryID            string `json:"memory_id,omitempty"`
-	EntitiesCreated     int    `json:"entities_created"`
-	RelationshipsCreated int   `json:"relationships_created"`
-	MetadataUpdated     bool   `json:"metadata_updated,omitempty"`
-	Error               string `json:"error,omitempty"`
+	Success              bool             `json:"success"`
+	MemoryID             string           `json:"memory_id,omitempty"`
+	EntitiesCreated      int              `json:"entities_created"`
+	RelationshipsCreated int              `json:"relationships_created"`
+	MetadataUpdated      bool             `json:"metadata_updated,omitempty"`
+	Error                string           `json:"error,omitempty"`
+	EntityResolution     string           `json:"entity_resolution,omitempty"`
+	ResolvedEntities     []ResolvedEntity `json:"resolved_entities,omitempty"`
+	IndexRepairNeeded    *bool            `json:"index_repair_needed,omitempty"`
+	Warnings             []string         `json:"warnings,omitempty"`
+}
+
+// ResolvedEntity records an identity resolved during exact KG extraction.
+type ResolvedEntity struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	EntityType string `json:"entity_type"`
 }

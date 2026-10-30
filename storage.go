@@ -1,6 +1,10 @@
 package nowledgemem
 
-import "context"
+import (
+	"context"
+
+	"github.com/lib-x/nowledgemem-go/openapi"
+)
 
 // StorageService handles storage operations.
 type StorageService struct {
@@ -19,6 +23,15 @@ func (s *StorageService) Info(ctx context.Context) (*StorageInfo, error) {
 // Optimize compacts search index and flushes database changes.
 func (s *StorageService) Optimize(ctx context.Context) error {
 	return s.client.do(ctx, "POST", "/storage/optimize", nil, nil)
+}
+
+// OptimizeResult returns the full optimization outcome, including partial results.
+func (s *StorageService) OptimizeResult(ctx context.Context) (*openapi.OptimizeStorageResponse, error) {
+	var response openapi.OptimizeStorageResponse
+	if err := s.client.do(ctx, "POST", "/storage/optimize", nil, &response); err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
 
 // --- Storage types ---

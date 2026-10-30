@@ -25,7 +25,14 @@ func TestSnapshotContainsDataTransferContract(t *testing.T) {
 	if document.OpenAPI != "3.1.0" || document.Info.Title != "Nowledge Mem API" || document.Info.Version == "" {
 		t.Fatalf("unexpected OpenAPI metadata: %#v", document)
 	}
-	for _, path := range []string{"/data/checkpoint", "/data/export/download", "/data/import/upload"} {
+	for _, path := range []string{
+		"/data/checkpoint", "/data/export/download", "/data/import/upload",
+		"/data/import/preview", "/data/import/upload/preview",
+		"/agent/feed/events/{event_id}/review", "/entities/{entity_id}/aliases",
+		"/identity/profiles", "/memories/{memory_id}/identity",
+		"/memories/{memory_id}/identity/correction", "/memories/{memory_id}/identity/extract",
+		"/threads/projects",
+	} {
 		if _, ok := document.Paths[path]; !ok {
 			t.Errorf("OpenAPI snapshot is missing %s", path)
 		}

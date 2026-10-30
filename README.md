@@ -148,9 +148,43 @@ go run ./internal/cmd/openapi-sync -update \
 ```
 
 The sync command rejects external `$ref` values and unreviewed path-parameter
-mismatches. It applies only the two documented corrections currently required by
-the upstream OpenAPI 3.1 document. The module and its pinned generator use Go
-1.27 or newer.
+mismatches. It retains two reviewed query-parameter corrections for older
+snapshots; the current upstream document needs neither correction. The module
+and its pinned generator use Go 1.27 or newer.
+
+### API snapshot (2026-10-30)
+
+The checked-in snapshot covers 297 paths, 337 operations, and 338 schemas.
+Upstream still reports API version `0.9.15`, despite adding 9 paths, 11
+operations, and 25 schemas since SDK v0.6.0. Compare the document itself rather
+than relying on `info.version` to detect changes.
+
+The generated client now includes Identity profiles and Memory identity evidence,
+extraction and correction, entity alias management, guarded Timeline review,
+Thread projects, and import previews. Identity operations require an explicit
+Space; retain server-issued references and revisions rather than deriving them
+from IDs. Preview/review plans do not grant permission to apply a mutation.
+
+The concise service client also supports:
+
+- `Threads.Projects` and `ListThreadsParams.ProjectKey` for exact project filters.
+- `Data.PreviewImport` and `Data.PreviewUploadImport` for inspection before import.
+- `IncludeFeedEvents` on export, download, import, and upload requests; use a
+  `*bool` to distinguish an omitted option from explicit `false`.
+- Memory write intent, claim status and source grounding; native source-derived
+  distillation, one-run policy overrides, and distill-again task references.
+- `Sources.IngestFile` attachment references and `FS.DeleteWithOptions` for
+  explicitly scoped deletion.
+- Thread deletion repair/uncertainty flags, Agent identity references, and exact
+  KG entity resolution with resolved identities and repair warnings.
+- `Storage.OptimizeResult` to inspect completed, partial, or refused outcomes;
+  the existing `Optimize` method keeps its original signature.
+
+Complex new request and response types are shared with the `openapi` package.
+Optional status fields remain pointers where absence matters for older servers.
+After a deletion error, inspect `APIError.Body` (or the generated typed error
+response) and refresh server state before retrying: a failure does not prove
+that no writes committed.
 
 ## Data Export Jobs
 

@@ -130,15 +130,16 @@ type AgentProfilesResponse struct {
 
 // AgentProfileResponse represents a named long-running agent identity.
 type AgentProfileResponse struct {
-	ID             string   `json:"id"`
-	DisplayName    string   `json:"displayName"`
-	Role           string   `json:"role,omitempty"`
-	Description    string   `json:"description,omitempty"`
-	Instructions   string   `json:"instructions,omitempty"`
-	DefaultSpaceID string   `json:"defaultSpaceId,omitempty"`
-	SourceApp      string   `json:"sourceApp,omitempty"`
-	HostAgentID    string   `json:"hostAgentId,omitempty"`
-	Tags           []string `json:"tags,omitempty"`
+	ID                string   `json:"id"`
+	DisplayName       string   `json:"displayName"`
+	Role              string   `json:"role,omitempty"`
+	Description       string   `json:"description,omitempty"`
+	Instructions      string   `json:"instructions,omitempty"`
+	DefaultSpaceID    string   `json:"defaultSpaceId,omitempty"`
+	SourceApp         string   `json:"sourceApp,omitempty"`
+	HostAgentID       string   `json:"hostAgentId,omitempty"`
+	Tags              []string `json:"tags,omitempty"`
+	IdentityReference *string  `json:"identityReference,omitempty"`
 }
 
 // AgentProfilePayload is the request body for agent profile create and update operations.

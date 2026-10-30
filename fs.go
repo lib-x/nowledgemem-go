@@ -110,6 +110,11 @@ func (s *FSService) Write(ctx context.Context, path, body string) error {
 // Delete deletes a file at the given path.
 func (s *FSService) Delete(ctx context.Context, path string) error {
 	req := FSDeleteRequest{Path: path}
+	return s.DeleteWithOptions(ctx, &req)
+}
+
+// DeleteWithOptions deletes a path with an optional explicit Space.
+func (s *FSService) DeleteWithOptions(ctx context.Context, req *FSDeleteRequest) error {
 	return s.client.do(ctx, "POST", "/fs/delete", req, nil)
 }
 
